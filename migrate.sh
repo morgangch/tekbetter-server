@@ -1,4 +1,8 @@
 #!/bin/bash
+
+rm -rf alembic.ini
+cp alembic.ini.default alembic.ini
+
 FILE="alembic.ini"
 if [[ ! -f "$FILE" ]]; then
     echo "Error: unknown file $FILE."

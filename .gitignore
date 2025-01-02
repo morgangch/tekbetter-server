@@ -2,3 +2,4 @@
 /.env
 /dev_cookies.json
 /pgdata/
+/alembic.ini
