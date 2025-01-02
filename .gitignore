@@ -1,0 +1,4 @@
+/storage/
+/.env
+/dev_cookies.json
+/pgdata/
