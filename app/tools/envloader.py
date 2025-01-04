@@ -33,5 +33,5 @@ def load_env():
                 os.environ[key] = value
             else:
                 raise Exception(f"Missing environment variable {key}")
-    if len(os.getenv("AES_KEY")) != 16:
-        raise Exception("AES_KEY must be 16 characters long")
+    if len(os.getenv("AES_KEY")) != 64:
+        raise Exception("AES_KEY must be 64 characters long")
