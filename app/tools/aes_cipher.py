@@ -20,8 +20,8 @@ def decrypt_text(encrypted_text: str) -> str:
     """Déchiffre le texte avec AES."""
 
     encrypted_data = base64.b64decode(encrypted_text)
-    iv = encrypted_data[:16]
-    encrypted_text = encrypted_data[16:]
+    iv = encrypted_data[:64]
+    encrypted_text = encrypted_data[64:]
     cipher = AES.new(key, AES.MODE_CBC, iv)
     decrypted_text = unpad(cipher.decrypt(encrypted_text), AES.block_size)
     return decrypted_text.decode()
