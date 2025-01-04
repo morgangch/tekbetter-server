@@ -1,14 +1,11 @@
 import os
 import sys
+
 from alembic.command import upgrade
 
-from app import create_app, db
-from app.models.student import Student
-from app.schedules.intra_ddos_schedule import intra_schedule_ddos
+from app import create_app
 from app.tools.envloader import load_env
 from app.tools.teklogger import log_info, log_debug, log_error
-from flask import send_from_directory
-from apscheduler.schedulers.background import BackgroundScheduler
 
 app = create_app()
 
@@ -39,7 +36,6 @@ if __name__ == '__main__':
     #     s.login = "admin"
     #     db.session.add(s)
     #     db.session.commit()
-
 
     app.run(host="0.0.0.0", port=os.getenv("PORT"), debug=True, use_reloader=False)
 
