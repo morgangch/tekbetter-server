@@ -1,6 +1,13 @@
 import {buildStyles, CircularProgressbar} from "react-circular-progressbar";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCheckCircle, faCircleInfo, faClose, faList} from "@fortawesome/free-solid-svg-icons";
+import {
+    faArrowUp,
+    faCheckCircle,
+    faClose,
+    faHammer, faLineChart,
+    faList, faMagnifyingGlass,
+    faSkull
+} from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import MouliTestGroup from "./MouliTestGroup";
 import Button from "../../comps/Button";
@@ -39,12 +46,22 @@ function TraceWindow(props: { content: string, close: () => void }) {
 
 }
 
+function TopProp( props: { children: React.ReactNode, title: string, icon: any }) {
+    return <div className={"flex flex-col justify-center border-l-4 border-gray-700 pl-2 m-1"}>
+        <div className={"flex flex-row items-center justify-center gap-2 p-2"}>
+            <FontAwesomeIcon icon={props.icon}/>
+            <h2 className={"font-bold"}>{props.title}</h2>
+        </div>
+        {props.children}
+    </div>
+}
+
 export default function MouliContent(): React.ReactElement {
 
-    const [traceOpen, setTraceOpen] = React.useState(true);
+    const [traceOpen, setTraceOpen] = React.useState(false);
 
     return <div>
-        {traceOpen && <TraceWindow content={"This is a trace"} close={() => setTraceOpen(false)} />}
+        {traceOpen && <TraceWindow content={"This is a trace"} close={() => setTraceOpen(false)}/>}
         <div className={"flex-grow"}>
             <h1 style={{fontSize: "30px"}} className={"font-bold text-center"}>101Secured</h1>
         </div>
@@ -64,13 +81,60 @@ export default function MouliContent(): React.ReactElement {
                         <p>Test date: 2025-01-01 23:42</p>
                         <p>Test n°15741</p>
                     </div>
+
+
+                    <div className={"grid grid-cols-2 grid-rows-2"}>
+                        <TopProp title={"Banned functions"} icon={faHammer}>
+                            <div className={"px-1"}>
+                                <div
+                                    className={"flex flex-row items-center border rounded-full border-green-700 gap-1 pl-1"}>
+                                    <FontAwesomeIcon icon={faCheckCircle} color={"green"}/>
+                                    <p>Ok !</p>
+                                </div>
+
+                            </div>
+                        </TopProp>
+
+                        <TopProp title={"Coding style"} icon={faMagnifyingGlass}>
+                            <div className={"px-1"}>
+                                <div
+                                    className={"flex flex-row items-center border rounded-full border-green-700 gap-1 pl-1"}>
+                                    <FontAwesomeIcon icon={faCheckCircle} color={"green"}/>
+                                    <p>Ok !</p>
+                                </div>
+
+                            </div>
+                        </TopProp>
+
+                        <TopProp title={"Crash verification"} icon={faSkull}>
+                            <div className={"px-1"}>
+                                <div
+                                    className={"flex flex-row items-center border rounded-full border-green-700 gap-1 pl-1"}>
+                                    <FontAwesomeIcon icon={faCheckCircle} color={"green"}/>
+                                    <p>Ok !</p>
+                                </div>
+                            </div>
+                        </TopProp>
+                        <TopProp title={"Evolution"} icon={faLineChart}>
+                            <div className={"px-1"}>
+                                <div
+                                    className={"flex flex-row items-center border rounded-full border-green-700 gap-1 pl-1"}>
+                                    <FontAwesomeIcon icon={faArrowUp} color={"green"}/>
+                                    <p>14%</p>
+                                </div>
+                            </div>
+                        </TopProp>
+                    </div>
+
                     <Button icon={faList} text={"Open trace"} onClick={() => {
                         setTraceOpen(true);
                     }}/>
+
+
                 </div>
             </div>
 
-            <div className={"flex flex-col justify-center border-l-4 border-gray-700 w-52 pl-2"}>
+            {/* <div className={"flex flex-col justify-center border-l-4 border-gray-700 w-52 pl-2"}>
                 <div>
                     <div className={"flex flex-row items-center justify-center gap-2 p-2"}>
                         <FontAwesomeIcon icon={faCircleInfo}/>
@@ -89,7 +153,9 @@ export default function MouliContent(): React.ReactElement {
                     </div>
 
                 </div>
-            </div>
+            </div>*/}
+
+
 
 
         </div>
