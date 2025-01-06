@@ -14,7 +14,7 @@ function CodingStyleRow(props: { name: string, value: number }) {
     </div>
 }
 
-function TraceWindow(props: { content: string }) {
+function TraceWindow(props: { content: string, close: () => void }) {
     return (
         <div>
             <div className={"absolute top-0 left-0 w-full h-full bg-black z-1 opacity-60"}/>
@@ -29,6 +29,7 @@ function TraceWindow(props: { content: string }) {
                     </div>
                     <div className={"flex flex-row justify-center mt-5"}>
                         <Button icon={faClose} text={"Close"} onClick={() => {
+                            props.close();
                         }}/>
                     </div>
                 </div>
@@ -43,7 +44,7 @@ export default function MouliContent(): React.ReactElement {
     const [traceOpen, setTraceOpen] = React.useState(true);
 
     return <div>
-        {traceOpen && <TraceWindow content={"This is a trace"}/>}
+        {traceOpen && <TraceWindow content={"This is a trace"} close={() => setTraceOpen(false)} />}
         <div className={"flex-grow"}>
             <h1 style={{fontSize: "30px"}} className={"font-bold text-center"}>101Secured</h1>
         </div>
@@ -64,6 +65,7 @@ export default function MouliContent(): React.ReactElement {
                         <p>Test n°15741</p>
                     </div>
                     <Button icon={faList} text={"Open trace"} onClick={() => {
+                        setTraceOpen(true);
                     }}/>
                 </div>
             </div>
