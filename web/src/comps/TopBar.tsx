@@ -91,7 +91,7 @@ export default function TopBar(): React.ReactElement {
                         />
                         <p className={"text-white ml-1 font-bold"}>TekBetter</p>
                     </div>
-                    <SyncStatus last_sync={null}/>
+                    <SyncStatus last_sync={new Date("2025-01-06 15:00:00")}/>
                 </div>
 
                 <div className={"flex gap-4 justify-center w-1/3"}>
