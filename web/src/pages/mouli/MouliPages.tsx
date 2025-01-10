@@ -5,6 +5,7 @@ import 'react-circular-progressbar/dist/styles.css';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheckCircle, faCircleInfo} from "@fortawesome/free-solid-svg-icons";
 import MouliContent from "./MouliContent";
+import genTests from "../../models/test";
 
 function Project(props: { name: string, id: string, score: number }) {
 
@@ -44,7 +45,7 @@ export default function MouliPage(): React.ReactElement {
                 </div>
 
                 <div className={"flex-grow"}>
-                    <MouliContent/>
+                    <MouliContent mouli={genTests()[0]}/>
                 </div>
             </div>
 
