@@ -6,6 +6,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheckCircle, faCircleInfo} from "@fortawesome/free-solid-svg-icons";
 import MouliContent from "./MouliContent";
 import genTests from "../../models/test";
+import MouliHistory from "./MouliHistory";
 
 function Project(props: { name: string, id: string, score: number }) {
 
@@ -27,28 +28,25 @@ function Project(props: { name: string, id: string, score: number }) {
 
 export default function MouliPage(): React.ReactElement {
     return (
-        <div>
-            <TopBar/>
+        <div className={"flex flex-row text-white flex-grow-0"}>
+            <div className={"p-2 w-96"}>
+                <h2 className={"text-white font-bold text-xl text-center"}>My Projects</h2>
 
-
-            <div className={"flex flex-row text-white"}>
-                <div className={"p-2 w-96"}>
-                    <h2 className={"text-white font-bold text-xl text-center"}>My Projects</h2>
-
-                    <div className={"flex-col space-y-2"}>
-                        <Project name={"Navy"} id={"1234"} score={100}/>
-                        <Project name={"CPoolDay 3"} id={"1234"} score={30}/>
-                        <Project name={"Secured"} id={"1234"} score={5}/>
-                        <Project name={"Minishell2"} id={"1234"} score={65}/>
-                        <Project name={"Corewar"} id={"1234"} score={90}/>
-                    </div>
-                </div>
-
-                <div className={"flex-grow"}>
-                    <MouliContent mouli={genTests()[0]}/>
+                <div className={"flex-col space-y-2"}>
+                    <Project name={"Navy"} id={"1234"} score={100}/>
+                    <Project name={"CPoolDay 3"} id={"1234"} score={30}/>
+                    <Project name={"Secured"} id={"1234"} score={5}/>
+                    <Project name={"Minishell2"} id={"1234"} score={65}/>
+                    <Project name={"Corewar"} id={"1234"} score={90}/>
                 </div>
             </div>
 
+            <div className={"flex-grow"}>
+                <MouliContent mouli={genTests()[0]}/>
+            </div>
+            <div className={"overflow-y-auto"}>
+                <MouliHistory moulis={genTests()} selected={0}/>
+            </div>
 
         </div>
     );

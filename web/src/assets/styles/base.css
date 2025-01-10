@@ -1,0 +1,17 @@
+@tailwind base;   /* Styles de base de Tailwind */
+@tailwind components; /* Classes pré-construites pour composants */
+@tailwind utilities;  /* Classes utilitaires */
+
+.bordered {
+    @apply shadow;
+    @apply rounded-2xl;
+    @apply border-gray-200 border-2
+}
+
+.text {
+    @apply text-gray-400;
+}
+
+body {
+    @apply bg-gray-50;
+}
