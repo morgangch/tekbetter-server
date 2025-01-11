@@ -84,40 +84,44 @@ export default function MouliContent(props: { mouli: MouliResult }): React.React
         <WindowElem
             title={<h1 style={{fontSize: "25px"}} className={"font-bold text-center"}>{mouli.project_name} test
                 results</h1>}>
-            <div className={"p-2"}>
+            <div className={"p-2 text"}>
                 {popupValue && <TraceWindow content={popupValue} close={() => setPopupValue(null)}/>}
                 <div className={"flex flex-row justify-between"}>
                     <div className={"flex flex-row justify-between w-full"}>
-                        <div className={"flex flex-row gap-2 p-2 rounded-md"}>
-                            <BasicBox>
+                        <div className={"flex flex-row flex-wrap gap-2 p-2 rounded-md"}>
+                            <BasicBox className="flex-grow w-full sm:w-[calc(40%-0.5rem)]">
                                 <div className={"flex flex-row items-center gap-2 h-min"}>
                                     <div className={"w-32 z-10"}>
-                                        <CircularProgressbar value={mouli.total_score} text={`${mouli.total_score}%`}
-                                                             strokeWidth={12}
-                                                             styles={
-                                                                 buildStyles({
-                                                                     pathColor: "green",
-                                                                     trailColor: "rgba(0,0,0,0.09)",
-                                                                 })
-                                                             }/>
+                                        <CircularProgressbar
+                                            value={mouli.total_score}
+                                            text={`${mouli.total_score}%`}
+                                            strokeWidth={12}
+                                            styles={buildStyles({
+                                                pathColor: "green",
+                                                trailColor: "rgba(0,0,0,0.09)",
+                                            })}
+                                        />
                                     </div>
                                     <div className={"flex flex-col justify-center"}>
                                         <p>Commit: {mouli.commit}</p>
                                         <p>Test date: {mouli.test_date.toDateString()}</p>
                                         <p>Test n°{mouli.test_id}</p>
                                         <ElemStatus
-                                            err_content={mouli.isManyMandatoryFailed() ? "Mandatory failed" : null}/>
+                                            err_content={mouli.isManyMandatoryFailed() ? "Mandatory failed" : null}
+                                        />
                                     </div>
                                 </div>
                                 <div className={"flex flex-col gap-2 mt-3"}>
-                                    {mouli.build_trace && <Button icon={faList} text={"Build trace"} onClick={() => {
-                                        setPopupValue(mouli.build_trace);
-                                    }}/>}
+                                    {mouli.build_trace && (
+                                        <Button
+                                            icon={faList}
+                                            text={"Build trace"}
+                                            onClick={() => setPopupValue(mouli.build_trace)}
+                                        />
+                                    )}
                                 </div>
                             </BasicBox>
-                            <BasicBox>
-
-
+                            <BasicBox className="flex-grow w-full sm:w-[calc(50%-0.5rem)]">
                                 <div className={"grid grid-cols-2 grid-rows-2"}>
                                     <TopProp title={"Banned functions"} icon={faHammer}>
                                         <div className={"px-1"}>
@@ -127,27 +131,33 @@ export default function MouliContent(props: { mouli: MouliResult }): React.React
 
                                     <TopProp title={"Coding style"} icon={faMagnifyingGlass}>
                                         <div className={"px-1"}>
-                                            <ElemStatus err_content={mouli.coding_style.isPerfect() ? null : (
-                                                <div>
-                                                    <CodingStyleRow name={"MAJOR"} value={mouli.coding_style.major}/>
-                                                    <CodingStyleRow name={"MINOR"} value={mouli.coding_style.minor}/>
-                                                    <CodingStyleRow name={"INFO"} value={mouli.coding_style.info}/>
-                                                </div>
-                                            )}/>
-
-
+                                            <ElemStatus
+                                                err_content={mouli.coding_style.isPerfect() ? null : (
+                                                    <div>
+                                                        <CodingStyleRow name={"MAJOR"}
+                                                                        value={mouli.coding_style.major}/>
+                                                        <CodingStyleRow name={"MINOR"}
+                                                                        value={mouli.coding_style.minor}/>
+                                                        <CodingStyleRow name={"INFO"} value={mouli.coding_style.info}/>
+                                                    </div>
+                                                )}
+                                            />
                                         </div>
                                     </TopProp>
 
                                     <TopProp title={"Crash verification"} icon={faSkull}>
                                         <div className={"px-1"}>
-                                            <ElemStatus err_content={mouli.isCrashed() ? "Crash detected" : null}/>
+                                            <ElemStatus
+                                                err_content={mouli.isCrashed() ? "Crash detected" : null}
+                                            />
                                         </div>
                                     </TopProp>
+
                                     <TopProp title={"Evolution"} icon={faLineChart}>
                                         <div className={"px-1"}>
                                             <div
-                                                className={"flex flex-row items-center border rounded-full border-green-700 gap-1 pl-1"}>
+                                                className={"flex flex-row items-center border rounded-full border-green-700 gap-1 pl-1"}
+                                            >
                                                 <FontAwesomeIcon icon={faArrowUp} color={"green"}/>
                                                 <p>14%</p>
                                             </div>
@@ -155,9 +165,8 @@ export default function MouliContent(props: { mouli: MouliResult }): React.React
                                     </TopProp>
                                 </div>
                             </BasicBox>
-
-
                         </div>
+
                     </div>
                 </div>
                 <div>
