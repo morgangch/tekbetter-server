@@ -12,7 +12,7 @@ export default function WindowElem(props: { title: React.ReactNode, children: Re
 }
 
 export function BasicBox(props: { children: React.ReactNode, className?: string }) {
-   return  <div className={"bordered p-2 text " + props.className ? props.className : ""}>
+   return  <div className={"bordered p-2 text shadow " + props.className ? props.className : ""}>
         {props.children}
     </div>
 }
