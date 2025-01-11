@@ -54,7 +54,7 @@ def _build_skill(skill_json: dict) -> MouliSkill:
     return skill
 
 
-def build_mouli_from_myepitech(test_id: int, mouli_json: dict):
+def build_mouli_from_myepitech(test_id: int, mouli_json: dict, student_id: int) -> MouliResult:
     mouli = MouliResult()
 
     mouli.project_name = mouli_json["instance"]["projectName"]
@@ -87,5 +87,7 @@ def build_mouli_from_myepitech(test_id: int, mouli_json: dict):
         mouli.skills = [skill for skill in mouli.skills if skill is not None]
     else:
         mouli.skills = None
+
+    mouli.student_id = student_id
 
     return mouli

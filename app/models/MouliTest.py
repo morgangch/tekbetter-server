@@ -1,3 +1,6 @@
+from typing import Dict, List
+
+
 class MouliTest:
     title: str
     passed: bool
@@ -67,10 +70,10 @@ class CodingStyleReport:
     is_too_many_issues: bool = False
 
     # Violation code : [file path and line]
-    details: dict = {
-        "minor": {str: [str]},
-        "major": {str: [str]},
-        "info": {str: [str]}
+    details: Dict[str, Dict[str, List[str]]] = {
+        "minor": {},
+        "major": {},
+        "info": {}
     }
 
     def __init__(self, mongodata=None):
@@ -83,7 +86,7 @@ class CodingStyleReport:
         self.details = mongodata["details"]
 
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         return {
             "minor_issues": self.minor_issues,
             "major_issues": self.major_issues,
@@ -127,14 +130,14 @@ class MouliResult:
         passed_tests = sum([skill.passed_count for skill in self.skills])
         return round(passed_tests / total_tests * 100, 2)
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         return {
+            "_id": self.test_id,
             "project_name": self.project_name,
             "module_code": self.module_code,
             "student_id": self.student_id,
             "score": self.score,
             "test_date": self.test_date,
-            "_id": self.test_id,
             "commit_hash": self.commit_hash,
             "build_trace": self.build_trace,
             "banned_content": self.banned_content,

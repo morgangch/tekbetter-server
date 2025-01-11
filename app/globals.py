@@ -1,0 +1,2 @@
+class Globals:
+    database = None
