@@ -1,0 +1,9 @@
+class Project:
+    student_id: int
+    date_start: str
+    date_end: str
+    code_module: str
+    title_module: str
+    acti_title: str
+    is_registered: bool
+    fetch_date: str

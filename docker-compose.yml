@@ -1,15 +1,10 @@
+version: '3.8'
 services:
-  postgres:
-    image: postgres:12
+  mongodb:
+    image: mongo:6-jammy
     ports:
-      - "5434:5432"
-    environment:
-      POSTGRES_USER: tekbetter
-      POSTGRES_PASSWORD: example
-      POSTGRES_DB: tekbetter
+      - '27017:27017'
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
-
-networks:
-  default:
-    driver: bridge
+      - dbdata6:/data/db
+volumes:
+  dbdata6:
