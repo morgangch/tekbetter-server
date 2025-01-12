@@ -4,11 +4,14 @@ from flask import request
 
 from app.api.middlewares.scraper_auth_middleware import scraper_auth_middleware
 from app.globals import Globals
+from app.models.PlanningEvent import PlanningEvent
 from app.models.Project import Project
 from app.parsers.mouli_parser import build_mouli_from_myepitech
+from app.parsers.planning_parser import fill_event_from_intra
 from app.parsers.project_parser import fill_project_from_intra
 from app.parsers.student_parser import fill_student_from_intra
 from app.services.mouli_service import MouliService
+from app.services.planning_service import PlanningService
 from app.services.project_service import ProjectService
 from app.services.student_service import StudentService
 
@@ -45,6 +48,13 @@ def load_scrapers_routes():
                 fill_project_from_intra(proj, project, student.internal_id)
                 project.last_update = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 ProjectService.upload_project(project)
+
+        if "intra_planning" in data and data["intra_planning"]:
+            events = []
+            for event in data["intra_planning"]:
+                e = PlanningEvent()
+                events.append(fill_event_from_intra(event, e, student.internal_id))
+            PlanningService.sync_events(events, student.internal_id)
 
         if "new_moulis" in data and data["new_moulis"]:
             for mouli_id, mouli_data in data["new_moulis"].items():
