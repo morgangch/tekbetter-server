@@ -12,7 +12,7 @@ class MouliService:
 
     @staticmethod
     def get_student_mouliids(student_id: int) -> [int]:
-        return [mouli["_id"] for mouli in Globals.database["moulis"].find({"student_id": student_id})]
+        return [int(mouli["_id"]) for mouli in Globals.database["moulis"].find({"student_id": student_id})]
 
     @staticmethod
     def delete_mouli(mouli: MouliResult):
