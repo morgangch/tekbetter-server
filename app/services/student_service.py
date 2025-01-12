@@ -1,3 +1,5 @@
+import random
+import string
 from datetime import datetime
 from app.globals import Globals
 from app.models.Student import Student
@@ -11,6 +13,9 @@ def _build_student(mongo_output):
     student.gpa = mongo_output["gpa"]
     student.first_name = mongo_output["first_name"]
     student.last_name = mongo_output["last_name"]
+    student.promo_year = mongo_output["promo_year"]
+    student.last_update = mongo_output["last_update"]
+    student.scraper_token = mongo_output.get("scraper_token", None)
     return student
 
 class StudentService:
@@ -36,6 +41,7 @@ class StudentService:
         student.last_update = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         student.internal_id = Globals.database["students"].count_documents({}) + 1
         Globals.database["students"].insert_one(student.to_dict())
+        StudentService.regenerate_scraper_token(student)
 
     @staticmethod
     def update_student(student: Student):
@@ -45,3 +51,15 @@ class StudentService:
     @staticmethod
     def delete_student(student: Student):
         Globals.database["students"].delete_one({"_id": student.internal_id})
+
+    @staticmethod
+    def get_student_by_scrapetoken(token: str) -> Student:
+        student = Globals.database["students"].find_one({"scraper_token": token})
+        return _build_student(student) if student else None
+
+    @staticmethod
+    def regenerate_scraper_token(student: Student):
+        token = ''.join(random.choices(string.ascii_letters + string.digits, k=32))
+        student.scraper_token = f"{student.login.split('@')[0]}_{token}"
+        StudentService.update_student(student)
+        return student.scraper_token

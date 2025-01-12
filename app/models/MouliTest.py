@@ -46,7 +46,7 @@ class MouliSkill:
         self.passed_count = mongodata["passed_count"]
         self.crash_count = mongodata["crash_count"]
         self.mandatoryfail_count = mongodata["mandatoryfail_count"]
-        self.tests = [MouliTest(test) for test in mongodata["tests"]]
+        self.tests = [MouliTest(test) for test in mongodata["tests"]] if mongodata["tests"] is not None else None
 
     @property
     def score(self):
@@ -60,7 +60,7 @@ class MouliSkill:
             "passed_count": self.passed_count,
             "crash_count": self.crash_count,
             "mandatoryfail_count": self.mandatoryfail_count,
-            "tests": [test.to_dict() for test in self.tests]
+            "tests": [test.to_dict() for test in self.tests] if self.tests is not None else None
         }
 
 class CodingStyleReport:
@@ -70,7 +70,7 @@ class CodingStyleReport:
     is_too_many_issues: bool = False
 
     # Violation code : [file path and line]
-    details: Dict[str, Dict[str, List[str]]] = {
+    details: Dict[str, Dict[str, List[str] | int]] = {
         "minor": {},
         "major": {},
         "info": {}
@@ -100,12 +100,12 @@ class MouliResult:
     project_name: str
     module_code: str
     test_date: str
-    commit_hash: str
+    commit_hash: str | None
     student_id: int
 
     build_trace: str | None
     banned_content: str | None
-
+    delivery_error: bool = False
     skills: [MouliSkill]
 
     coding_style_report: CodingStyleReport
@@ -120,6 +120,7 @@ class MouliResult:
         self.test_date = mongodata["test_date"]
         self.commit_hash = mongodata["commit_hash"]
         self.build_trace = mongodata["build_trace"]
+        self.delivery_error = mongodata["delivery_error"]
         self.banned_content = mongodata["banned_content"]
         self.skills = [MouliSkill(skill) for skill in mongodata["skills"]]
         self.coding_style_report = CodingStyleReport(mongodata["coding_style_report"])
@@ -128,6 +129,8 @@ class MouliResult:
     def score(self):
         total_tests = sum([skill.tests_count for skill in self.skills])
         passed_tests = sum([skill.passed_count for skill in self.skills])
+        if total_tests == 0:
+            return 0
         return round(passed_tests / total_tests * 100, 2)
 
     def to_dict(self) -> dict:
@@ -137,6 +140,7 @@ class MouliResult:
             "module_code": self.module_code,
             "student_id": self.student_id,
             "score": self.score,
+            "delivery_error": self.delivery_error,
             "test_date": self.test_date,
             "commit_hash": self.commit_hash,
             "build_trace": self.build_trace,

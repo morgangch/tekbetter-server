@@ -11,11 +11,14 @@ def _build_coding_style(mouli_json: dict) -> CodingStyleReport:
     if len(v) > 0:
         coding_style.is_too_many_issues = True
 
-    if "style" in mouli_json and "Details" in mouli_json["style"]:
-        details = mouli_json["style"]["Details"]
+    if "style" in mouli_json and ("Details" in mouli_json["style"] or "Counts" in mouli_json["style"]):
+        key = "Counts" if "Counts" in mouli_json["style"] else "Details"
+        details = mouli_json["style"][key]
         coding_style.details["minor"] = details["minor"] if "minor" in details else {}
         coding_style.details["major"] = details["major"] if "major" in details else {}
         coding_style.details["info"] = details["info"] if "info" in details else {}
+
+
 
     return coding_style
 
@@ -48,7 +51,7 @@ def _build_skill(skill_json: dict) -> MouliSkill:
         skill.tests_count = skill_json["breakdown"]["count"]
         skill.passed_count = skill_json["breakdown"]["passed"]
         skill.crash_count = skill_json["breakdown"]["crashed"]
-        skill.mandatoryfail_count = skill_json["breakdown"]["mandatoryFail"]
+        skill.mandatoryfail_count = skill_json["breakdown"]["mandatoryFailed"]
 
     skill.title = skill_json["name"]
     return skill
@@ -62,7 +65,7 @@ def build_mouli_from_myepitech(test_id: int, mouli_json: dict, student_id: int) 
 
     mouli.test_date = mouli_json["date"]
     mouli.test_id = test_id
-    mouli.commit_hash = mouli_json["gitCommit"]
+    mouli.commit_hash = mouli_json.get("gitCommit", "")
 
     trace_types = ["trace-pool"]
     mouli.build_trace = None
@@ -73,12 +76,11 @@ def build_mouli_from_myepitech(test_id: int, mouli_json: dict, student_id: int) 
 
 
     mouli.banned_content = [i['comment'] for i in mouli_json["externalItems"] if i['type'] == "banned"]
+    mouli.delivery_error = len([i for i in mouli_json["externalItems"] if i['type'] == "delivery-error"]) > 0
     if len(mouli.banned_content) == 0:
         mouli.banned_content = None
     else:
         mouli.banned_content = mouli.banned_content[0]
-
-
 
     mouli.coding_style_report = _build_coding_style(mouli_json)
 

@@ -1,11 +1,9 @@
 import json
 import pymongo
+from flask import Flask
 
+from app.api.routes.scrapers_routes import load_scrapers_routes
 from app.globals import Globals
-from app.parsers.mouli_parser import build_mouli_from_myepitech
-from app.parsers.student_parser import build_student_from_intra
-from app.services.mouli_service import MouliService
-from app.services.student_service import StudentService
 from app.tools.teklogger import log_info, log_debug, log_error
 
 
@@ -20,3 +18,8 @@ if __name__ == '__main__':
         exit(1)
     Globals.database = pymongo.MongoClient("mongodb://localhost:27017")["tekbetter"]
     log_info("Connected to MongoDB")
+
+    Globals.app = Flask(__name__)
+    load_scrapers_routes()
+
+    Globals.app.run("0.0.0.0", port=8080, debug=True)
