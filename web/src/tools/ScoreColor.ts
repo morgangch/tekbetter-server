@@ -10,10 +10,10 @@ export function getTextScoreColor(score: number): string {
 
 export function getScoreColor(score: number): string {
     if (score < 50) {
-        return "red";
+        return "rgb(245,0,0)";
     } else if (score < 70) {
         return "yellow";
     } else {
-        return "green";
+        return "rgba(40,224,0,0.89)";
     }
 }

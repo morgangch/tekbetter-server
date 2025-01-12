@@ -41,6 +41,10 @@ export class MouliSkill {
         return this.crashed > 0 || (this.tests !== null && this.tests.filter(test => test.crashed).length > 0);
     }
 
+    isWarning() {
+        return this.mandatoryFailed > 0 || this.isCrashed();
+    }
+
     constructor(data: any) {
         this.name = data.name;
         this.score = data.score;

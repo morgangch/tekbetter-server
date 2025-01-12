@@ -9,6 +9,7 @@ import {
     faRobot,
     faTv, faWarning
 } from "@fortawesome/free-solid-svg-icons";
+import {dateToElapsed} from "../tools/DateString";
 
 function NavElement(props: { text: string, icon: any, link: string }) {
     const navigate = useNavigate();
@@ -33,36 +34,13 @@ function SyncStatus(props: { last_sync: Date | null }) {
 
 
     const gen_visual = (color: string, icon: any, text: string) => (
-        <div className={"flex px-1.5 flex-row items-center rounded-full bg-blue-300 bg-opacity-5"}>
+        <div className={"flex px-1.5 flex-row items-center rounded-full bg-blue-300 bg-opacity-20"}>
             <FontAwesomeIcon icon={icon} className={color} fontSize={"13px"}/>
-            <p className={"text-white text-xs my-1 ml-1 text-nowrap"}>{text}</p>
+            <p className={"text-white text-xs my-1 ml-1 text-nowrap"}>Sync: {text}</p>
         </div>
     );
 
-    const gen_time_diff = (date: Date) => {
-        // minutes, hours, days, weeks, months, years
-        const diff = new Date().getTime() - date.getTime();
-        const minutes = Math.floor(diff / 60000);
-        const hours = Math.floor(minutes / 60);
-        const days = Math.floor(hours / 24);
-        const weeks = Math.floor(days / 7);
-        const months = Math.floor(weeks / 4);
-        const years = Math.floor(months / 12);
 
-        if (minutes < 60) {
-            return `Sync: ${minutes} minutes ago`;
-        } else if (hours < 24) {
-            return `Sync: ${hours} hours ago`;
-        } else if (days < 7) {
-            return `Sync: ${days} days ago`;
-        } else if (weeks < 4) {
-            return `Sync: ${weeks} weeks ago`;
-        } else if (months < 12) {
-            return `Sync: ${months} months ago`;
-        } else {
-            return `Sync: ${years} years ago`;
-        }
-    }
 
     const total_minutes = (date: Date) => {
         const diff = new Date().getTime() - date.getTime();
@@ -73,14 +51,14 @@ function SyncStatus(props: { last_sync: Date | null }) {
         return gen_visual("text-red-500", faWarning, "Never Synced");
 
     if (total_minutes(props.last_sync) > 60)
-        return gen_visual("text-red-500", faWarning, gen_time_diff(props.last_sync));
+        return gen_visual("text-red-500", faWarning, dateToElapsed(props.last_sync));
     else
-        return gen_visual("text-green-500", faCheckCircle, gen_time_diff(props.last_sync));
+        return gen_visual("text-green-500", faCheckCircle, dateToElapsed(props.last_sync));
 }
 
 export default function TopBar(): React.ReactElement {
     return (
-        <div className={"bg-gray-900"}>
+        <div className={"bg-gray-700"}>
             <div className={"flex h-14 items-center justify-between"}>
                 <div className={"flex flex-row items-center gap-4 ml-4 w-1/3"}>
                     <div className={"h-full flex flex-row items-center"}>
