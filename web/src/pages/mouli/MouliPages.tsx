@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import 'react-circular-progressbar/dist/styles.css';
 import MouliContent from "./MouliContent";
 import genTests from "../../models/test";
@@ -6,6 +6,8 @@ import MouliHistory from "./MouliHistory";
 import {BasicBox} from "../../comps/WindowElem";
 import {buildStyles, CircularProgressbar} from "react-circular-progressbar";
 import {dateToElapsed} from "../../tools/DateString";
+import {MouliResult} from "../../models/MouliResult";
+import getMouliDetails from "../../api/mouli.api";
 
 function Project(props: { test_id: string, project_name: string, score: number, last_test: Date }) {
 
@@ -46,6 +48,16 @@ function Project(props: { test_id: string, project_name: string, score: number, 
 
 
 export default function MouliPage(): React.ReactElement {
+
+    const [mouli, setMouli] = React.useState<MouliResult | null>(null);
+
+    useEffect(() => {
+        getMouliDetails("1234").then(setMouli);
+    }, []);
+
+    if (!mouli)
+        return <div>Loading...</div>;
+
     return (
         <div className={"flex flex-row justify-between w-full h-full"}>
             <div className={"p-2 w-96"}>
@@ -66,9 +78,9 @@ export default function MouliPage(): React.ReactElement {
                 </div>
 
             </div>
-            <div className={"flex flex-row"}>
+            <div className={"flex flex-row gap-3"}>
                 <div className={"flex-grow"}>
-                    <MouliContent mouli={genTests()[0]}/>
+                    <MouliContent mouli={mouli}/>
                 </div>
                 <MouliHistory moulis={genTests()} selected={0}/>
             </div>

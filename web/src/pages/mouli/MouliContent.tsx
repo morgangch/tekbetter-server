@@ -13,6 +13,8 @@ import MouliTestSkill from "./MouliTestSkill";
 import Button from "../../comps/Button";
 import {MouliResult} from "../../models/MouliResult";
 import WindowElem, {BasicBox} from "../../comps/WindowElem";
+import {dateToString} from "../../tools/DateString";
+import ReactApexChart from "react-apexcharts";
 
 function CodingStyleRow(props: { name: string, value: number }) {
     const color = props.name === "FATAL" ? "text-red-500" : props.name === "MAJOR" ? "text-yellow-500" : props.name === "MINOR" ? "text-yellow-300" : "text-green-500";
@@ -48,11 +50,19 @@ function TraceWindow(props: { content: string, close: () => void }) {
 
 }
 
-function TopProp(props: { children: React.ReactNode, title: string, icon: any }) {
-    return <div className={"flex flex-col justify-center border-l-4 border-gray-300 pl-2 m-1"}>
-        <div className={"flex flex-row items-center justify-center gap-2 p-2"}>
-            <FontAwesomeIcon icon={props.icon}/>
-            <h2 className={"font-bold"}>{props.title}</h2>
+function TopProp(props: { children: React.ReactNode, title: string, icon: any, isOk?: boolean }) {
+
+    const icon = (is_ok: boolean) => {
+        return <FontAwesomeIcon icon={is_ok ? faCheckCircle : faWarning} color={is_ok ? "green" : "red"}/>
+    }
+
+    return <div className={"flex flex-col border-l-2 border-gray-200 pl-2 m-1 shadow-sm rounded hover:bg-gray-100 transition"}>
+        <div className={"flex flex-row items-center justify-between gap-2 p-2"}>
+            <div className={"flex flex-row items-center gap-1"}>
+                <FontAwesomeIcon icon={props.icon}/>
+                <h2 className={"font-bold text-nowrap"}>{props.title}</h2>
+            </div>
+            {icon(props.isOk === undefined ? true : props.isOk)}
         </div>
         {props.children}
     </div>
@@ -60,10 +70,8 @@ function TopProp(props: { children: React.ReactNode, title: string, icon: any })
 
 function ElemStatus(props: { err_content: any }) {
     return !props.err_content ? (
-        <div
-            className={"flex flex-row items-center border rounded-full border-green-700 gap-1 pl-1"}>
-            <FontAwesomeIcon icon={faCheckCircle} color={"green"}/>
-            <p>Ok !</p>
+        <div className={""}>
+            <p className={"italic opacity-70"}>No issues found</p>
         </div>
     ) : (
         <div
@@ -74,6 +82,65 @@ function ElemStatus(props: { err_content: any }) {
     );
 }
 
+function MouliChart(props: { scores: number[], dates: string[] }) {
+
+
+    const replace_date = (date: string) => {
+        return date.split("T")[0];
+    }
+
+    return (
+        <ReactApexChart
+            className={"w-full"}
+            options={{
+                chart: {
+                    id: "basic-bar",
+                    toolbar: {
+                        show: false,
+                    },
+                    zoom: {
+                        enabled: false
+                    },
+                    selection: {
+                        enabled: false
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                yaxis: {
+                    min: 0,
+                    max: 100,
+                    labels: {
+                        show: false,
+                    },
+                },
+                xaxis: {
+                    categories: props.dates.map(replace_date),
+                    labels: {
+                        show: false,
+                    },
+                },
+
+                stroke: {
+                    show: true,
+                    width: 2,
+                }
+            }}
+            series={[
+                {
+                    name: "Result",
+                    data: props.scores,
+                },
+            ]}
+            type="area"
+            height={130}
+        />
+    );
+
+}
+
+
 export default function MouliContent(props: { mouli: MouliResult }): React.ReactElement {
 
     const [popupValue, setPopupValue] = React.useState<string | null>(null);
@@ -82,100 +149,110 @@ export default function MouliContent(props: { mouli: MouliResult }): React.React
 
     return (
         <WindowElem
-            title={<h1 style={{fontSize: "25px"}} className={"font-bold text-center"}>{mouli.project_name} test
-                results</h1>}>
+            title={<h1 className={"font-bold text-center text"}>{mouli.project_name} test results</h1>}>
             <div className={"p-2 text"}>
                 {popupValue && <TraceWindow content={popupValue} close={() => setPopupValue(null)}/>}
-                <div className={"flex flex-row justify-between"}>
+                <div className={"flex flex-row justify-between texts"}>
                     <div className={"flex flex-row justify-between w-full"}>
-                        <div className={"flex flex-row flex-wrap gap-2 p-2 rounded-md"}>
-                            <BasicBox className="flex-grow w-full sm:w-[calc(40%-0.5rem)]">
-                                <div className={"flex flex-row items-center gap-2 h-min"}>
-                                    <div className={"w-32 z-10"}>
-                                        <CircularProgressbar
-                                            value={mouli.total_score}
-                                            text={`${mouli.total_score}%`}
-                                            strokeWidth={12}
-                                            styles={buildStyles({
-                                                pathColor: "green",
-                                                trailColor: "rgba(0,0,0,0.09)",
-                                            })}
-                                        />
-                                    </div>
-                                    <div className={"flex flex-col justify-center"}>
-                                        <p>Commit: {mouli.commit}</p>
-                                        <p>Test date: {mouli.test_date.toDateString()}</p>
-                                        <p>Test n°{mouli.test_id}</p>
-                                        <ElemStatus
-                                            err_content={mouli.isManyMandatoryFailed() ? "Mandatory failed" : null}
-                                        />
-                                    </div>
-                                </div>
-                                <div className={"flex flex-col gap-2 mt-3"}>
-                                    {mouli.build_trace && (
-                                        <Button
-                                            icon={faList}
-                                            text={"Build trace"}
-                                            onClick={() => setPopupValue(mouli.build_trace)}
-                                        />
-                                    )}
-                                </div>
-                            </BasicBox>
-                            <BasicBox className="flex-grow w-full sm:w-[calc(50%-0.5rem)]">
-                                <div className={"grid grid-cols-2 grid-rows-2"}>
-                                    <TopProp title={"Banned functions"} icon={faHammer}>
-                                        <div className={"px-1"}>
-                                            <ElemStatus err_content={mouli.banned_content}/>
-                                        </div>
-                                    </TopProp>
-
-                                    <TopProp title={"Coding style"} icon={faMagnifyingGlass}>
-                                        <div className={"px-1"}>
-                                            <ElemStatus
-                                                err_content={mouli.coding_style.isPerfect() ? null : (
-                                                    <div>
-                                                        <CodingStyleRow name={"MAJOR"}
-                                                                        value={mouli.coding_style.major}/>
-                                                        <CodingStyleRow name={"MINOR"}
-                                                                        value={mouli.coding_style.minor}/>
-                                                        <CodingStyleRow name={"INFO"} value={mouli.coding_style.info}/>
-                                                    </div>
-                                                )}
+                        <div className={"flex flex-col gap-2 p-2 rounded-md w-full"}>
+                            {/*<BasicBox className="flex flex-row w-full sm:w-[calc(40%-0.5rem)]">*/}
+                            <div className={"flex flex-row justify-between gap-2 w-full"}>
+                                <BasicBox className={"min-w-72 flex flex-row items-center"}>
+                                    <div className={"flex flex-row items-center gap-2 h-min"}>
+                                        <div className={"w-20 z-10"}>
+                                            <CircularProgressbar
+                                                value={mouli.total_score}
+                                                text={`${mouli.total_score}%`}
+                                                strokeWidth={8}
+                                                styles={buildStyles({
+                                                    pathColor: "green",
+                                                    trailColor: "rgba(0,0,0,0.09)",
+                                                })}
                                             />
                                         </div>
-                                    </TopProp>
-
-                                    <TopProp title={"Crash verification"} icon={faSkull}>
-                                        <div className={"px-1"}>
+                                        <div className={"flex flex-col justify-center"}>
+                                            <p>Commit: {mouli.commit}</p>
+                                            <p>Test date: {dateToString(mouli.test_date)}</p>
+                                            <p>Test n°{mouli.test_id}</p>
                                             <ElemStatus
-                                                err_content={mouli.isCrashed() ? "Crash detected" : null}
+                                                err_content={mouli.isManyMandatoryFailed() ? "Mandatory failed" : null}
                                             />
                                         </div>
-                                    </TopProp>
+                                    </div>
+                                </BasicBox>
+                                <BasicBox className={"flex flex-row flex-grow justify-center"}>
+                                    <MouliChart scores={mouli.evolution.scores} dates={mouli.evolution.dates}/>
+                                </BasicBox>
+                            </div>
 
-                                    <TopProp title={"Evolution"} icon={faLineChart}>
-                                        <div className={"px-1"}>
-                                            <div
-                                                className={"flex flex-row items-center border rounded-full border-green-700 gap-1 pl-1"}
-                                            >
-                                                <FontAwesomeIcon icon={faArrowUp} color={"green"}/>
-                                                <p>14%</p>
+                            <div className={"flex flex-row gap-2"}>
+                                <BasicBox className="flex-grow w-full sm:w-[calc(50%-0.5rem)]">
+                                    <div className={"grid grid-cols-2 grid-rows-2"}>
+                                        <TopProp title={"Banned functions"} icon={faHammer}>
+                                            <div className={"px-1"}>
+                                                <ElemStatus err_content={mouli.banned_content}/>
                                             </div>
-                                        </div>
-                                    </TopProp>
-                                </div>
-                            </BasicBox>
+                                        </TopProp>
+
+                                        <TopProp title={"Coding style"} icon={faMagnifyingGlass}>
+                                            <div className={"px-1"}>
+                                                <ElemStatus
+                                                    err_content={mouli.coding_style.isPerfect() ? null : (
+                                                        <div>
+                                                            <CodingStyleRow name={"MAJOR"}
+                                                                            value={mouli.coding_style.major_count}/>
+                                                            <CodingStyleRow name={"MINOR"}
+                                                                            value={mouli.coding_style.minor_count}/>
+                                                            <CodingStyleRow name={"INFO"}
+                                                                            value={mouli.coding_style.info_count}/>
+                                                        </div>
+                                                    )}
+                                                />
+                                            </div>
+                                        </TopProp>
+
+                                        <TopProp title={"Crash verification"} icon={faSkull}>
+                                            <div className={"px-1"}>
+                                                <ElemStatus
+                                                    err_content={mouli.isCrashed() ? "Crash detected" : null}
+                                                />
+                                            </div>
+                                        </TopProp>
+
+                                        <TopProp title={"Evolution"} icon={faLineChart}>
+                                            <div className={"px-1"}>
+                                                <div
+                                                    className={"flex flex-row items-center border rounded-full border-green-700 gap-1 pl-1"}
+                                                >
+                                                    <FontAwesomeIcon icon={faArrowUp} color={"green"}/>
+                                                    <p>14%</p>
+                                                </div>
+                                            </div>
+                                        </TopProp>
+                                    </div>
+                                </BasicBox>
+                            </div>
+
+                            {/*<div className={"flex flex-col gap-2 mt-3"}>*/}
+                            {/*    {mouli.build_trace && (*/}
+                            {/*        <Button*/}
+                            {/*            icon={faList}*/}
+                            {/*            text={"Build trace"}*/}
+                            {/*            onClick={() => setPopupValue(mouli.build_trace)}*/}
+                            {/*        />*/}
+                            {/*    )}*/}
+                            {/*</div>*/}
+                            {/*</BasicBox>*/}
+
                         </div>
 
                     </div>
                 </div>
-                <div>
-
+                <div className={"texts"}>
                     <h1>Tests</h1>
                     <div className={"space-y-2"}>
                         {mouli.skills.map(skill => <MouliTestSkill skill={skill}/>)}
                     </div>
-
                 </div>
 
             </div>

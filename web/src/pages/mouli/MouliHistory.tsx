@@ -46,7 +46,7 @@ function MouliHistoryItem(props: { mouli: MouliResult, is_selected: boolean, onO
 export default function MouliHistory(props: { moulis: MouliResult[], selected: number }): React.ReactElement {
     return (
         <WindowElem
-            title={<h1 style={{fontSize: "25px"}} className={"font-bold text-center h-full"}>Tests history</h1>}
+            title={<h1 className={"font-bold text-center text"}>Tests history</h1>}
         >
             <div className="h-full relative min-w-96">
                 <div className="absolute inset-0 overflow-y-scroll">

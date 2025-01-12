@@ -1,16 +1,27 @@
 import uuid
-
-from requests import delete
-
 from app.globals import Globals
-from app.models.MouliTest import MouliTest, MouliResult, CodingStyleReport
+from app.models.MouliTest import MouliResult
 
 class MouliService:
 
     @staticmethod
     def get_mouli_by_id(test_id: int, student_id: int) -> MouliResult:
-        mouli = Globals.database["moulis"].find_one({"test_id": test_id, "student_id": student_id})
+        mouli = Globals.database["moulis"].find_one({"test_id": str(test_id)    , "student_id": student_id})
         return MouliResult(mouli) if mouli else None
+
+    @staticmethod
+    def build_evolution(mouli: MouliResult) -> [MouliResult]:
+        all_moulis = [MouliResult(m) for m in Globals.database["moulis"].find({"student_id": mouli.student_id, "project_code": mouli.project_code})]
+        all_moulis.sort(key=lambda m: m.test_date)
+        result = ([], [])
+        for m in all_moulis:
+            result[0].append(m.test_date)
+            result[1].append(m.score)
+
+        return result
+
+
+
 
     @staticmethod
     def get_student_mouliids(student_id: int) -> [int]:

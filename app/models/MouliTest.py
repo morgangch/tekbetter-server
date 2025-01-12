@@ -1,6 +1,5 @@
 from typing import Dict, List
 
-
 class MouliTest:
     title: str
     passed: bool
@@ -26,6 +25,16 @@ class MouliTest:
             "crashed": self.crashed,
             "skipped": self.skipped,
             "mandatory": self.mandatory,
+            "comment": self.comment
+        }
+
+    def to_api(self):
+        return {
+            "name": self.title,
+            "is_passed": self.passed,
+            "is_crashed": self.crashed,
+            "is_skipped": self.skipped,
+            "is_mandatory": self.mandatory,
             "comment": self.comment
         }
 
@@ -61,6 +70,17 @@ class MouliSkill:
             "crash_count": self.crash_count,
             "mandatoryfail_count": self.mandatoryfail_count,
             "tests": [test.to_dict() for test in self.tests] if self.tests is not None else None
+        }
+
+    def to_api(self):
+        return {
+            "title": self.title,
+            "score": self.score,
+            "tests_count": self.tests_count,
+            "passed_count": self.passed_count,
+            "crash_count": self.crash_count,
+            "mandatoryfail_count": self.mandatoryfail_count,
+            "tests": [test.to_api() for test in self.tests] if self.tests is not None else None
         }
 
 class CodingStyleReport:
@@ -152,6 +172,30 @@ class MouliResult:
             "build_trace": self.build_trace,
             "banned_content": self.banned_content,
             "skills": [skill.to_dict() for skill in self.skills],
+            "coding_style_report": self.coding_style_report.to_dict()
+        }
+
+    def to_api(self):
+        from app.services.mouli_service import MouliService
+        evolution = MouliService.build_evolution(self)
+
+        return {
+            "test_id": self.test_id,
+            "project_name": self.project_name,
+            "project_code": self.project_code,
+            "module_code": self.module_code,
+            "student_id": self.student_id,
+            "score": self.score,
+            "delivery_error": self.delivery_error,
+            "test_date": self.test_date,
+            "commit_hash": self.commit_hash,
+            "evolution": {
+                "dates": evolution[0],
+                "scores": evolution[1]
+            },
+            "build_trace": self.build_trace,
+            "banned_content": self.banned_content,
+            "skills": [skill.to_api() for skill in self.skills],
             "coding_style_report": self.coding_style_report.to_dict()
         }
 

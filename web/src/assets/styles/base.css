@@ -12,6 +12,11 @@
     @apply text-gray-400;
 }
 
+.texts {
+    @apply text-gray-400;
+    @apply text-sm;
+}
+
 body {
     @apply bg-gray-50;
 }
