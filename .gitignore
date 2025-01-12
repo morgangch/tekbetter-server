@@ -4,3 +4,4 @@
 /pgdata/
 /alembic.ini
 /.idea
+/scrapers-config.json

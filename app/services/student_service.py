@@ -5,45 +5,31 @@ from datetime import datetime
 from app.globals import Globals
 from app.models.Student import Student
 
-def _build_student(mongo_output):
-    student = Student()
-    student._id = mongo_output["_id"]
-    student.login = mongo_output["login"]
-    student.city = mongo_output["city"]
-    student.credits = mongo_output["credits"]
-    student.gpa = mongo_output["gpa"]
-    student.first_name = mongo_output["first_name"]
-    student.last_name = mongo_output["last_name"]
-    student.promo_year = mongo_output["promo_year"]
-    student.last_update = mongo_output["last_update"]
-    student.scraper_token = mongo_output.get("scraper_token", None)
-    return student
-
 class StudentService:
     @staticmethod
     def get_student_by_login(login: str) -> Student:
         student = Globals.database["students"].find_one({"login": login})
-        return _build_student(student) if student else None
+        return Student(student) if student else None
 
     @staticmethod
     def get_student_by_id(student_id: int) -> Student:
         student = Globals.database["students"].find_one({"_id": student_id})
-        return _build_student(student) if student else None
+        return Student(student) if student else None
 
     @staticmethod
     def get_students_by_public_scraper(scraper_id: str) -> [Student]:
         students = Globals.database["students"].find({"public_scraper_id": scraper_id})
-        return [_build_student(student) for student in students]
+        return [Student(student) for student in students]
 
     @staticmethod
     def get_all_students() -> [Student]:
         students = Globals.database["students"].find()
-        return [_build_student(student) for student in students]
+        return [Student(student) for student in students]
 
     @staticmethod
     def get_public_scraper_students() -> [Student]:
-        students = Globals.database["students"].find({"public_scraper_id": {"$ne": None}})
-        return [_build_student(student) for student in students]
+        students = Globals.database["students"].find({"microsoft_session": {"$ne": None}})
+        return [Student(student) for student in students]
 
     @staticmethod
     def add_student(student: Student):
@@ -67,7 +53,7 @@ class StudentService:
     @staticmethod
     def get_student_by_scrapetoken(token: str) -> Student:
         student = Globals.database["students"].find_one({"scraper_token": token})
-        return _build_student(student) if student else None
+        return Student(student) if student else None
 
     @staticmethod
     def regenerate_scraper_token(student: Student):

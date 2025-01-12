@@ -7,6 +7,7 @@ from flask import Flask
 
 from app.api.routes.scrapers_routes import load_scrapers_routes
 from app.globals import Globals
+from app.services.publicscraper_service import PublicScraperService
 from app.tools.envloader import load_env
 from app.tools.teklogger import log_info, log_debug, log_error, log_success
 
@@ -34,5 +35,9 @@ if __name__ == '__main__':
 
     Globals.app = Flask(__name__)
     load_scrapers_routes()
+
+    if os.getenv("SCRAPERS_CONFIG_FILE") != "":
+        PublicScraperService.load_scrapers_from_config()
+        PublicScraperService.reassign_scrapers()
 
     Globals.app.run("0.0.0.0", port=8080, debug=True)

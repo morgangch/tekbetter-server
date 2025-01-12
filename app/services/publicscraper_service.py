@@ -1,3 +1,5 @@
+import json
+import os.path
 import random
 import string
 import uuid
@@ -7,54 +9,82 @@ from app.models.PublicScraper import PublicScraper
 from app.models.Student import Student
 from app.services.student_service import StudentService
 
+def get_config():
+    if not os.path.exists(os.getenv("SCRAPERS_CONFIG_FILE")):
+        raise Exception("Invalid SCRAPER_CONFIG_FILE path")
+    if not os.access(os.getenv("SCRAPERS_CONFIG_FILE"), os.R_OK):
+        raise Exception(f"{os.getenv('SCRAPERS_CONFIG_FILE')} is not readable")
+    if not os.access(os.getenv("SCRAPERS_CONFIG_FILE"), os.W_OK):
+        raise Exception(f"{os.getenv('SCRAPERS_CONFIG_FILE')} is not writable")
+    with open(os.getenv("SCRAPERS_CONFIG_FILE"), "r") as f:
+        return json.load(f)
 
 class PublicScraperService:
+
+    @staticmethod
+    def load_scrapers_from_config():
+        scrapers = Globals.public_scrapers
+        config = get_config()
+        for scraper in config:
+            for key in ["id", "label", "enabled", "access_token"]:
+                if not scraper.get(key):
+                    raise Exception(f"Missing key {key} in scraper configuration")
+
+            is_new = PublicScraperService.get_scraper(scraper["id"]) is None
+            ns = PublicScraper() if is_new else PublicScraperService.get_scraper(scraper["id"])
+            ns.id = scraper["id"]
+            ns.name = scraper["label"]
+            ns.enabled = scraper["enabled"]
+            ns.access_token = scraper["access_token"]
+
+            if is_new:
+                Globals.public_scrapers.append(ns)
+
+
+
     @staticmethod
     def get_scraper(scraper_id: str) -> PublicScraper:
-        scraper = Globals.database["public_scrapers"].find_one({"_id": scraper_id})
-        return PublicScraper(scraper) if scraper else None
+        result = [scraper for scraper in Globals.public_scrapers if scraper.id == scraper_id]
+        return result[0] if result else None
 
     @staticmethod
     def get_scraper_by_accesstoken(access_token: str) -> PublicScraper:
-        scraper = Globals.database["public_scrapers"].find_one({"access_token": access_token})
-        return PublicScraper(scraper) if scraper else None
+        scrapers = Globals.public_scrapers
+        result = [scraper for scraper in scrapers if scraper.access_token == access_token]
+        return result[0] if result else None
 
     @staticmethod
     def get_all_scrapers() -> [PublicScraper]:
-        scrapers = Globals.database["public_scrapers"].find()
-        return [PublicScraper(scraper) for scraper in scrapers]
-
-    @staticmethod
-    def add_scraper(scraper: PublicScraper):
-        scraper._id = uuid.uuid4().hex
-        Globals.database["public_scrapers"].insert_one(scraper.to_dict())
-        PublicScraperService.regenerate_access_token(scraper)
-        return scraper
-
-    @staticmethod
-    def update_scraper(scraper: PublicScraper):
-        Globals.database["public_scrapers"].update_one({"_id": scraper.id}, {"$set": scraper.to_dict()})
-        return scraper
-
-    @staticmethod
-    def delete_scraper(scraper: PublicScraper):
-        Globals.database["public_scrapers"].delete_one({"_id": scraper.id})
-
-    @staticmethod
-    def regenerate_access_token(scraper: PublicScraper):
-        scraper.access_token = ''.join(random.choices(string.ascii_letters + string.digits, k=32))
-        PublicScraperService.update_scraper(scraper)
-        return scraper.access_token
+        return Globals.public_scrapers
 
     @staticmethod
     def reassign_scrapers():
+        changed = False
         students = StudentService.get_public_scraper_students()
         scrapers = PublicScraperService.get_all_scrapers()
-        groups = [[] for _ in range(len(scrapers))]
-        for i, student in enumerate(students):
-            groups[i % len(scrapers)].append(student)
-        for i, scraper in enumerate(scrapers):
-            for student in groups[i]:
-                student.public_scraper_id = scraper.id
+        max_per_scraper = len(students) // len(scrapers) + 1
+
+        def count_of(scraper_id: str):
+            return len([student for student in students if student.public_scraper_id == scraper_id])
+        def need_reassign():
+            return any([count_of(scraper.id) > max_per_scraper for scraper in scrapers])
+        def find_smallest():
+            return min(scrapers, key=lambda s: count_of(s.id))
+        def find_biggest():
+            return max(scrapers, key=lambda s: count_of(s.id))
+
+        for student in students:
+            if not student.public_scraper_id or not PublicScraperService.get_scraper(student.public_scraper_id):
+                changed = True
+                student.public_scraper_id = find_smallest().id
+        while need_reassign():
+            smallest = find_smallest()
+            biggest = find_biggest()
+            student = next((student for student in students if student.public_scraper_id == biggest.id), None)
+            student.public_scraper_id = smallest.id
+            changed = True
+
+        if changed:
+            # Save students
+            for student in students:
                 StudentService.update_student(student)
-        return len(students)

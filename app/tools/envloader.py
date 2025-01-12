@@ -11,6 +11,7 @@ default_values = {
     "MONGO_DB": "tekbetter",
     "JWT_SECRET": None,
     "AES_KEY": None,
+    "SCRAPERS_CONFIG_FILE": "",
 }
 
 

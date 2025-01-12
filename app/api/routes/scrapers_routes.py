@@ -14,6 +14,7 @@ from app.parsers.student_parser import fill_student_from_intra
 from app.services.mouli_service import MouliService
 from app.services.planning_service import PlanningService
 from app.services.project_service import ProjectService
+from app.services.publicscraper_service import PublicScraperService
 from app.services.student_service import StudentService
 
 
@@ -22,6 +23,7 @@ def load_scrapers_routes():
     @public_scraper_auth_middleware()
     def get_publicscraper_config():
         scraper: PublicScraper = request.scraper
+        PublicScraperService.reassign_scrapers()
         students = StudentService.get_students_by_public_scraper(scraper.id)
 
         return {
