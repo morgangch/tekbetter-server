@@ -8,7 +8,7 @@ jwt_secret = os.getenv("JWT_SECRET")
 
 def generate_jwt(student: Student, expiration):
     return jwt.encode({
-        "id": student.internal_id,
+        "id": student.id,
         "login": student.login,
         "created_at": str(datetime.datetime.now()),
         "exp": expiration

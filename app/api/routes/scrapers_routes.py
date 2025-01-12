@@ -18,16 +18,22 @@ from app.services.student_service import StudentService
 
 def load_scrapers_routes():
 
-    @Globals.app.route("/api/scraper/moulis", methods=["GET"])
+    @Globals.app.route("/api/scraper/infos", methods=["GET"])
     @scraper_auth_middleware()
     def get_all_moulis():
         """
         Return the list of ids of all already scraped moulis
         """
         student = request.student
-        moulis_ids = MouliService.get_student_mouliids(student.internal_id)
+        moulis_ids = MouliService.get_student_mouliids(student.id)
 
-        return {"known_tests": moulis_ids}
+        asked_slugs = []
+        projects = ProjectService.get_student_projects(student.id)
+        for project in projects:
+            if project.slug is None:
+                asked_slugs.append(project.code_acti)
+
+        return {"known_tests": moulis_ids, "asked_slugs": asked_slugs}
 
     @Globals.app.route("/api/scraper/push", methods=["POST"])
     @scraper_auth_middleware()
@@ -45,7 +51,7 @@ def load_scrapers_routes():
         if "intra_projects" in data and data["intra_projects"]:
             for proj in data["intra_projects"]:
                 project = Project()
-                fill_project_from_intra(proj, project, student.internal_id)
+                fill_project_from_intra(proj, project, student.id)
                 project.last_update = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 ProjectService.upload_project(project)
 
@@ -53,11 +59,20 @@ def load_scrapers_routes():
             events = []
             for event in data["intra_planning"]:
                 e = PlanningEvent()
-                events.append(fill_event_from_intra(event, e, student.internal_id))
-            PlanningService.sync_events(events, student.internal_id)
+                events.append(fill_event_from_intra(event, e, student.id))
+            PlanningService.sync_events(events, student.id)
 
         if "new_moulis" in data and data["new_moulis"]:
             for mouli_id, mouli_data in data["new_moulis"].items():
-                mouli = build_mouli_from_myepitech(mouli_id, mouli_data, student.internal_id)
+                mouli = build_mouli_from_myepitech(mouli_id, mouli_data, student.id)
                 MouliService.upload_mouli(mouli)
+
+        if "projects_slugs" in data and data["projects_slugs"]:
+            for project_id, slug in data["projects_slugs"].items():
+                project = ProjectService.get_project_by_code_acti(project_id, student.id)
+                if not project:
+                    continue
+                project.slug = slug
+                ProjectService.upload_project(project)
+
         return {"message": "Data pushed"}

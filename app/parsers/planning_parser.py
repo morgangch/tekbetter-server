@@ -9,7 +9,8 @@ def fill_event_from_intra(intra_json: dict, event: PlanningEvent, student_id: in
     for key in ["codeacti", "acti_title", "codemodule"]:
         if key not in intra_json:
             return None
-    event._id = int(intra_json["codeacti"].split("-")[1])
+
+    event.code_acti = intra_json["codeacti"]
     event.student_id = student_id
     event.title = intra_json["acti_title"]
 

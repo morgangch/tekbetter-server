@@ -61,6 +61,8 @@ def build_mouli_from_myepitech(test_id: int, mouli_json: dict, student_id: int) 
     mouli = MouliResult()
 
     mouli.project_name = mouli_json["instance"]["projectName"]
+    mouli.project_code = mouli_json["instance"]["projectSlug"]
+
     mouli.module_code = mouli_json["instance"]["moduleCode"]
 
     mouli.test_date = mouli_json["date"]

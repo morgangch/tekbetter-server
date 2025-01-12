@@ -96,8 +96,10 @@ class CodingStyleReport:
         }
 
 class MouliResult:
+    _id: str = None
     test_id: int
     project_name: str
+    project_code: str
     module_code: str
     test_date: str
     commit_hash: str | None
@@ -113,8 +115,10 @@ class MouliResult:
     def __init__(self, mongodata=None):
         if mongodata is None:
             return
-        self.test_id = mongodata["_id"]
+        self._id = mongodata["_id"]
+        self.test_id = mongodata["test_id"]
         self.project_name = mongodata["project_name"]
+        self.project_code = mongodata["project_code"]
         self.module_code = mongodata["module_code"]
         self.student_id = mongodata["student_id"]
         self.test_date = mongodata["test_date"]
@@ -135,8 +139,10 @@ class MouliResult:
 
     def to_dict(self) -> dict:
         return {
-            "_id": self.test_id,
+            "_id": self._id,
+            "test_id": self.test_id,
             "project_name": self.project_name,
+            "project_code": self.project_code,
             "module_code": self.module_code,
             "student_id": self.student_id,
             "score": self.score,
@@ -148,3 +154,7 @@ class MouliResult:
             "skills": [skill.to_dict() for skill in self.skills],
             "coding_style_report": self.coding_style_report.to_dict()
         }
+
+    @property
+    def mongo_id(self):
+        return self._id

@@ -1,12 +1,13 @@
 import random
 import string
+import uuid
 from datetime import datetime
 from app.globals import Globals
 from app.models.Student import Student
 
 def _build_student(mongo_output):
     student = Student()
-    student.internal_id = mongo_output["_id"]
+    student._id = mongo_output["_id"]
     student.login = mongo_output["login"]
     student.city = mongo_output["city"]
     student.credits = mongo_output["credits"]
@@ -39,18 +40,19 @@ class StudentService:
         if StudentService.get_student_by_login(student.login):
             return
         student.last_update = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        student.internal_id = Globals.database["students"].count_documents({}) + 1
+        student.internal_id = uuid.uuid4().hex
         Globals.database["students"].insert_one(student.to_dict())
         StudentService.regenerate_scraper_token(student)
+        return student
 
     @staticmethod
     def update_student(student: Student):
         student.last_update = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        Globals.database["students"].update_one({"_id": student.internal_id}, {"$set": student.to_dict()})
+        Globals.database["students"].update_one({"_id": student.id}, {"$set": student.to_dict()})
 
     @staticmethod
     def delete_student(student: Student):
-        Globals.database["students"].delete_one({"_id": student.internal_id})
+        Globals.database["students"].delete_one({"_id": student.id})
 
     @staticmethod
     def get_student_by_scrapetoken(token: str) -> Student:
