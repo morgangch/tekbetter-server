@@ -8,6 +8,8 @@ class Student:
     credits: int = None
     gpa: float = None
     scraper_token: str = None
+    microsoft_session: str = None
+    public_scraper_id: str = None
 
     last_update: str = None
 
@@ -22,7 +24,9 @@ class Student:
             "credits": self.credits,
             "gpa": self.gpa,
             "last_update": self.last_update,
-            "scraper_token": self.scraper_token
+            "scraper_token": self.scraper_token,
+            "microsoft_session": self.microsoft_session,
+            "public_scraper_id": self.public_scraper_id
         }
 
     @property
@@ -42,3 +46,9 @@ class Student:
         self.gpa = mongo_data.get("gpa", None)
         self.scraper_token = mongo_data.get("scraper_token", None)
         self.last_update = mongo_data.get("last_update", None)
+        self.microsoft_session = mongo_data.get("microsoft_session", None)
+        self.public_scraper_id = mongo_data.get("public_scraper_id", None)
+
+    def get_scraper(self):
+        from app.services.publicscraper_service import PublicScraperService
+        return PublicScraperService.get_scraper(self.public_scraper_id) if self.public_scraper_id else None

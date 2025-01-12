@@ -2,10 +2,11 @@ from datetime import datetime
 
 from flask import request
 
-from app.api.middlewares.scraper_auth_middleware import scraper_auth_middleware
+from app.api.middlewares.scraper_auth_middleware import scraper_auth_middleware, public_scraper_auth_middleware
 from app.globals import Globals
 from app.models.PlanningEvent import PlanningEvent
 from app.models.Project import Project
+from app.models.PublicScraper import PublicScraper
 from app.parsers.mouli_parser import build_mouli_from_myepitech
 from app.parsers.planning_parser import fill_event_from_intra
 from app.parsers.project_parser import fill_project_from_intra
@@ -17,6 +18,19 @@ from app.services.student_service import StudentService
 
 
 def load_scrapers_routes():
+    @Globals.app.route("/api/scraper/config", methods=["GET"])
+    @public_scraper_auth_middleware()
+    def get_publicscraper_config():
+        scraper: PublicScraper = request.scraper
+        students = StudentService.get_students_by_public_scraper(scraper.id)
+
+        return {
+            "student_interval": 60,
+            "students": [{
+                "microsoft_session": student.microsoft_session,
+                "tekbetter_token": student.scraper_token,
+            } for student in students]
+        }
 
     @Globals.app.route("/api/scraper/infos", methods=["GET"])
     @scraper_auth_middleware()

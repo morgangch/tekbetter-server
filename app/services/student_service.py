@@ -31,8 +31,18 @@ class StudentService:
         return _build_student(student) if student else None
 
     @staticmethod
+    def get_students_by_public_scraper(scraper_id: str) -> [Student]:
+        students = Globals.database["students"].find({"public_scraper_id": scraper_id})
+        return [_build_student(student) for student in students]
+
+    @staticmethod
     def get_all_students() -> [Student]:
         students = Globals.database["students"].find()
+        return [_build_student(student) for student in students]
+
+    @staticmethod
+    def get_public_scraper_students() -> [Student]:
+        students = Globals.database["students"].find({"public_scraper_id": {"$ne": None}})
         return [_build_student(student) for student in students]
 
     @staticmethod
