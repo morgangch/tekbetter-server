@@ -86,7 +86,7 @@ def load_scrapers_routes():
                 project = ProjectService.get_project_by_code_acti(project_id, student.id)
                 if not project:
                     continue
-                project.slug = slug
+                project.slug = slug if slug else "unknown"
                 ProjectService.upload_project(project)
 
         return {"message": "Data pushed"}

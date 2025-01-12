@@ -20,6 +20,7 @@ class ProjectService:
         curr = ProjectService.get_project_by_code_acti(project.code_acti, project.student_id)
         if curr:
             project._id = curr._id
+            project.slug = curr.slug if project.slug is None else project.slug
             Globals.database["projects"].update_one({"_id": project._id}, {"$set": project.to_dict()})
         else:
             project._id = uuid.uuid4().hex
