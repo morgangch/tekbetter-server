@@ -62,6 +62,8 @@ class PublicScraperService:
         changed = False
         students = StudentService.get_public_scraper_students()
         scrapers = PublicScraperService.get_all_scrapers()
+        if len(scrapers) == 0:
+            return
         max_per_scraper = len(students) // len(scrapers) + 1
 
         def count_of(scraper_id: str):
