@@ -5,6 +5,7 @@ from asyncio import timeout
 import pymongo
 from flask import Flask
 
+from app.api.routes.mouli_routes import load_mouli_routes
 from app.api.routes.scrapers_routes import load_scrapers_routes
 from app.globals import Globals
 from app.services.publicscraper_service import PublicScraperService
@@ -35,6 +36,7 @@ if __name__ == '__main__':
 
     Globals.app = Flask(__name__)
     load_scrapers_routes()
+    load_mouli_routes()
 
     if os.getenv("SCRAPERS_CONFIG_FILE") != "":
         PublicScraperService.load_scrapers_from_config()
