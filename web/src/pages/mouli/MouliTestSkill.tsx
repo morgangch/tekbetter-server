@@ -6,8 +6,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import ProgressBar from "@ramonak/react-progress-bar";
-import {getScoreColor, getTextScoreColor} from "../../tools/ScoreColor";
 import {MouliSkill, MouliTestClass} from "../../models/MouliResult";
+import scoreColor from "../../tools/ScoreColor";
 
 function MouliTest(props: { test: MouliTestClass }) {
     const test = props.test;
@@ -48,10 +48,10 @@ export default function MouliTestSkill(props: { skill: MouliSkill }): React.Reac
 
 
             <div className={"flex flex-row items-center gap-1"}>
-                <p className={"text-right font-bold " + getTextScoreColor(skill.score)}>{skill.score}%</p>
+                <p className={"text-right font-bold"} style={{color:  scoreColor(skill.score).html}}>{skill.score}%</p>
                 <div className={"w-60"}>
-                    <ProgressBar height={"10px"} baseBgColor={"#141e3c"} completed={skill.score}
-                                 bgColor={getScoreColor(skill.score)} isLabelVisible={false}/>
+                    <ProgressBar height={"10px"} baseBgColor={"rgba(0,0,0,0.09)"} completed={skill.score}
+                                 bgColor={scoreColor(skill.score).html} isLabelVisible={false}/>
                 </div>
             </div>
         </div>

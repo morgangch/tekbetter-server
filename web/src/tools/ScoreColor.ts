@@ -1,19 +1,45 @@
-export function getTextScoreColor(score: number): string {
-    if (score < 50) {
-        return "text-red-500";
-    } else if (score < 70) {
-        return "text-yellow-500";
-    } else {
-        return "text-green-500";
-    }
+const Thresholds: { [key: number]: string } = {
+    80: "green",
+    75: "lightgreen",
+    65: "yellow",
+    50: "orange",
+    0: "red",
 }
 
-export function getScoreColor(score: number): string {
-    if (score < 50) {
-        return "rgb(245,0,0)";
-    } else if (score < 70) {
-        return "yellow";
-    } else {
-        return "rgba(40,224,0,0.89)";
+function getColorCode(score: number) {
+    for (const [threshold, color] of Object.entries(Thresholds).reverse()) {
+        console.log("Comparing", score, "with", threshold);
+        if (score >= Number(threshold)) {
+            console.log("Score", score, "is", color);
+            return color;
+        }
     }
+    return "red";
+}
+
+export default function scoreColor(score: number) {
+    const code = getColorCode(score);
+    let result = {
+        tailwind: "",
+        html: "",
+    }
+
+    if (code === "green") {
+        result.tailwind = "bg-green-500";
+        result.html = "green";
+    } else if (code === "lightgreen") {
+        result.tailwind = "bg-green-300";
+        result.html = "lightgreen";
+    } else if (code === "yellow") {
+        result.tailwind = "bg-yellow-500";
+        result.html = "#FFD700";
+    } else if (code === "orange") {
+        result.tailwind = "bg-orange-500";
+        result.html = "orange";
+    } else if (code === "red") {
+        result.tailwind = "bg-red-500";
+        result.html = "red";
+    }
+
+    return result;
 }

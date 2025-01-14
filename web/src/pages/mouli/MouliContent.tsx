@@ -15,6 +15,7 @@ import {CodingStyleResult, MouliResult} from "../../models/MouliResult";
 import WindowElem, {BasicBox} from "../../comps/WindowElem";
 import {dateToString} from "../../tools/DateString";
 import ReactApexChart from "react-apexcharts";
+import scoreColor from "../../tools/ScoreColor";
 
 
 function buildCodingStyle(coding_style: CodingStyleResult) {
@@ -173,8 +174,10 @@ export default function MouliContent(props: { mouli: MouliResult | null }): Reac
                                                 value={mouli.total_score}
                                                 text={`${mouli.total_score}%`}
                                                 strokeWidth={8}
+
                                                 styles={buildStyles({
-                                                    pathColor: "green",
+                                                    textColor: scoreColor(mouli.total_score).html,
+                                                    pathColor: scoreColor(mouli.total_score).html,
                                                     trailColor: "rgba(0,0,0,0.09)",
                                                 })}
                                             />

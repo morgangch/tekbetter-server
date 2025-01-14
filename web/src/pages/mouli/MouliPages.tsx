@@ -10,6 +10,7 @@ import getAllProjects from "../../api/project.api";
 import {EpiProject} from "../../models/Project";
 import {getMouliDetails, getProjectMouliHistory} from "../../api/mouli.api";
 import {useNavigate, useParams} from "react-router";
+import scoreColor from "../../tools/ScoreColor";
 
 function Project(props: { project_slug: string, project_name: string, score: number, last_test: Date }) {
     const params = useParams();
@@ -18,7 +19,7 @@ function Project(props: { project_slug: string, project_name: string, score: num
     const navigate = useNavigate();
 
     return <div
-        className={"shadow text rounded-2xl flex flex-row items-center h-20 p-2 hover:bg-gray-100 cursor-pointer transition " + (is_selected ? "bg-gray-100" : "")}
+        className={"shadow text rounded-2xl flex flex-row items-center h-20 p-2 cursor-pointer transition " + (is_selected ? "bg-gray-200" : "hover:bg-gray-100")}
         onClick={() => navigate(`/moulinettes/${props.project_slug}`)}>
         <div className={"w-12"}>
             <CircularProgressbar
@@ -27,7 +28,8 @@ function Project(props: { project_slug: string, project_name: string, score: num
                 text={`${Math.round(props.score)}`}
                 styles={
                     buildStyles({
-                        pathColor: props.score > 75 ? "green" : props.score > 50 ? "yellow" : props.score > 25 ? "orange" : "red",
+                        textColor: scoreColor(props.score).html,
+                        pathColor: scoreColor(props.score).html,
                         trailColor: "rgba(0,0,0,0.06)",
                         textSize: "30",
                     })
@@ -82,7 +84,7 @@ export default function MouliPage(): React.ReactElement {
 
     useEffect(() => {
         getAllProjects().then((data) => {
-            setProjects(data);
+            setProjects(data.sort((a, b) => a.start_date > b.start_date ? -1 : 1));
         });
     }, []);
 

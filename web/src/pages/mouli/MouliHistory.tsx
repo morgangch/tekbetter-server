@@ -13,6 +13,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import {dateToElapsed, dateToString} from "../../tools/DateString";
 import WindowElem from "../../comps/WindowElem";
+import scoreColor from "../../tools/ScoreColor";
 
 function MouliHistoryItem(props: {
     test_id: number,
@@ -34,7 +35,8 @@ function MouliHistoryItem(props: {
         <div style={{width: "30px"}}>
             <CircularProgressbar value={mouli.total_score} strokeWidth={12} styles={
                 buildStyles({
-                    pathColor: mouli.total_score > 75 ? "green" : mouli.total_score > 50 ? "yellow" : mouli.total_score > 25 ? "orange" : "red",
+                    textColor: scoreColor(props.score).html,
+                    pathColor: scoreColor(mouli.total_score).html,
                     trailColor: "rgba(0,0,0,0.07)",
                 })
             }/>
