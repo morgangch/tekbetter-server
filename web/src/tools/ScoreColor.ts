@@ -8,9 +8,7 @@ const Thresholds: { [key: number]: string } = {
 
 function getColorCode(score: number) {
     for (const [threshold, color] of Object.entries(Thresholds).reverse()) {
-        console.log("Comparing", score, "with", threshold);
         if (score >= Number(threshold)) {
-            console.log("Score", score, "is", color);
             return color;
         }
     }
