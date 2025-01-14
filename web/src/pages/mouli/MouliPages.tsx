@@ -1,22 +1,30 @@
 import React, {useEffect} from "react";
 import 'react-circular-progressbar/dist/styles.css';
 import MouliContent from "./MouliContent";
-import genTests from "../../models/test";
 import MouliHistory from "./MouliHistory";
 import {BasicBox} from "../../comps/WindowElem";
 import {buildStyles, CircularProgressbar} from "react-circular-progressbar";
 import {dateToElapsed} from "../../tools/DateString";
 import {MouliResult} from "../../models/MouliResult";
-import getMouliDetails from "../../api/mouli.api";
+import getAllProjects from "../../api/project.api";
+import {EpiProject} from "../../models/Project";
+import {getMouliDetails, getProjectMouliHistory} from "../../api/mouli.api";
+import {useNavigate, useParams} from "react-router";
 
-function Project(props: { test_id: string, project_name: string, score: number, last_test: Date }) {
+function Project(props: { project_slug: string, project_name: string, score: number, last_test: Date }) {
+    const params = useParams();
 
-    return <div className={"shadow text rounded-2xl flex flex-row items-center h-20 p-2 w-36 hover:bg-gray-100 cursor-pointer transition"}>
-        <div className={"w-10"}>
+    const is_selected = params.project_slug === props.project_slug;
+    const navigate = useNavigate();
+
+    return <div
+        className={"shadow text rounded-2xl flex flex-row items-center h-20 p-2 hover:bg-gray-100 cursor-pointer transition " + (is_selected ? "bg-gray-100" : "")}
+        onClick={() => navigate(`/moulinettes/${props.project_slug}`)}>
+        <div className={"w-12"}>
             <CircularProgressbar
                 value={props.score}
                 strokeWidth={6}
-                text={`${props.score}%`}
+                text={`${Math.round(props.score)}`}
                 styles={
                     buildStyles({
                         pathColor: props.score > 75 ? "green" : props.score > 50 ? "yellow" : props.score > 25 ? "orange" : "red",
@@ -49,49 +57,98 @@ function Project(props: { test_id: string, project_name: string, score: number, 
 
 export default function MouliPage(): React.ReactElement {
 
-    const [mouli, setMouli] = React.useState<MouliResult | null>(null);
-    const [projects, setProjects] = React.useState<MouliResult[]>([]);
+    const [projects, setProjects] = React.useState<EpiProject[] | null>(null);
+
+    const [current_mouli, setCurrentMouli] = React.useState<MouliResult | null>(null);
+    const [project_slug, setProjectSlug] = React.useState<string | null>(null);
+
+    const [history, setHistory] = React.useState< {
+        test_id: number;
+        score: number;
+        date: Date;
+    }[] | null>(null);
 
     const [search, setSearch] = React.useState<string>("");
+    const params = useParams();
+    const c_project_slug = params.project_slug || null;
+
+
+    const load_test = (test_id: number) => {
+        setCurrentMouli(null);
+        getMouliDetails(test_id).then((r) => {
+            setCurrentMouli(r);
+        });
+    }
 
     useEffect(() => {
-        getMouliDetails("1234").then(setMouli);
+        getAllProjects().then((data) => {
+            setProjects(data);
+        });
     }, []);
 
-    if (!mouli)
-        return <div>Loading...</div>;
+    useEffect(() => {
+        if (c_project_slug !== project_slug) {
+            console.log(c_project_slug, project_slug);
+            setHistory(null);
+            getProjectMouliHistory(c_project_slug!).then((data) => {
+                setHistory(data);
+                console.log("Setting project slug to", c_project_slug);
+                setProjectSlug(c_project_slug);
+                if (data.length > 0)
+                    load_test(data[0].test_id);
+            });
+        }
+    }, [c_project_slug, project_slug]);
 
-  //  const search_results = mouli.tests.filter((test) => test.name.includes(search));
+
+    //
+    // if (c_project_slug !== project_slug) {
+    //     console.log(c_project_slug, project_slug);
+    //     setHistory(null);
+    //     getProjectMouliHistory(c_project_slug!).then((data) => {
+    //         setHistory(data);
+    //         console.log("Setting project slug to", c_project_slug);
+    //         setProjectSlug(c_project_slug);
+    //         if (data.length > 0)
+    //             load_test(data[0].test_id);
+    //     });
+    //     return <BasicBox>Loading...</BasicBox>
+    // }
+
+
+    if (projects === null)
+        return <BasicBox>Loading...</BasicBox>
+
+    const search_results = projects.filter((project) => project.project_name.toLowerCase().includes(search.toLowerCase()));
 
     return (
-        <div className={"flex flex-row justify-between w-full h-full"}>
-            <div className={"p-2 w-96"}>
-                <h2 className={"text-white font-bold text-xl text-center"}>My Projects</h2>
+        <div className={"flex flex-row gap-1 w-full h-full"}>
+            <div className={"p-2 overflow-y-scroll"}>
+                <input type="text" placeholder="Search..."
+                       className={"w-full p-2 rounded-md bg-gray-100 text-gray-800 mt-2"}
+                       onChange={(e) => setSearch(e.target.value)}/>
+                <div
+                    className={"grid grid-cols-2 gap-2 p-2"}>
 
-                <input type="text" placeholder="Search..." className={"w-full p-2 rounded-md bg-gray-100 text-gray-800 mt-2"}/>
-
-
-
-                <div className={"flex flex-row  gap-2 flex-wrap w-full h-full justify-center content-start overflow-y-scroll"}>
-
-                    <Project project_name={"Navy"} test_id={"1234"} score={100}
-                             last_test={new Date("2025-01-11 13:00")}/>
-                    <Project project_name={"CPoolDay 3"} test_id={"1234"} score={30}
-                             last_test={new Date("2025-01-11 13:00")}/>
-                    <Project project_name={"Secured"} test_id={"1234"} score={5}
-                             last_test={new Date("2025-01-11 13:00")}/>
-                    <Project project_name={"Minishell2"} test_id={"1234"} score={65}
-                             last_test={new Date("2025-01-11 13:00")}/>
-                    <Project project_name={"Corewar"} test_id={"1234"} score={90}
-                             last_test={new Date("2025-01-11 13:00")}/>
+                    {
+                        search_results
+                            .filter((project) => project.mouli !== null)
+                            .map((project) => {
+                                return <Project
+                                        project_name={project.project_name}
+                                        project_slug={project.project_slug}
+                                        score={project.mouli?.score!}
+                                        last_test={new Date(project.mouli?.date!)}/>
+                            })
+                    }
                 </div>
-
             </div>
-            <div className={"flex flex-row gap-3"}>
+            <div className={"flex flex-row justify-start w-full gap-3"}>
+                <MouliHistory history={history || []} selected={current_mouli?.test_id || -1} onSelect={(new_id: number) => load_test(new_id)}/>
+
                 <div className={"flex-grow"}>
-                    <MouliContent mouli={mouli}/>
+                    <MouliContent mouli={current_mouli}/>
                 </div>
-                <MouliHistory moulis={genTests()} selected={0}/>
             </div>
 
         </div>

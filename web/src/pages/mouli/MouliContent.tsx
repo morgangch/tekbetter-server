@@ -146,11 +146,15 @@ function MouliChart(props: { scores: number[], dates: string[] }) {
 }
 
 
-export default function MouliContent(props: { mouli: MouliResult }): React.ReactElement {
+export default function MouliContent(props: { mouli: MouliResult | null }): React.ReactElement {
 
     const [popupValue, setPopupValue] = React.useState<string | null>(null);
 
     const mouli = props.mouli;
+
+    if (!mouli) {
+        return <div></div>
+    }
 
     return (
         <WindowElem

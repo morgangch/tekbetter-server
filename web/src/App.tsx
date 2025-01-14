@@ -20,6 +20,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<HomePage/>}/>
                         <Route path="/moulinettes" element={<MouliPage/>}/>
+                        <Route path="/moulinettes/:project_slug" element={<MouliPage />}/>
                     </Routes>
                 </div>
                 <div>

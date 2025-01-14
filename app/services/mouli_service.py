@@ -5,9 +5,21 @@ from app.models.MouliTest import MouliResult
 class MouliService:
 
     @staticmethod
-    def get_mouli_by_id(test_id: int, student_id: int) -> MouliResult:
+    def get_mouli_by_id(test_id: int, student_id: str) -> MouliResult:
         mouli = Globals.database["moulis"].find_one({"test_id": str(test_id)    , "student_id": student_id})
         return MouliResult(mouli) if mouli else None
+
+    @staticmethod
+    def get_latest_of_project(project_slug: str, student_id: str) -> MouliResult:
+        mouli = Globals.database["moulis"].find_one({"project_code": project_slug, "student_id": student_id}, sort=[("test_date", -1)])
+        if mouli:
+            return MouliResult(mouli)
+        return None
+
+    @staticmethod
+    def get_project_moulis(project_slug: str, student_id: str) -> [MouliResult]:
+        moulis = Globals.database["moulis"].find({"project_code": project_slug, "student_id": student_id})
+        return [MouliResult(m) for m in moulis]
 
     @staticmethod
     def build_evolution(mouli: MouliResult) -> [MouliResult]:

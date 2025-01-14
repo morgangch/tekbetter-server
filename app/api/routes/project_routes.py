@@ -4,7 +4,6 @@ from flask import request
 
 from app.api.middlewares.scraper_auth_middleware import scraper_auth_middleware, public_scraper_auth_middleware
 from app.globals import Globals
-from app.models.MouliTest import MouliResult
 from app.models.PlanningEvent import PlanningEvent
 from app.models.Project import Project
 from app.models.PublicScraper import PublicScraper
@@ -19,21 +18,11 @@ from app.services.publicscraper_service import PublicScraperService
 from app.services.student_service import StudentService
 
 
-def load_mouli_routes():
-    @Globals.app.route("/api/mouli/project/<string:project_slug>", methods=["GET"])
-    def mouli_get_route(project_slug: str):
+def load_project_routes():
+    @Globals.app.route("/api/projects", methods=["GET"])
+    def projects_route():
         student = StudentService.get_student_by_id(1)
 
-        history: [MouliResult] = MouliService.get_project_moulis(project_slug, student.id)
-        return [{
-            "test_id": mouli.test_id,
-            "score": mouli.score,
-            "date": mouli.test_date,
-        } for mouli in history]
+        projects = ProjectService.get_student_projects(student.id)
 
-    @Globals.app.route("/api/mouli/test/<int:test_id>", methods=["GET"])
-    def mouli_test_route(test_id: int):
-        student = StudentService.get_student_by_id(1)
-
-        test = MouliService.get_mouli_by_id(test_id, student.id)
-        return test.to_api()
+        return [project.to_api() for project in projects]

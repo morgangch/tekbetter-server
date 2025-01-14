@@ -1,8 +1,11 @@
+from app.services.mouli_service import MouliService
+
+
 class Project:
     _id: str = None
 
     code_acti: str
-    student_id: int
+    student_id: str
     title: str
 
     date_start: str
@@ -43,6 +46,26 @@ class Project:
             "title": self.title,
             "fetch_date": self.fetch_date,
             "slug": self.slug
+        }
+
+    def to_api(self):
+
+        latest_mouli = MouliService.get_latest_of_project(self.slug, self.student_id)
+
+        return {
+            "code_acti": self.code_acti,
+            "date_start": self.date_start,
+            "date_end": self.date_end,
+            "code_module": self.code_module,
+            "title_module": self.title_module,
+            "title": self.title,
+            "fetch_date": self.fetch_date,
+            "slug": self.slug,
+            "mouli": {
+                "test_id": latest_mouli.test_id,
+                "score": latest_mouli.score,
+                "date": latest_mouli.test_date
+            } if latest_mouli else None
         }
 
     @property

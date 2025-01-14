@@ -162,7 +162,7 @@ class MouliResult:
             "_id": self._id,
             "test_id": self.test_id,
             "project_name": self.project_name,
-            "project_code": self.project_code,
+            "project_code": self.project_code, # slug
             "module_code": self.module_code,
             "student_id": self.student_id,
             "score": self.score,
