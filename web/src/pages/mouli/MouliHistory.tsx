@@ -29,7 +29,7 @@ function MouliHistoryItem(props: {
     }
 
     return <div
-        className={"flex text flex-row justify-between items-center p-2 rounded-md shadow hover:bg-gray-200 cursor-pointer transition min-w-80"}
+        className={"flex text flex-row justify-between items-center p-2 rounded-md shadow hover:bg-gray-100 cursor-pointer transition mb-1"}
         onClick={props.onOpen}
     >
         <div style={{width: "30px"}}>
@@ -72,7 +72,7 @@ export default function MouliHistory(props: {
             title={<h1 className={"font-bold text-center text"}>Tests history</h1>}
         >
             <div className="h-full relative min-w-96">
-                <div className="absolute inset-0 overflow-y-scroll">
+                <div className="absolute p-1 inset-0 overflow-y-scroll">
                     {props.history
                         .sort((a, b) => b.date.getTime() - a.date.getTime())
                         .map((mouli, index) =>
