@@ -50,6 +50,9 @@ function Project(props: { test_id: string, project_name: string, score: number, 
 export default function MouliPage(): React.ReactElement {
 
     const [mouli, setMouli] = React.useState<MouliResult | null>(null);
+    const [projects, setProjects] = React.useState<MouliResult[]>([]);
+
+    const [search, setSearch] = React.useState<string>("");
 
     useEffect(() => {
         getMouliDetails("1234").then(setMouli);
@@ -58,10 +61,16 @@ export default function MouliPage(): React.ReactElement {
     if (!mouli)
         return <div>Loading...</div>;
 
+  //  const search_results = mouli.tests.filter((test) => test.name.includes(search));
+
     return (
         <div className={"flex flex-row justify-between w-full h-full"}>
             <div className={"p-2 w-96"}>
                 <h2 className={"text-white font-bold text-xl text-center"}>My Projects</h2>
+
+                <input type="text" placeholder="Search..." className={"w-full p-2 rounded-md bg-gray-100 text-gray-800 mt-2"}/>
+
+
 
                 <div className={"flex flex-row  gap-2 flex-wrap w-full h-full justify-center content-start overflow-y-scroll"}>
 

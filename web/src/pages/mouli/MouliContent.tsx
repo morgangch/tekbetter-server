@@ -11,10 +11,15 @@ import {
 import React from "react";
 import MouliTestSkill from "./MouliTestSkill";
 import Button from "../../comps/Button";
-import {MouliResult} from "../../models/MouliResult";
+import {CodingStyleResult, MouliResult} from "../../models/MouliResult";
 import WindowElem, {BasicBox} from "../../comps/WindowElem";
 import {dateToString} from "../../tools/DateString";
 import ReactApexChart from "react-apexcharts";
+
+
+function buildCodingStyle(coding_style: CodingStyleResult) {
+
+}
 
 function CodingStyleRow(props: { name: string, value: number }) {
     const color = props.name === "FATAL" ? "text-red-500" : props.name === "MAJOR" ? "text-yellow-500" : props.name === "MINOR" ? "text-yellow-300" : "text-green-500";
@@ -75,7 +80,7 @@ function ElemStatus(props: { err_content: any }) {
         </div>
     ) : (
         <div
-            className={"flex max-w-64 flex-row items-center border rounded border-red-400 bg-red-100 gap-1 pl-1"}>
+            className={"flex max-w-64 flex-row items-center border rounded border-red-400 bg-red-200 text-gray-500 gap-1 pl-1"}>
             <FontAwesomeIcon icon={faCircleInfo} color={"red"}/>
             <p>{props.err_content}</p>
         </div>
@@ -211,10 +216,13 @@ export default function MouliContent(props: { mouli: MouliResult }): React.React
                                             </div>
                                         </TopProp>
 
-                                        <TopProp title={"Crash verification"} icon={faSkull}>
+                                        <TopProp title={"Crash verification"} icon={faSkull}
+                                                 isOk={!mouli.isCrashed()}
+
+                                        >
                                             <div className={"px-1"}>
                                                 <ElemStatus
-                                                    err_content={mouli.isCrashed() ? "Crash detected" : null}
+                                                    err_content={mouli.isCrashed() ? `${mouli.crashCount()} tests crashed` : null}
                                                 />
                                             </div>
                                         </TopProp>
