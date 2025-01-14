@@ -83,11 +83,7 @@ export default function MouliHistory(props: {
                                     date={mouli.date}
                                     score={mouli.score}
                                     is_selected={mouli.test_id === props.selected}
-                                    onOpen={() => {
-                                        props.onSelect(mouli.test_id)
-                                        console.log("Loading test", mouli.test_id);
-
-                                    }}
+                                    onOpen={() => props.onSelect(mouli.test_id)}
                                 />
                             ))
                         )}

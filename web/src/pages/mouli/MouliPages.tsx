@@ -76,6 +76,8 @@ export default function MouliPage(): React.ReactElement {
 
 
     const load_test = (test_id: number) => {
+        if (test_id === current_mouli?.test_id)
+            return;
         setCurrentMouli(null);
         getMouliDetails(test_id).then((r) => {
             setCurrentMouli(r);
