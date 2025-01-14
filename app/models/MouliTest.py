@@ -191,7 +191,8 @@ class MouliResult:
             "commit_hash": self.commit_hash,
             "evolution": {
                 "dates": evolution[0],
-                "scores": evolution[1]
+                "scores": evolution[1],
+                "ids": evolution[2]
             },
             "build_trace": self.build_trace,
             "banned_content": self.banned_content,

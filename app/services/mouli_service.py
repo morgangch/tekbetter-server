@@ -25,11 +25,11 @@ class MouliService:
     def build_evolution(mouli: MouliResult) -> [MouliResult]:
         all_moulis = [MouliResult(m) for m in Globals.database["moulis"].find({"student_id": mouli.student_id, "project_code": mouli.project_code})]
         all_moulis.sort(key=lambda m: m.test_date)
-        result = ([], [])
+        result = ([], [], [])
         for m in all_moulis:
             result[0].append(m.test_date)
             result[1].append(m.score)
-
+            result[2].append(m.test_id)
         return result
 
 

@@ -1,12 +1,16 @@
 import {buildStyles, CircularProgressbar} from "react-circular-progressbar";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
-    faArrowUp,
-    faCheckCircle, faCircleInfo,
+    faArrowTrendDown,
+    faArrowTrendUp,
+    faCheckCircle,
+    faCircleInfo,
     faClose,
-    faHammer, faLineChart,
-    faList, faMagnifyingGlass,
-    faSkull, faWarning
+    faHammer,
+    faLineChart,
+    faMagnifyingGlass,
+    faSkull,
+    faWarning
 } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import MouliTestSkill from "./MouliTestSkill";
@@ -62,7 +66,8 @@ function TopProp(props: { children: React.ReactNode, title: string, icon: any, i
         return <FontAwesomeIcon icon={is_ok ? faCheckCircle : faWarning} color={is_ok ? "green" : "red"}/>
     }
 
-    return <div className={"flex flex-col border-l-2 border-gray-200 pl-2 m-1 shadow-sm rounded hover:bg-gray-100 transition"}>
+    return <div
+        className={"flex flex-col border-l-2 border-gray-200 pl-2 m-1 shadow-sm rounded hover:bg-gray-100 transition"}>
         <div className={"flex flex-row items-center justify-between gap-2 p-2"}>
             <div className={"flex flex-row items-center gap-1"}>
                 <FontAwesomeIcon icon={props.icon}/>
@@ -157,6 +162,17 @@ export default function MouliContent(props: { mouli: MouliResult | null }): Reac
         return <div></div>
     }
 
+    let scores = mouli.evolution.scores
+    let evo_ids = mouli.evolution.ids
+    let id_index = evo_ids.indexOf(mouli.test_id)
+    scores = scores.slice(0, id_index)
+
+    console.log(scores)
+    let evolution = mouli.total_score
+
+    if (scores.length > 0)
+        evolution = mouli.total_score - scores[scores.length - 1]
+
     return (
         <WindowElem
             title={<h1 className={"font-bold text-center text"}>{mouli.project_name} test results</h1>}>
@@ -200,10 +216,9 @@ export default function MouliContent(props: { mouli: MouliResult | null }): Reac
                             <div className={"flex flex-row gap-2"}>
                                 <BasicBox className="flex-grow w-full sm:w-[calc(50%-0.5rem)]">
                                     <div className={"grid grid-cols-2 grid-rows-2"}>
-                                        <TopProp title={"Banned functions"} icon={faHammer}>
-                                            <div className={"px-1"}>
-                                                <ElemStatus err_content={mouli.banned_content}/>
-                                            </div>
+                                        <TopProp title={"Banned functions"} icon={faHammer}
+                                                 isOk={mouli.banned_content === null}>
+                                            <p className={"italic opacity-95 text-red-300 font-bold"}>{mouli.banned_content}</p>
                                         </TopProp>
 
                                         <TopProp title={"Coding style"} icon={faMagnifyingGlass}>
@@ -235,13 +250,12 @@ export default function MouliContent(props: { mouli: MouliResult | null }): Reac
                                         </TopProp>
 
                                         <TopProp title={"Evolution"} icon={faLineChart}>
-                                            <div className={"px-1"}>
-                                                <div
-                                                    className={"flex flex-row items-center border rounded-full border-green-700 gap-1 pl-1"}
-                                                >
-                                                    <FontAwesomeIcon icon={faArrowUp} color={"green"}/>
-                                                    <p>14%</p>
-                                                </div>
+                                            <div className={"px-1 flex flex-row items-center gap-2"}>
+                                                <FontAwesomeIcon
+                                                    icon={evolution >= 0  || mouli.total_score === 100 ? faArrowTrendUp : faArrowTrendDown}
+                                                    color={evolution >= 0 || mouli.total_score === 100 ? "green" : "red"}/>
+                                                <p className={"font-bold " + ((evolution >= 0 || mouli.total_score === 100) ? "text-green-500" : "text-red-500")}>
+                                                    {evolution}%</p>
                                             </div>
                                         </TopProp>
                                     </div>

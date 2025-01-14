@@ -89,7 +89,8 @@ export class MouliResult {
     skills: MouliSkill[];
     evolution: {
         "dates": string[],
-        "scores": number[]
+        "scores": number[],
+        "ids": number[]
     }
 
     constructor(data: any) {
