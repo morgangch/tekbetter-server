@@ -1,6 +1,7 @@
 import {useNavigate} from "react-router";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
+    faArrowRotateForward,
     faAutomobile, faBell,
     faCalendar, faCalendarCheck, faCheckCircle,
     faGraduationCap,
@@ -96,9 +97,8 @@ export default function TopBar(): React.ReactElement {
 
                 <div className={"flex gap-4 justify-center w-1/3"}>
                     <NavElement text={"Moulinettes"} link={"/moulinettes"} icon={faGraduationCap}/>
-                    <NavElement text={"Projects"} link={"/projects"} icon={faListSquares}/>
                     <NavElement text={"Calendar"} link={"/calendar"} icon={faCalendarCheck}/>
-                    <NavElement text={"Notifications"} link={"/calendar"} icon={faBell}/>
+                    <NavElement text={"Synchronisation"} link={"/sync"} icon={faCheckCircle}/>
                 </div>
                 <div className={"w-1/3"}></div>
             </div>
