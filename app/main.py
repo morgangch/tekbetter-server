@@ -3,6 +3,7 @@ import pymongo
 from flask import Flask
 from flask_cors import CORS
 
+from app.api.routes.global_routes import load_global_routes
 from app.api.routes.mouli_routes import load_mouli_routes
 from app.api.routes.project_routes import load_project_routes
 from app.api.routes.scrapers_routes import load_scrapers_routes
@@ -37,6 +38,7 @@ if __name__ == '__main__':
     load_scrapers_routes()
     load_project_routes()
     load_mouli_routes()
+    load_global_routes()
 
     if os.getenv("SCRAPERS_CONFIG_FILE") != "":
         PublicScraperService.load_scrapers_from_config()

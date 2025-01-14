@@ -10,6 +10,11 @@ class ProjectService:
         return [Project(p) for p in Globals.database["projects"].find({"student_id": student_id})]
 
     @staticmethod
+    def get_latest_fetchdate(student_id: int) -> str:
+        p = Globals.database["projects"].find_one({"student_id": student_id}, sort=[("fetch_date", -1)])
+        return p["fetch_date"] if p else None
+
+    @staticmethod
     def get_project_by_code_acti(acti_code: str, student_id: int):
         p = Globals.database["projects"].find_one({"code_acti": acti_code, "student_id": student_id})
         if p:

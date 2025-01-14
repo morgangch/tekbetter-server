@@ -18,6 +18,10 @@ class PlanningService:
     def get_student_events(student_id: int):
         return [PlanningEvent(event) for event in Globals.database["planning"].find({"student_id": student_id})]
 
+    @staticmethod
+    def get_latest_fetched_date(student_id: int) -> str:
+        return Globals.database["planning"].find_one({"student_id": student_id}, sort=[("fetch_date", -1)])["fetch_date"]
+
 
     @staticmethod
     def create_event(event: PlanningEvent):

@@ -10,6 +10,8 @@ import {
     faTv, faWarning
 } from "@fortawesome/free-solid-svg-icons";
 import {dateToElapsed} from "../tools/DateString";
+import {useEffect, useState} from "react";
+import {getSyncStatus} from "../api/global.api";
 
 function NavElement(props: { text: string, icon: any, link: string }) {
     const navigate = useNavigate();
@@ -30,7 +32,27 @@ function NavElement(props: { text: string, icon: any, link: string }) {
 }
 
 
-function SyncStatus(props: { last_sync: Date | null }) {
+function SyncStatus() {
+
+    const [last_sync, setLastSync] = useState<Date | null>(null);
+
+    useEffect(() => {
+        const reload = async () => {
+            const status = await getSyncStatus();
+            let date = (() => {
+                if (status.mouli !== null) return status.mouli;
+                if (status.planning !== null) return status.planning;
+                if (status.projects !== null) return status.projects;
+                return null;
+            })();
+            setLastSync(date);
+        }
+        const interval = setInterval(async () => {
+            reload();
+        }, 30000);
+        reload();
+        return () => clearInterval(interval);
+    }, []);
 
 
     const gen_visual = (color: string, icon: any, text: string) => (
@@ -47,13 +69,13 @@ function SyncStatus(props: { last_sync: Date | null }) {
         return Math.floor(diff / 60000);
     }
 
-    if (props.last_sync === null)
+    if (last_sync === null)
         return gen_visual("text-red-500", faWarning, "Never Synced");
 
-    if (total_minutes(props.last_sync) > 60)
-        return gen_visual("text-red-500", faWarning, dateToElapsed(props.last_sync));
+    if (total_minutes(last_sync) > 60)
+        return gen_visual("text-red-500", faWarning, dateToElapsed(last_sync));
     else
-        return gen_visual("text-green-500", faCheckCircle, dateToElapsed(props.last_sync));
+        return gen_visual("text-green-500", faCheckCircle, dateToElapsed(last_sync));
 }
 
 export default function TopBar(): React.ReactElement {
@@ -69,7 +91,7 @@ export default function TopBar(): React.ReactElement {
                         />
                         <p className={"text-white ml-1 font-bold"}>TekBetter</p>
                     </div>
-                    <SyncStatus last_sync={new Date("2025-01-06 15:00:00")}/>
+                    <SyncStatus />
                 </div>
 
                 <div className={"flex gap-4 justify-center w-1/3"}>
