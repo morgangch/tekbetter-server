@@ -87,7 +87,7 @@ export default function MouliPage(): React.ReactElement {
     useEffect(() => {
         getAllProjects().then((data) => {
             setProjects(data.sort((a, b) => a.start_date > b.start_date ? -1 : 1));
-        });
+        }).catch(() => {});
     }, []);
 
     useEffect(() => {

@@ -36,7 +36,7 @@ export default function SyncPage(): React.ReactElement {
     useEffect(() => {
         getCalendarToken().then((token: string) => {
             setToken(token);
-        });
+        }).catch(() => {});
     }, []);
 
     if (token === null)
@@ -98,7 +98,7 @@ export default function SyncPage(): React.ReactElement {
                                 database.</p>
                             <button className={"mt-2 h-8 bg-red-500 text-white px-2 rounded"}
                                     onClick={() => {
-                                        if (window.confirm("Are you sure ? Your token will be deleted.")) deleteMicrosoftToken().then(null);
+                                        if (window.confirm("Are you sure ? Your token will be deleted.")) deleteMicrosoftToken().then(null).catch(() => {});
                                     }}
                             >
                                 Delete my token
@@ -140,7 +140,7 @@ export default function SyncPage(): React.ReactElement {
                             if (window.confirm("Are you sure ? Your token will be regenerated. This token is used for scrapers and the calendar export urls.")) {
                                 regenCalendarToken().then((token) => {
                                     setToken(token);
-                                });
+                                }).catch(() => {});
                             }
                         }}
                     >Reload my token

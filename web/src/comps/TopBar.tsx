@@ -49,9 +49,9 @@ function SyncStatus() {
             setLastSync(date);
         }
         const interval = setInterval(async () => {
-            reload();
+            reload().catch(() => {});
         }, 30000);
-        reload();
+        reload().catch(() => {});
         return () => clearInterval(interval);
     }, []);
 

@@ -8,17 +8,27 @@ import "./assets/styles/base.css"
 import CalendarPage from "./pages/CalendarPage";
 import SyncPage from "./pages/SyncPage";
 import AuthPage from "./pages/AuthPage";
+import FullError from "./comps/FullError";
+import {vars} from "./api/api";
 
 function App() {
 
+    const [error, setError] = React.useState<{ title?: string, message?: string } | null>(null);
 
     useEffect(() => {
+        vars.setErrorPopup = (title: string | null, message: string | null) => {
+            setError({
+                title: title || "An error occured",
+                message: message || "An error occured, please try again later."
+            });
+        }
     }, []);
 
     return (
         <BrowserRouter>
             <div className={"h-screen flex flex-col"}>
                 <TopBar/>
+                {error && <FullError title={error.title} message={error.message}/>}
                 <div className={"h-auto grow p-2"}>
                     <Routes>
                         <Route path="/" element={<HomePage/>}/>

@@ -34,7 +34,7 @@ export default function CalendarPage(): React.ReactElement {
     useEffect(() => {
         getCalendarToken().then((token) => {
             setToken(token);
-        });
+        }).catch(() => {})
     }, []);
 
     if (token === null)
