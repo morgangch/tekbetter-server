@@ -82,3 +82,18 @@ class RedisService:
         except Exception as e:
             log_error(f"Error getting key '{key}': {e}")
             raise
+
+    @staticmethod
+    def delete(key):
+        """
+        Delete a key from Redis.
+
+        :param key: Redis key
+        """
+        RedisService.ensure_connection()
+        try:
+            RedisService.connection.delete(key)
+            log_debug(f"Key '{key}' deleted successfully.")
+        except Exception as e:
+            log_error(f"Error deleting key '{key}': {e}")
+            raise

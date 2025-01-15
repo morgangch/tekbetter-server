@@ -31,7 +31,7 @@ function CopyUrl(props: { cal_name: string, token: string }) {
 export default function SyncPage(): React.ReactElement {
 
     const [token, setToken] = React.useState<string | null>(null);
-    const [microToken, setMicroToken] = React.useState<string | null>(null);
+    const [microToken, setMicroToken] = React.useState<string>("");
 
     useEffect(() => {
         getCalendarToken().then((token: string) => {
@@ -85,7 +85,7 @@ export default function SyncPage(): React.ReactElement {
                             <button
                                 className={"mt-2 h-8 bg-blue-500 text-white px-2 rounded"}
                                 onClick={() => {
-                                    putMicrosoftToken(token).then(() => setMicroToken(null));
+                                    putMicrosoftToken(microToken!).then(() => setMicroToken(""));
                                 }}
                             >
                                 Update

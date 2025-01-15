@@ -3,6 +3,7 @@ from datetime import datetime
 from flask import request
 
 from app.api.middlewares.scraper_auth_middleware import scraper_auth_middleware, public_scraper_auth_middleware
+from app.api.middlewares.student_auth_middleware import student_auth_middleware
 from app.globals import Globals
 from app.models.MouliTest import MouliResult
 from app.models.PlanningEvent import PlanningEvent
@@ -21,8 +22,9 @@ from app.services.student_service import StudentService
 
 def load_global_routes(app):
     @app.route("/api/global/sync-status", methods=["GET"])
+    @student_auth_middleware()
     def global_sync_status():
-        student = StudentService.get_student_by_id(1)
+        student = request.student
 
         latest_planning = PlanningService.get_latest_fetched_date(student.id)
         latest_project = ProjectService.get_latest_fetchdate(student.id)

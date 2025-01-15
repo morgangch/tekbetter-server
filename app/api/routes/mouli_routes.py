@@ -3,6 +3,7 @@ from datetime import datetime
 from flask import request
 
 from app.api.middlewares.scraper_auth_middleware import scraper_auth_middleware, public_scraper_auth_middleware
+from app.api.middlewares.student_auth_middleware import student_auth_middleware
 from app.globals import Globals
 from app.models.MouliTest import MouliResult
 from app.models.PlanningEvent import PlanningEvent
@@ -21,8 +22,9 @@ from app.services.student_service import StudentService
 
 def load_mouli_routes(app):
     @app.route("/api/mouli/project/<string:project_slug>", methods=["GET"])
+    @student_auth_middleware()
     def mouli_get_route(project_slug: str):
-        student = StudentService.get_student_by_id(1)
+        student = request.student
 
         history: [MouliResult] = MouliService.get_project_moulis(project_slug, student.id)
         return [{
@@ -32,8 +34,9 @@ def load_mouli_routes(app):
         } for mouli in history]
 
     @app.route("/api/mouli/test/<int:test_id>", methods=["GET"])
+    @student_auth_middleware()
     def mouli_test_route(test_id: int):
-        student = StudentService.get_student_by_id(1)
+        student = request.student
 
         test = MouliService.get_mouli_by_id(test_id, student.id)
         return test.to_api()

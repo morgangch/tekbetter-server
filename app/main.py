@@ -3,6 +3,7 @@ import pymongo
 from flask import Flask
 from flask_cors import CORS
 
+from app.api.routes.auth_routes import load_auth_routes
 from app.api.routes.calendar_routes import load_calendar_routes
 from app.api.routes.global_routes import load_global_routes
 from app.api.routes.mouli_routes import load_mouli_routes
@@ -51,6 +52,7 @@ def create_app():
     load_global_routes(app)
     load_calendar_routes(app)
     load_sync_routes(app)
+    load_auth_routes(app)
 
     # Enable CORS
     CORS(app)

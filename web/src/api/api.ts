@@ -4,7 +4,8 @@ export class StaticVars {
     setErrorPopup: (title: string | null, message: string | null) => void;
 
     constructor() {
-        this.setErrorPopup = (title: string | null, message: string | null) => {}
+        this.setErrorPopup = (title: string | null, message: string | null) => {
+        }
     }
 
 }
@@ -16,7 +17,7 @@ const api = axios.create({
     baseURL: `${backend_url}/api/`,
     headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer '// + localStorage.getItem('session')
+        'Authorization': 'Bearer ' + localStorage.getItem('auth')
     }
 });
 
@@ -26,6 +27,11 @@ api.interceptors.response.use((response) => {
 }, function (error) {
     if (!error.response)
         vars.setErrorPopup("Network error", "An error occured with the api server, please try again later.");
+    else if (error.response.status === 401) {
+        if (window.location.pathname !== "/auth")
+            window.location.href = "/auth";
+    }
+
     // if (!error.response) {
     //     myAlert.setMaintenance(true);
     // }
@@ -36,7 +42,7 @@ api.interceptors.response.use((response) => {
     // if (error.response.status === 500) {
     //     myAlert.open("Erreur", "Une erreur serveur est survenue, veuillez réessayer plus tard.");
     // }
-   return Promise.reject(error);
+    return Promise.reject(error);
 });
 
 

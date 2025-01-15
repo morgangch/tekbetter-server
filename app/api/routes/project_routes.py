@@ -3,6 +3,7 @@ from datetime import datetime
 from flask import request
 
 from app.api.middlewares.scraper_auth_middleware import scraper_auth_middleware, public_scraper_auth_middleware
+from app.api.middlewares.student_auth_middleware import student_auth_middleware
 from app.globals import Globals
 from app.models.PlanningEvent import PlanningEvent
 from app.models.Project import Project
@@ -20,8 +21,9 @@ from app.services.student_service import StudentService
 
 def load_project_routes(app):
     @app.route("/api/projects", methods=["GET"])
+    @student_auth_middleware()
     def projects_route():
-        student = StudentService.get_student_by_id(1)
+        student = request.student
 
         projects = ProjectService.get_student_projects(student.id)
 

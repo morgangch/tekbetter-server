@@ -7,6 +7,8 @@ export async function deleteMicrosoftToken() {
 }
 
 export async function putMicrosoftToken(token: string) {
-    const res = await api.post(`/sync/microsoft`, {token});
+    const res = await api.post(`/sync/microsoft`, {
+        token: token
+    });
     if (res.status === 200) alert("Microsoft token saved successfully");
 }

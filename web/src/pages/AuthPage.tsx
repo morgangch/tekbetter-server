@@ -2,13 +2,12 @@ import React, {useEffect} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
     faArrowRight,
-    faArrowRotateForward,
     faCheckCircle,
-    faLock,
     faSpinner,
     faWarning
 } from "@fortawesome/free-solid-svg-icons";
 import GithubLogo from "../assets/githublogo.svg";
+import {getLoginStatus, loginWithPassword, registerWithTicket} from "../api/auth.api";
 
 
 function AuthButton(props: { text: string, icon: any, onClick: () => Promise<any>, disabled?: boolean }) {
@@ -32,6 +31,10 @@ export default function AuthPage(): React.ReactElement {
     const [login_email, setLoginEmail] = React.useState<string>("");
     const [login_password, setLoginPassword] = React.useState<string>("");
 
+    const params = new URLSearchParams(window.location.search);
+
+    const register_ticket = params.get("ticket");
+
     const [register_password, setRegisterPassword] = React.useState<{
         password: string,
         confirm: string
@@ -40,7 +43,7 @@ export default function AuthPage(): React.ReactElement {
         confirm: ""
     } as { password: string, confirm: string });
 
-    const [page, setPage] = React.useState<"email" | "password" | "register" | "create_password">("create_password");
+    const [page, setPage] = React.useState<"email" | "password" | "register" | "create_password">(register_ticket ? "create_password" : "email");
 
     const is_valid_password = () => {
         // min 8 characters, 1 uppercase, 1 lowercase, 1 number
@@ -84,6 +87,11 @@ export default function AuthPage(): React.ReactElement {
                                 alert("Please enter a valid Epitech email address.");
                                 return;
                             }
+                            const status = await getLoginStatus(login_email);
+                            if (status === "login")
+                                setPage("password")
+                            else if (status === "register")
+                                setPage("register")
                         }}/>
                     </>
                 }
@@ -104,7 +112,11 @@ export default function AuthPage(): React.ReactElement {
                         </div>
 
                         <AuthButton icon={faArrowRight} text={"Login"} onClick={async () => {
-
+                            const status = await loginWithPassword(login_email, login_password);
+                            if (!status) {
+                                alert("Login failed. Please check your email and password.");
+                                return;
+                            }
                         }}/>
                     </>
                 }
@@ -154,7 +166,11 @@ export default function AuthPage(): React.ReactElement {
                         </div>
 
                         <AuthButton icon={faArrowRight} disabled={register_password.password !== register_password.confirm || !is_valid_password()} text={"Create my account"} onClick={async () => {
-
+                            const status = await registerWithTicket(register_ticket!, register_password.password);
+                            if (!status) {
+                                alert("Registration failed. Please try again.");
+                                return;
+                            }
                         }}/>
                     </>
                 }

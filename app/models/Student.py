@@ -1,6 +1,7 @@
 class Student:
     _id: str = None
     login: str
+    password_hash: str = None
     first_name: str = None
     last_name: str = None
     city: str = "Epitech"
@@ -17,6 +18,7 @@ class Student:
         return {
             "_id": self._id,
             "login": self.login,
+            "password_hash": self.password_hash,
             "first_name": self.first_name,
             "last_name": self.last_name,
             "city": self.city,
@@ -38,6 +40,7 @@ class Student:
             return
         self._id = mongo_data["_id"]
         self.login = mongo_data["login"]
+        self.password_hash = mongo_data.get("password_hash", None)
         self.first_name = mongo_data.get("first_name", None)
         self.last_name = mongo_data.get("last_name", None)
         self.city = mongo_data.get("city", "Epitech")
