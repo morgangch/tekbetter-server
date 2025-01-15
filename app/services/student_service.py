@@ -1,9 +1,9 @@
 import random
 import string
-import uuid
 from datetime import datetime
 from app.globals import Globals
 from app.models.Student import Student
+from snowflake import SnowflakeGenerator
 
 class StudentService:
     @staticmethod
@@ -12,7 +12,7 @@ class StudentService:
         return Student(student) if student else None
 
     @staticmethod
-    def get_student_by_id(student_id: int) -> Student:
+    def get_student_by_id(student_id: str) -> Student:
         student = Globals.database["students"].find_one({"_id": student_id})
         return Student(student) if student else None
 
@@ -35,8 +35,9 @@ class StudentService:
     def add_student(student: Student):
         if StudentService.get_student_by_login(student.login):
             return
+        gen = SnowflakeGenerator(42)
+        student._id = next(gen)
         student.last_update = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        student.internal_id = uuid.uuid4().hex
         Globals.database["students"].insert_one(student.to_dict())
         StudentService.regenerate_scraper_token(student)
         return student
