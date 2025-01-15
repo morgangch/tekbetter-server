@@ -54,4 +54,5 @@ class Student:
 
     def get_scraper(self):
         from app.services.publicscraper_service import PublicScraperService
-        return PublicScraperService.get_scraper(self.public_scraper_id) if self.public_scraper_id else None
+        return PublicScraperService.get_scraper(
+            self.public_scraper_id) if self.public_scraper_id else None

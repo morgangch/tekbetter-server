@@ -13,17 +13,25 @@ class Colors:
     UNDERLINE = '\033[4m'
     END = '\033[0m'
 
+
 def log_info(message):
     print(f"[{Colors.CYAN}INFO{Colors.END}] {message}")
 
+
 def log_error(message):
-    print(f"[{Colors.RED}ERROR{Colors.END}] {Colors.DARK_RED}{message}{Colors.END}")
+    print(
+        f"[{Colors.RED}ERROR{Colors.END}] {Colors.DARK_RED}{message}{Colors.END}")
+
 
 def log_warning(message):
-    print(f"[{Colors.YELLOW}WARN{Colors.END}] {Colors.DARK_YELLOW}{message}{Colors.END}")
+    print(
+        f"[{Colors.YELLOW}WARN{Colors.END}] {Colors.DARK_YELLOW}{message}{Colors.END}")
+
 
 def log_success(message):
     print(f"[{Colors.GREEN}SUCCESS{Colors.END}] {message}")
 
+
 def log_debug(message):
-    print(f"[{Colors.BLUE}DEBUG{Colors.END}] {Colors.LIGHT_BLUE}{message}{Colors.END}")
+    print(
+        f"[{Colors.BLUE}DEBUG{Colors.END}] {Colors.LIGHT_BLUE}{message}{Colors.END}")

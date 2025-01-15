@@ -30,7 +30,8 @@ def load_env():
     for key, value in default_values.items():
         if os.getenv(key, None) is None:
             if value is not None:
-                log_warning(f"Missing environment variable {key}, using default value: {value}")
+                log_warning(
+                    f"Missing environment variable {key}, using default value: {value}")
                 os.environ[key] = value
             else:
                 raise Exception(f"Missing environment variable {key}")

@@ -22,7 +22,6 @@ def shutdown_server():
     Shutdown all the services.
     """
 
-
     # Shutdown the Redis service
     log_info("Closing redis connection...")
     RedisService.disconnect()
@@ -38,6 +37,7 @@ def shutdown_server():
     # Exit the program
     log_info("Exiting...")
     exit(0)
+
 
 def create_app():
     """
@@ -58,7 +58,6 @@ def create_app():
     CORS(app)
 
     return app
-
 
 
 def run():
@@ -98,6 +97,7 @@ def run():
 
     app = create_app()
     app.run("0.0.0.0", port=8080, debug=True)
+
 
 try:
     run()

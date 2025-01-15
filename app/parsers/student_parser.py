@@ -2,6 +2,7 @@ from datetime import datetime
 
 from app.models.Student import Student
 
+
 def fill_student_from_intra(intra_json: dict, student: Student):
     for key in ["login", "lastname", "firstname", "credits", "gpa", "promo"]:
         if key not in intra_json:

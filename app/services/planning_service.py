@@ -1,29 +1,28 @@
-import random
-import string
 import uuid
 from datetime import datetime
 from app.globals import Globals
 from app.models.PlanningEvent import PlanningEvent
-from app.models.Project import Project
-from app.models.Student import Student
 
 
 class PlanningService:
 
     @staticmethod
     def get_student_events_code_actis(student_id: int):
-        return [int(event["code_acti"]) for event in Globals.database["planning"].find({"student_id": student_id})]
+        return [int(event["code_acti"]) for event in
+                Globals.database["planning"].find({"student_id": student_id})]
 
     @staticmethod
     def get_student_events(student_id: str):
-        return [PlanningEvent(event) for event in Globals.database["planning"].find({"student_id": student_id})]
-
+        return [PlanningEvent(event) for event in
+                Globals.database["planning"].find({"student_id": student_id})]
     @staticmethod
     def get_latest_fetched_date(student_id: str) -> str or None:
-        res =  Globals.database["planning"].find_one({"student_id": student_id}, sort=[("fetch_date", -1)])
+        res = Globals.database["planning"].find_one({"student_id": student_id},
+                                                    sort=[("fetch_date", -1)])
         if res is None:
             return None
         return res["fetch_date"]
+
 
     @staticmethod
     def get_latest_date_before_now(student_id: str) -> str or None:
@@ -34,6 +33,7 @@ class PlanningService:
         if res is None:
             return None
         return res["date_start"]
+
 
     @staticmethod
     def create_event(event: PlanningEvent):
@@ -48,7 +48,8 @@ class PlanningService:
 
     @staticmethod
     def update_event(event: PlanningEvent):
-        Globals.database["planning"].update_one({"_id": event.mongo_id}, {"$set": event.to_dict()})
+        Globals.database["planning"].update_one({"_id": event.mongo_id},
+                                                {"$set": event.to_dict()})
 
     @staticmethod
     def sync_events(events: [PlanningEvent], student_id: int):
@@ -58,7 +59,8 @@ class PlanningService:
         for event in events:
             event.fetch_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             if event.code_acti in current_code_actis:
-                curr = [ev for ev in current_events if ev.code_acti == event.code_acti][0]
+                curr = [ev for ev in current_events if
+                        ev.code_acti == event.code_acti][0]
                 event._id = curr._id
                 PlanningService.update_event(event)
             else:
