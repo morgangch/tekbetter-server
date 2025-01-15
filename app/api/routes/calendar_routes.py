@@ -19,15 +19,15 @@ from app.services.publicscraper_service import PublicScraperService
 from app.services.student_service import StudentService
 
 
-def load_calendar_routes():
-    @Globals.app.route("/api/calendar", methods=["GET"])
+def load_calendar_routes(app):
+    @app.route("/api/calendar", methods=["GET"])
     def calendar_token_route():
         student = StudentService.get_student_by_id(1)
         return {
             "token": student.scraper_token,
         }
 
-    @Globals.app.route("/api/calendar/regenerate", methods=["POST"])
+    @app.route("/api/calendar/regenerate", methods=["POST"])
     def calendar_regenerate_route():
         student = StudentService.get_student_by_id(1)
         new_token = StudentService.regenerate_scraper_token(student)

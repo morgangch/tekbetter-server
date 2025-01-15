@@ -18,8 +18,8 @@ from app.services.publicscraper_service import PublicScraperService
 from app.services.student_service import StudentService
 
 
-def load_sync_routes():
-    @Globals.app.route("/api/sync/microsoft", methods=["POST"])
+def load_sync_routes(app):
+    @app.route("/api/sync/microsoft", methods=["POST"])
     def put_microsoft_token():
         student = StudentService.get_student_by_id(1)
 
@@ -32,7 +32,7 @@ def load_sync_routes():
 
         return {"success": True}
 
-    @Globals.app.route("/api/sync/microsoft", methods=["DELETE"])
+    @app.route("/api/sync/microsoft", methods=["DELETE"])
     def delete_microsoft_token():
         student = StudentService.get_student_by_id(1)
 

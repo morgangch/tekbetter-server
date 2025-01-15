@@ -19,8 +19,8 @@ from app.services.publicscraper_service import PublicScraperService
 from app.services.student_service import StudentService
 
 
-def load_global_routes():
-    @Globals.app.route("/api/global/sync-status", methods=["GET"])
+def load_global_routes(app):
+    @app.route("/api/global/sync-status", methods=["GET"])
     def global_sync_status():
         student = StudentService.get_student_by_id(1)
 

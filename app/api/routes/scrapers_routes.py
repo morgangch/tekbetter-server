@@ -18,8 +18,8 @@ from app.services.publicscraper_service import PublicScraperService
 from app.services.student_service import StudentService
 
 
-def load_scrapers_routes():
-    @Globals.app.route("/api/scraper/config", methods=["GET"])
+def load_scrapers_routes(app):
+    @app.route("/api/scraper/config", methods=["GET"])
     @public_scraper_auth_middleware()
     def get_publicscraper_config():
         scraper: PublicScraper = request.scraper
@@ -34,7 +34,7 @@ def load_scrapers_routes():
             } for student in students]
         }
 
-    @Globals.app.route("/api/scraper/infos", methods=["GET"])
+    @app.route("/api/scraper/infos", methods=["GET"])
     @scraper_auth_middleware()
     def get_all_moulis():
         """
@@ -51,7 +51,7 @@ def load_scrapers_routes():
 
         return {"known_tests": moulis_ids, "asked_slugs": asked_slugs}
 
-    @Globals.app.route("/api/scraper/push", methods=["POST"])
+    @app.route("/api/scraper/push", methods=["POST"])
     @scraper_auth_middleware()
     def push_data():
         """

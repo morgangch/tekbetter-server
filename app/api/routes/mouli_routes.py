@@ -19,8 +19,8 @@ from app.services.publicscraper_service import PublicScraperService
 from app.services.student_service import StudentService
 
 
-def load_mouli_routes():
-    @Globals.app.route("/api/mouli/project/<string:project_slug>", methods=["GET"])
+def load_mouli_routes(app):
+    @app.route("/api/mouli/project/<string:project_slug>", methods=["GET"])
     def mouli_get_route(project_slug: str):
         student = StudentService.get_student_by_id(1)
 
@@ -31,7 +31,7 @@ def load_mouli_routes():
             "date": mouli.test_date,
         } for mouli in history]
 
-    @Globals.app.route("/api/mouli/test/<int:test_id>", methods=["GET"])
+    @app.route("/api/mouli/test/<int:test_id>", methods=["GET"])
     def mouli_test_route(test_id: int):
         student = StudentService.get_student_by_id(1)
 

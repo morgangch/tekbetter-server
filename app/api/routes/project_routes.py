@@ -18,8 +18,8 @@ from app.services.publicscraper_service import PublicScraperService
 from app.services.student_service import StudentService
 
 
-def load_project_routes():
-    @Globals.app.route("/api/projects", methods=["GET"])
+def load_project_routes(app):
+    @app.route("/api/projects", methods=["GET"])
     def projects_route():
         student = StudentService.get_student_by_id(1)
 
