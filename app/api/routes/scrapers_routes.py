@@ -2,8 +2,8 @@ from datetime import datetime
 
 from flask import request
 
-from app.api.middlewares.scraper_auth_middleware import scraper_auth_middleware, public_scraper_auth_middleware
-from app.globals import Globals
+from app.api.middlewares.scraper_auth_middleware import \
+    scraper_auth_middleware, public_scraper_auth_middleware
 from app.models.PlanningEvent import PlanningEvent
 from app.models.Project import Project
 from app.models.PublicScraper import PublicScraper
@@ -68,7 +68,8 @@ def load_scrapers_routes(app):
             for proj in data["intra_projects"]:
                 project = Project()
                 fill_project_from_intra(proj, project, student.id)
-                project.last_update = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                project.last_update = datetime.now().strftime(
+                    "%Y-%m-%d %H:%M:%S")
                 ProjectService.upload_project(project)
 
         if "intra_planning" in data and data["intra_planning"]:
@@ -80,12 +81,14 @@ def load_scrapers_routes(app):
 
         if "new_moulis" in data and data["new_moulis"]:
             for mouli_id, mouli_data in data["new_moulis"].items():
-                mouli = build_mouli_from_myepitech(mouli_id, mouli_data, student.id)
+                mouli = build_mouli_from_myepitech(mouli_id, mouli_data,
+                                                   student.id)
                 MouliService.upload_mouli(mouli)
 
         if "projects_slugs" in data and data["projects_slugs"]:
             for project_id, slug in data["projects_slugs"].items():
-                project = ProjectService.get_project_by_code_acti(project_id, student.id)
+                project = ProjectService.get_project_by_code_acti(project_id,
+                                                                  student.id)
                 if not project:
                     continue
                 project.slug = slug if slug else "unknown"

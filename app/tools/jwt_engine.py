@@ -5,6 +5,7 @@ from app.models.Student import Student
 
 jwt_secret = os.getenv("JWT_SECRET")
 
+
 def generate_jwt(student: Student, expiration):
     return jwt.encode({
         "student_id": student.id,
@@ -12,6 +13,7 @@ def generate_jwt(student: Student, expiration):
         "created_at": str(datetime.datetime.now()),
         "exp": expiration
     }, jwt_secret, algorithm="HS256")
+
 
 def decode_jwt(token):
     try:

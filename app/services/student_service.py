@@ -2,12 +2,10 @@ import random
 import string
 from datetime import datetime, timedelta
 
-from redis import Redis
+from snowflake import SnowflakeGenerator
 
 from app.globals import Globals
 from app.models.Student import Student
-from snowflake import SnowflakeGenerator
-
 from app.services.redis_service import RedisService
 from app.tools.jwt_engine import generate_jwt
 from app.tools.password_tools import hash_password
@@ -27,7 +25,8 @@ class StudentService:
 
     @staticmethod
     def get_students_by_public_scraper(scraper_id: str) -> [Student]:
-        students = Globals.database["students"].find({"public_scraper_id": scraper_id})
+        students = Globals.database["students"].find(
+            {"public_scraper_id": scraper_id})
         return [Student(student) for student in students]
 
     @staticmethod
@@ -37,7 +36,8 @@ class StudentService:
 
     @staticmethod
     def get_public_scraper_students() -> [Student]:
-        students = Globals.database["students"].find({"microsoft_session": {"$ne": None}})
+        students = Globals.database["students"].find(
+            {"microsoft_session": {"$ne": None}})
         return [Student(student) for student in students]
 
     @staticmethod
@@ -54,7 +54,8 @@ class StudentService:
     @staticmethod
     def update_student(student: Student):
         student.last_update = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        Globals.database["students"].update_one({"_id": student.id}, {"$set": student.to_dict()})
+        Globals.database["students"].update_one({"_id": student.id},
+                                                {"$set": student.to_dict()})
 
     @staticmethod
     def delete_student(student: Student):
@@ -62,21 +63,25 @@ class StudentService:
 
     @staticmethod
     def get_student_by_scrapetoken(token: str) -> Student:
-        student = Globals.database["students"].find_one({"scraper_token": token})
+        student = Globals.database["students"].find_one(
+            {"scraper_token": token})
         return Student(student) if student else None
 
     @staticmethod
     def regenerate_scraper_token(student: Student):
-        token = ''.join(random.choices(string.ascii_letters + string.digits, k=32))
+        token = ''.join(
+            random.choices(string.ascii_letters + string.digits, k=32))
         student.scraper_token = f"{student.login.split('@')[0]}_{token}"
         StudentService.update_student(student)
         return student.scraper_token
 
     @staticmethod
     def create_register_ticket(email: str):
-        ticket = ''.join(random.choices(string.ascii_letters + string.digits, k=64))
+        ticket = ''.join(
+            random.choices(string.ascii_letters + string.digits, k=64))
         ticket = "tbticket_" + ticket
-        RedisService.set(f"register_ticket_{ticket}", email, 60*60) # Expires in 1 hour
+        RedisService.set(f"register_ticket_{ticket}", email,
+                         60 * 60)  # Expires in 1 hour
         # TODO: Send the ticket by email
         log_debug(f"Register ticket created for {email}: {ticket}")
         return ticket

@@ -23,7 +23,6 @@ class PlanningEvent:
         self.location = mongo_data["location"]
         self.fetch_date = mongo_data["fetch_date"]
 
-
     def to_dict(self):
         return {
             "_id": self._id,

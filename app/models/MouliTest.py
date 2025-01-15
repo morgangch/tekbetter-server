@@ -1,5 +1,6 @@
 from typing import Dict, List
 
+
 class MouliTest:
     title: str
     passed: bool
@@ -38,6 +39,7 @@ class MouliTest:
             "comment": self.comment
         }
 
+
 class MouliSkill:
     title: str
     tests_count: int
@@ -55,7 +57,8 @@ class MouliSkill:
         self.passed_count = mongodata["passed_count"]
         self.crash_count = mongodata["crash_count"]
         self.mandatoryfail_count = mongodata["mandatoryfail_count"]
-        self.tests = [MouliTest(test) for test in mongodata["tests"]] if mongodata["tests"] is not None else None
+        self.tests = [MouliTest(test) for test in mongodata["tests"]] if \
+        mongodata["tests"] is not None else None
 
     @property
     def score(self):
@@ -69,7 +72,8 @@ class MouliSkill:
             "passed_count": self.passed_count,
             "crash_count": self.crash_count,
             "mandatoryfail_count": self.mandatoryfail_count,
-            "tests": [test.to_dict() for test in self.tests] if self.tests is not None else None
+            "tests": [test.to_dict() for test in
+                      self.tests] if self.tests is not None else None
         }
 
     def to_api(self):
@@ -80,8 +84,10 @@ class MouliSkill:
             "passed_count": self.passed_count,
             "crash_count": self.crash_count,
             "mandatoryfail_count": self.mandatoryfail_count,
-            "tests": [test.to_api() for test in self.tests] if self.tests is not None else None
+            "tests": [test.to_api() for test in
+                      self.tests] if self.tests is not None else None
         }
+
 
 class CodingStyleReport:
     minor_issues: int = 0
@@ -105,7 +111,6 @@ class CodingStyleReport:
         self.is_too_many_issues = mongodata["is_too_many_issues"]
         self.details = mongodata["details"]
 
-
     def to_dict(self) -> dict:
         return {
             "minor_issues": self.minor_issues,
@@ -114,6 +119,7 @@ class CodingStyleReport:
             "is_too_many_issues": self.is_too_many_issues,
             "details": self.details
         }
+
 
 class MouliResult:
     _id: str = None
@@ -147,7 +153,8 @@ class MouliResult:
         self.delivery_error = mongodata["delivery_error"]
         self.banned_content = mongodata["banned_content"]
         self.skills = [MouliSkill(skill) for skill in mongodata["skills"]]
-        self.coding_style_report = CodingStyleReport(mongodata["coding_style_report"])
+        self.coding_style_report = CodingStyleReport(
+            mongodata["coding_style_report"])
 
     @property
     def score(self):
@@ -162,7 +169,7 @@ class MouliResult:
             "_id": self._id,
             "test_id": self.test_id,
             "project_name": self.project_name,
-            "project_code": self.project_code, # slug
+            "project_code": self.project_code,  # slug
             "module_code": self.module_code,
             "student_id": self.student_id,
             "score": self.score,

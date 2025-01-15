@@ -1,24 +1,26 @@
-from datetime import datetime
-
-from app.models.MouliTest import MouliResult, CodingStyleReport, MouliSkill, MouliTest
-from app.models.Student import Student
+from app.models.MouliTest import MouliResult, CodingStyleReport, MouliSkill, \
+    MouliTest
 
 
 def _build_coding_style(mouli_json: dict) -> CodingStyleReport:
     coding_style = CodingStyleReport()
 
-    v = [i['value'] for i in mouli_json["externalItems"] if i['type'] == "coding-style-fail" and i['value'] == 1]
+    v = [i['value'] for i in mouli_json["externalItems"] if
+         i['type'] == "coding-style-fail" and i['value'] == 1]
     if len(v) > 0:
         coding_style.is_too_many_issues = True
 
-    if "style" in mouli_json and ("Details" in mouli_json["style"] or "Counts" in mouli_json["style"]):
+    if "style" in mouli_json and (
+            "Details" in mouli_json["style"] or "Counts" in mouli_json[
+        "style"]):
         key = "Counts" if "Counts" in mouli_json["style"] else "Details"
         details = mouli_json["style"][key]
-        coding_style.details["minor"] = details["minor"] if "minor" in details else {}
-        coding_style.details["major"] = details["major"] if "major" in details else {}
-        coding_style.details["info"] = details["info"] if "info" in details else {}
-
-
+        coding_style.details["minor"] = details[
+            "minor"] if "minor" in details else {}
+        coding_style.details["major"] = details[
+            "major"] if "major" in details else {}
+        coding_style.details["info"] = details[
+            "info"] if "info" in details else {}
 
     return coding_style
 
@@ -37,15 +39,19 @@ def _build_test(test_json: dict) -> MouliTest:
 def _build_skill(skill_json: dict) -> MouliSkill:
     skill = MouliSkill()
     tests_shown = "FullSkillReport" in skill_json
-    skill_json = skill_json["FullSkillReport"] if tests_shown else skill_json["BreakdownSkillReport"]
+    skill_json = skill_json["FullSkillReport"] if tests_shown else skill_json[
+        "BreakdownSkillReport"]
 
     if tests_shown:
         if "tests" in skill_json:
             skill.tests = [_build_test(test) for test in skill_json["tests"]]
             skill.tests_count = len(skill.tests)
-            skill.passed_count = len([test for test in skill.tests if test.passed])
-            skill.crash_count = len([test for test in skill.tests if test.crashed])
-            skill.mandatoryfail_count = len([test for test in skill.tests if not test.passed and test.mandatory])
+            skill.passed_count = len(
+                [test for test in skill.tests if test.passed])
+            skill.crash_count = len(
+                [test for test in skill.tests if test.crashed])
+            skill.mandatoryfail_count = len([test for test in skill.tests if
+                                             not test.passed and test.mandatory])
     else:
         skill.tests = None
         skill.tests_count = skill_json["breakdown"]["count"]
@@ -57,7 +63,8 @@ def _build_skill(skill_json: dict) -> MouliSkill:
     return skill
 
 
-def build_mouli_from_myepitech(test_id: int, mouli_json: dict, student_id: int) -> MouliResult:
+def build_mouli_from_myepitech(test_id: int, mouli_json: dict,
+                               student_id: int) -> MouliResult:
     mouli = MouliResult()
 
     mouli.project_name = mouli_json["instance"]["projectName"]
@@ -76,9 +83,10 @@ def build_mouli_from_myepitech(test_id: int, mouli_json: dict, student_id: int) 
             mouli.build_trace = item["comment"]
             break
 
-
-    mouli.banned_content = [i['comment'] for i in mouli_json["externalItems"] if i['type'] == "banned"]
-    mouli.delivery_error = len([i for i in mouli_json["externalItems"] if i['type'] == "delivery-error"]) > 0
+    mouli.banned_content = [i['comment'] for i in mouli_json["externalItems"]
+                            if i['type'] == "banned"]
+    mouli.delivery_error = len([i for i in mouli_json["externalItems"] if
+                                i['type'] == "delivery-error"]) > 0
     if len(mouli.banned_content) == 0:
         mouli.banned_content = None
     else:

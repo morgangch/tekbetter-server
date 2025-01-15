@@ -19,7 +19,6 @@ class Project:
     mouli_project_code: str | None = None
     slug: str | None = None
 
-
     def __init__(self, mongo_data=None):
         if mongo_data is None:
             return
@@ -49,8 +48,8 @@ class Project:
         }
 
     def to_api(self):
-
-        latest_mouli = MouliService.get_latest_of_project(self.slug, self.student_id)
+        latest_mouli = MouliService.get_latest_of_project(self.slug,
+                                                          self.student_id)
 
         return {
             "code_acti": self.code_acti,

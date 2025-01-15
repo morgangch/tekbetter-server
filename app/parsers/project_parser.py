@@ -1,10 +1,12 @@
 from datetime import datetime
 
 from app.models.Project import Project
-from app.models.Student import Student
 
-def fill_project_from_intra(intra_json: dict, project: Project, student_id: int):
-    for key in ["codeacti", "acti_title", "begin_acti", "end_acti", "codemodule"]:
+
+def fill_project_from_intra(intra_json: dict, project: Project,
+                            student_id: int):
+    for key in ["codeacti", "acti_title", "begin_acti", "end_acti",
+                "codemodule"]:
         if key not in intra_json:
             return None
     project.student_id = student_id
