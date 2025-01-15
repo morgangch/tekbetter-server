@@ -16,6 +16,28 @@ from app.tools.teklogger import log_info, log_debug, log_error, log_success
 from app.services.redis_service import RedisService
 
 
+def shutdown_server():
+    """
+    Shutdown all the services.
+    """
+
+
+    # Shutdown the Redis service
+    log_info("Closing redis connection...")
+    RedisService.disconnect()
+
+    # Shutdown the MongoDB service
+    log_info("Closing MongoDB connection...")
+    Globals.database.client.close()
+
+    # Shutdown the Flask app
+    log_info("Shutting down Flask app...")
+    Globals.app.shutdown()
+
+    # Exit the program
+    log_info("Exiting...")
+    exit(0)
+
 def create_app():
     """
     Create the Flask application and load the routes.
@@ -33,18 +55,11 @@ def create_app():
     # Enable CORS
     CORS(app)
 
-    # Register teardown functions
-    @app.teardown_appcontext
-    def teardown(exception):
-        log_info("Shutting down...")
-        RedisService.disconnect()
-        if exception:
-            print(f"Exception : {exception}")
-
     return app
 
 
-if __name__ == '__main__':
+
+def run():
     log_info("Welcome to TekBetter server !")
     log_debug("Debug mode enabled")
     try:
@@ -81,3 +96,8 @@ if __name__ == '__main__':
 
     app = create_app()
     app.run("0.0.0.0", port=8080, debug=True)
+
+try:
+    run()
+except KeyboardInterrupt:
+    shutdown_server()
