@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, Response
 from ics import Calendar, Event
 from app.api.middlewares.student_auth_middleware import student_auth_middleware
 from app.services.planning_service import PlanningService
@@ -55,7 +55,11 @@ def load_calendar_routes(app):
             e.name = project.title
             e.begin = project.date_start
             e.end = project.date_end
+            e.make_all_day()
             cal.events.add(e)
 
-        data = cal.serialize_iter()
-        return data, 200, {"Content-Type": "text/calendar; charset=utf-8"}
+        ics_content = cal.serialize()
+        response = Response(ics_content, mimetype="text/calendar")
+        response.headers["Content-Disposition"] = f"attachment; filename={type}.ics"
+
+        return response
