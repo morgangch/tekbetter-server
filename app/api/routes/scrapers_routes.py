@@ -26,12 +26,17 @@ def load_scrapers_routes(app):
         PublicScraperService.reassign_scrapers()
         students = StudentService.get_students_by_public_scraper(scraper.id)
 
-        return {
-            "student_interval": 60,
-            "students": [{
+        res = []
+
+        for student in students:
+            res.append({
                 "microsoft_session": student.microsoft_session,
                 "tekbetter_token": student.scraper_token,
-            } for student in students]
+            })
+
+        return {
+            "student_interval": 60,
+            "students": res
         }
 
     @app.route("/api/scraper/infos", methods=["GET"])
@@ -49,7 +54,19 @@ def load_scrapers_routes(app):
             if project.slug is None:
                 asked_slugs.append(project.code_acti)
 
-        return {"known_tests": moulis_ids, "asked_slugs": asked_slugs}
+        start = datetime.now().replace(year=datetime.now().year - 5)
+        end = datetime.now().replace(year=datetime.now().year + 1)
+
+        proj_start = ProjectService.get_latest_date_before_now(student.id)
+        plan_start = PlanningService.get_latest_date_before_now(student.id)
+
+        proj_start = datetime.strptime(proj_start, "%Y-%m-%d %H:%M:%S") if proj_start else None
+        plan_start = datetime.strptime(plan_start, "%Y-%m-%d %H:%M:%S") if plan_start else None
+
+        if proj_start and plan_start:
+            start = proj_start if proj_start < plan_start else plan_start
+
+        return {"known_tests": moulis_ids, "asked_slugs": asked_slugs, "fetch_start": start.strftime("%Y-%m-%d"), "fetch_end": end.strftime("%Y-%m-%d")}
 
     @app.route("/api/scraper/push", methods=["POST"])
     @scraper_auth_middleware()
