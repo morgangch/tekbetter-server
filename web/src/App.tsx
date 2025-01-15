@@ -7,6 +7,7 @@ import TopBar from "./comps/TopBar";
 import "./assets/styles/base.css"
 import CalendarPage from "./pages/CalendarPage";
 import SyncPage from "./pages/SyncPage";
+import AuthPage from "./pages/AuthPage";
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
                 <div className={"h-auto grow p-2"}>
                     <Routes>
                         <Route path="/" element={<HomePage/>}/>
+                        <Route path="/auth" element={<AuthPage/>}/>
                         <Route path="/calendar" element={<CalendarPage/>}/>
                         <Route path="/sync" element={<SyncPage/>}/>
                         <Route path="/moulinettes" element={<MouliPage/>}/>
