@@ -1,6 +1,6 @@
 import os
 import pymongo
-from flask import Flask
+from flask import Flask, send_from_directory, render_template
 from flask_cors import CORS
 
 from app.api.routes.auth_routes import load_auth_routes
@@ -43,9 +43,18 @@ def create_app():
     """
     Create the Flask application and load the routes.
     """
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder="../dashboard_build")
 
-    # Load the routes
+    # Serve React App
+    @app.route('/', defaults={'path': ''})
+    @app.route('/<path:path>')
+    def serve(path):
+        if path != "" and os.path.exists(app.static_folder + '/' + path):
+            return send_from_directory(app.static_folder, path)
+        else:
+            return send_from_directory(app.static_folder, 'index.html')
+
+    #Load the routes
     load_scrapers_routes(app)
     load_project_routes(app)
     load_mouli_routes(app)
@@ -56,6 +65,7 @@ def create_app():
 
     # Enable CORS
     CORS(app)
+
 
     return app
 
