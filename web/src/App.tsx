@@ -41,7 +41,7 @@ function App() {
                 </div>
                 <div>
                     <footer className={"bg-gray-800 text-white p-2"}>
-                        <p className={"text-center"}>Made with ❤️ by Eliot</p>
+                        <p className={"text-center"}>Made with ❤️ by Eliot & Maël</p>
                     </footer>
                 </div>
 
