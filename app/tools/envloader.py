@@ -15,7 +15,7 @@ default_values = {
     "REDIS_PASSWORD": None,
     "JWT_SECRET": None,
     "AES_KEY": None,
-    "SCRAPERS_CONFIG_FILE": "",
+    "SCRAPERS_CONFIG_FILE": "scrapers.json",
 }
 
 

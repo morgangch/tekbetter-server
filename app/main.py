@@ -19,6 +19,9 @@ from app.services.redis_service import RedisService
 _is_initialized = False
 
 
+os.chdir(os.path.join(os.path.dirname(__file__), ".."))
+
+
 def init_services():
     """Initialize database connections and services"""
     global _is_initialized

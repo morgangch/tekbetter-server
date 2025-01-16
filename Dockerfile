@@ -39,7 +39,8 @@ ENV PYTHONPATH=/app \
     PYTHONUNBUFFERED=1 \
     FLASK_ENV=production \
     FLASK_DEBUG=0 \
-    DASHBOARD_BUILD_PATH=/app/dashboard_build
+    DASHBOARD_BUILD_PATH=/app/dashboard_build \
+    SCRAPERS_CONFIG_FILE=/app/scrapers.json
 
 RUN useradd -m -s /bin/bash appuser && \
     chown -R appuser:appuser /app
