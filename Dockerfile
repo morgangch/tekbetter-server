@@ -33,8 +33,8 @@ RUN npm run build
 WORKDIR /app
 RUN mkdir -p /app/dashboard_build && \
     mv /app/web/build/* /app/dashboard_build
-
-
+# Delete the web directory
+RUN rm -rf /app/web
 
 # Default environment variables
 ENV PYTHONPATH=/app \
