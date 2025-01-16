@@ -70,7 +70,7 @@ def create_app():
 
     init_services()
 
-    flask_app = Flask(__name__)
+    flask_app = Flask(__name__, static_folder=os.getenv("DASHBOARD_BUILD_PATH", "../web/build"))
 
     # Load the routes
     load_scrapers_routes(flask_app)
@@ -80,6 +80,16 @@ def create_app():
     load_calendar_routes(flask_app)
     load_sync_routes(flask_app)
     load_auth_routes(flask_app)
+
+    # Serve React App
+    @app.route('/', defaults={'path': ''})
+    @app.route('/<path:path>')
+    def serve(path):
+        if path != "" and os.path.exists(app.static_folder + '/' + path):
+            return send_from_directory(app.static_folder, path)
+        else:
+            return send_from_directory(app.static_folder, 'index.html')
+
 
     CORS(flask_app)
 

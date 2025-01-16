@@ -5,5 +5,3 @@
 /alembic.ini
 /.idea
 /scrapers-config.json
-!/dashboard_build/.gitkeep
-/dashboard_build/*

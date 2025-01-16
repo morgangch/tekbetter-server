@@ -14,6 +14,8 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
     libcurl4-openssl-dev \
+    npm \
+    nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
@@ -21,11 +23,25 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt && \
     pip install --no-cache-dir gunicorn
 
+WORKDIR /app/web
+COPY web/package.json web/package-lock.json ./
+RUN npm install
+COPY web ./
+RUN npm run build
+
+# Déplacer les fichiers build React
+WORKDIR /app
+RUN mkdir -p /app/dashboard_build && \
+    mv /app/web/build/* /app/dashboard_build
+
+
+
 # Default environment variables
 ENV PYTHONPATH=/app \
     PYTHONUNBUFFERED=1 \
     FLASK_ENV=production \
-    FLASK_DEBUG=0
+    FLASK_DEBUG=0 \
+    DASHBOARD_BUILD_PATH=/app/dashboard_build
 
 RUN useradd -m -s /bin/bash appuser && \
     chown -R appuser:appuser /app
