@@ -1,40 +1,49 @@
-FROM nikolaik/python-nodejs:python3.13-nodejs23
-
-# Open Container Initiative (OCI) labels
-LABEL org.opencontainers.image.title="TekBetter Server"
-LABEL org.opencontainers.image.description="TekBetter API Server with Flask"
-LABEL org.opencontainers.image.version="1.0.0"
-LABEL org.opencontainers.image.authors="eliaute,maelapp"
-
-# Custom labels
-LABEL app.component="api-server"
-LABEL app.dependencies="mongodb,redis"
-
-WORKDIR /app
-
-RUN apt-get update && apt-get install -y \
-    libcurl4-openssl-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt && \
-    pip install --no-cache-dir gunicorn
-
+# Stage 1: Build React application
+FROM node:20-slim AS react-builder
 WORKDIR /app/web
 COPY web/package.json web/package-lock.json ./
-RUN npm install
+RUN npm ci
 COPY web ./
 RUN npm run build
 
-# Déplacer les fichiers build React
+# Stage 2: Build Python dependencies
+FROM python:3.13-slim-bookworm AS python-builder
 WORKDIR /app
-RUN mkdir -p /app/dashboard_build && \
-    mv /app/web/build/* /app/dashboard_build
-# Delete the web directory
-RUN rm -rf /app/web
+COPY requirements.txt .
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        gcc \
+        libcurl4-openssl-dev \
+    && pip install --no-cache-dir --user -r requirements.txt \
+    && pip install --no-cache-dir --user gunicorn
 
-# Default environment variables
+# Stage 3: Final production image
+FROM python:3.13-slim-bookworm
+
+# OCI labels
+LABEL org.opencontainers.image.title="TekBetter Server" \
+      org.opencontainers.image.description="TekBetter API Server with Flask" \
+      org.opencontainers.image.version="1.0.0" \
+      org.opencontainers.image.authors="eliaute,maelapp" \
+      app.component="api-server" \
+      app.dependencies="mongodb,redis"
+
+WORKDIR /app
+
+# Install runtime dependencies only
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        libcurl4-openssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy Python packages from builder
+COPY --from=python-builder /root/.local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
+COPY --from=python-builder /root/.local/bin /usr/local/bin
+
+# Copy React build
+COPY --from=react-builder /app/web/build /app/dashboard_build
+
+# Set environment variables
 ENV PYTHONPATH=/app \
     PYTHONUNBUFFERED=1 \
     FLASK_ENV=production \
@@ -42,10 +51,12 @@ ENV PYTHONPATH=/app \
     DASHBOARD_BUILD_PATH=/app/dashboard_build \
     SCRAPERS_CONFIG_FILE=/app/scrapers.json
 
+# Create non-root user
 RUN useradd -m -s /bin/bash appuser && \
     chown -R appuser:appuser /app
 USER appuser
 
+# Copy application code
 COPY --chown=appuser:appuser app /app/app
 COPY --chown=appuser:appuser gunicorn.conf.py /app/
 
