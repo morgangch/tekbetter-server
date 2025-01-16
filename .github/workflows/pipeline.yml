@@ -24,7 +24,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push Docker image with latest tag
+      - name: Build and push Docker image for AMD64 and ARM64 with latest tag
         if: github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v4
         with:
@@ -33,8 +33,9 @@ jobs:
           tags: |
             ${{ secrets.REGISTRY_URL }}/tekbetter/tekbetter-server:latest
             ${{ secrets.REGISTRY_URL }}/tekbetter/tekbetter-server:${{ github.sha }}
+          platforms: linux/amd64,linux/arm64
 
-      - name: Build and push Docker image with dev tag
+      - name: Build and push Docker image for AMD64 and ARM64 with dev tag
         if: github.ref == 'refs/heads/dev-production'
         uses: docker/build-push-action@v4
         with:
@@ -43,6 +44,7 @@ jobs:
           tags: |
             ${{ secrets.REGISTRY_URL }}/tekbetter/tekbetter-server:development
             ${{ secrets.REGISTRY_URL }}/tekbetter/tekbetter-server:${{ github.sha }}
+          platforms: linux/amd64,linux/arm64
 
       - name: Logout from Docker Hub
         run: docker logout ${{ secrets.REGISTRY_URL }}
