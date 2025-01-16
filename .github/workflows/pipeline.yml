@@ -33,7 +33,6 @@ jobs:
           tags: |
             ${{ secrets.REGISTRY_URL }}/tekbetter/tekbetter-server:latest
             ${{ secrets.REGISTRY_URL }}/tekbetter/tekbetter-server:${{ github.sha }}
-            ${{ secrets.REGISTRY_URL }}/tekbetter/tekbetter-server:$(date +'%Y%m%d')
 
       - name: Build and push Docker image with dev tag
         if: github.ref == 'refs/heads/dev-production'
@@ -41,10 +40,9 @@ jobs:
         with:
           context: .
           push: true
-          ttags: |
+          tags: |
             ${{ secrets.REGISTRY_URL }}/tekbetter/tekbetter-server:development
             ${{ secrets.REGISTRY_URL }}/tekbetter/tekbetter-server:${{ github.sha }}
-            ${{ secrets.REGISTRY_URL }}/tekbetter/tekbetter-server:$(date +'%Y%m%d')
 
       - name: Logout from Docker Hub
         run: docker logout ${{ secrets.REGISTRY_URL }}
