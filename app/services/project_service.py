@@ -1,21 +1,25 @@
 import uuid
-
+from datetime import datetime
 from app.globals import Globals
 from app.models.Project import Project
-
 
 class ProjectService:
 
     @staticmethod
-    def get_student_projects(student_id: int):
+    def get_student_projects(student_id: str):
         return [Project(p) for p in
                 Globals.database["projects"].find({"student_id": student_id})]
 
     @staticmethod
-    def get_latest_fetchdate(student_id: int) -> str:
+    def get_latest_fetchdate(student_id: str) -> str:
         p = Globals.database["projects"].find_one({"student_id": student_id},
                                                   sort=[("fetch_date", -1)])
         return p["fetch_date"] if p else None
+
+    @staticmethod
+    def get_latest_date_before_now(student_id: str) -> str:
+        p = Globals.database["projects"].find_one({"student_id": student_id, "date_end": {"$lt": datetime.now().strftime("%Y-%m-%d %H:%M:%S")}}, sort=[("date_end", -1)])
+        return p["date_start"] if p else None
 
     @staticmethod
     def get_project_by_code_acti(acti_code: str, student_id: int):

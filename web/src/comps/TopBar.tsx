@@ -1,14 +1,9 @@
 import {useNavigate} from "react-router";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
-    faArrowRotateForward,
-    faAutomobile, faBell,
-    faCalendar, faCalendarCheck, faCheckCircle,
+    faCalendarCheck, faCheckCircle,
     faGraduationCap,
-    faHome,
-    faListSquares,
-    faRobot,
-    faTv, faWarning
+    faWarning
 } from "@fortawesome/free-solid-svg-icons";
 import {dateToElapsed} from "../tools/DateString";
 import {useEffect, useState} from "react";
@@ -16,10 +11,11 @@ import {getSyncStatus} from "../api/global.api";
 
 function NavElement(props: { text: string, icon: any, link: string }) {
     const navigate = useNavigate();
+    const is_active = window.location.pathname.startsWith(props.link);
 
     return (
         <div
-            className={"flex items-center justify-center text-white cursor-pointer bg-blue-950 px-5 min-w-36 h-8 rounded hover:bg-blue-900"}
+            className={"flex items-center justify-center text-white cursor-pointer px-5 min-w-36 h-8 rounded-2xl hover:bg-blue-900 transition " + (is_active ? "bg-blue-900" : "")}
             onClick={() => navigate(props.link)}>
             <div className={"flex flex-row items-center justify-center"}>
                 <div>
@@ -49,9 +45,11 @@ function SyncStatus() {
             setLastSync(date);
         }
         const interval = setInterval(async () => {
-            reload().catch(() => {});
+            reload().catch(() => {
+            });
         }, 30000);
-        reload().catch(() => {});
+        reload().catch(() => {
+        });
         return () => clearInterval(interval);
     }, []);
 
@@ -62,7 +60,6 @@ function SyncStatus() {
             <p className={"text-white text-xs my-1 ml-1 text-nowrap"}>Sync: {text}</p>
         </div>
     );
-
 
 
     const total_minutes = (date: Date) => {
@@ -83,24 +80,34 @@ export default function TopBar(): React.ReactElement {
     return (
         <div className={"bg-gray-700"}>
             <div className={"flex h-14 items-center justify-between"}>
-                <div className={"flex flex-row items-center gap-4 ml-4 w-1/3"}>
-                    <div className={"h-full flex flex-row items-center"}>
-                        <img
-                            src={require("../assets/epitech.png")}
-                            alt={"Epitech"}
-                            className={"w-12"}
-                        />
-                        <p className={"text-white ml-1 font-bold"}>TekBetter</p>
+                <div className={"flex flex-row items-center gap-3"}>
+
+                    <div className={"flex flex-row items-center gap-4 ml-4"}>
+                        <div className={"h-full flex flex-row items-center"}>
+                            <img
+                                src={require("../assets/epitech.png")}
+                                alt={"Epitech"}
+                                className={"w-12"}
+                            />
+                            <p className={"text-white ml-1 font-bold"}>TekBetter</p>
+                        </div>
+                        <SyncStatus/>
                     </div>
-                    <SyncStatus />
+
+                    <div className={"flex gap-4 justify-start"}>
+                        <NavElement text={"Moulinettes"} link={"/moulinettes"} icon={faGraduationCap}/>
+                        <NavElement text={"Calendar"} link={"/calendar"} icon={faCalendarCheck}/>
+                        <NavElement text={"Synchronisation"} link={"/sync"} icon={faCheckCircle}/>
+                    </div>
                 </div>
 
-                <div className={"flex gap-4 justify-center w-1/3"}>
-                    <NavElement text={"Moulinettes"} link={"/moulinettes"} icon={faGraduationCap}/>
-                    <NavElement text={"Calendar"} link={"/calendar"} icon={faCalendarCheck}/>
-                    <NavElement text={"Synchronisation"} link={"/sync"} icon={faCheckCircle}/>
-                </div>
-                <div className={"w-1/3"}></div>
+                {/*<div className={""}>*/}
+                {/*    <img*/}
+                {/*        src={require("../assets/epitech.png")}*/}
+                {/*        alt={"Epitech"}*/}
+                {/*        className={"w-12"}*/}
+                {/*    />*/}
+                {/*</div>*/}
             </div>
         </div>
     );

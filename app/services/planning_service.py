@@ -1,6 +1,5 @@
 import uuid
 from datetime import datetime
-
 from app.globals import Globals
 from app.models.PlanningEvent import PlanningEvent
 
@@ -13,17 +12,28 @@ class PlanningService:
                 Globals.database["planning"].find({"student_id": student_id})]
 
     @staticmethod
-    def get_student_events(student_id: int):
+    def get_student_events(student_id: str):
         return [PlanningEvent(event) for event in
                 Globals.database["planning"].find({"student_id": student_id})]
-
     @staticmethod
-    def get_latest_fetched_date(student_id: int) -> str or None:
+    def get_latest_fetched_date(student_id: str) -> str or None:
         res = Globals.database["planning"].find_one({"student_id": student_id},
                                                     sort=[("fetch_date", -1)])
         if res is None:
             return None
         return res["fetch_date"]
+
+
+    @staticmethod
+    def get_latest_date_before_now(student_id: str) -> str or None:
+        """
+        Get the latest event date before now
+        """
+        res =  Globals.database["planning"].find_one({"student_id": student_id, "date_end": {"$lt": datetime.now().strftime("%Y-%m-%d %H:%M:%S")}}, sort=[("date_end", -1)])
+        if res is None:
+            return None
+        return res["date_start"]
+
 
     @staticmethod
     def create_event(event: PlanningEvent):

@@ -62,7 +62,7 @@ export default function SyncPage(): React.ReactElement {
                         <span className={"font-bold text-blue-500"}>How can i get my Microsoft cookie ?</span>
                         You can follow
                         <a
-                            href={"https://github.com/EliotAmn/tekbetter-server/blob/main/MicrosoftSessionTutorial.md"}
+                            href={"https://github.com/EliotAmn/tekbetter-server/blob/main/HOW_TO_GET_COOKIES.md"}
                             className={"text-blue-500 mx-1"}
                             target={"_blank"}
                         >
