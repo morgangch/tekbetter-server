@@ -11,7 +11,9 @@ export class StaticVars {
 }
 
 
-const backend_url = process.env.REACT_APP_BACKEND_URL || "http://localhost:8080"
+//const backend_url = process.env.REACT_APP_BACKEND_URL || "http://localhost:8080"
+const current_domain = window.location.hostname;
+const backend_url = process.env.NODE_ENV === 'development' ? "http://localhost:8080" : `https://${current_domain}`
 
 const api = axios.create({
     baseURL: `${backend_url}/api/`,
