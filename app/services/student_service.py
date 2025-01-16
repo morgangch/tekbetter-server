@@ -87,6 +87,10 @@ class StudentService:
         return ticket
 
     @staticmethod
+    def get_ticket_email(ticket: str):
+        return RedisService.get(f"register_ticket_{ticket}")
+
+    @staticmethod
     def create_student_by_ticket(ticket: str, password: str):
         email = RedisService.get(f"register_ticket_{ticket}")
         if not email:
