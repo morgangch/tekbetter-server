@@ -1,5 +1,5 @@
 import redis
-from app.tools.teklogger import log_info, log_debug, log_error, log_success
+from app.tools.teklogger import log_info, log_debug, log_error
 
 
 class RedisService:
@@ -10,7 +10,6 @@ class RedisService:
         """
         Create a connection to a Redis server.
         """
-        log_info("Connecting to Redis...")
         try:
             RedisService.connection = redis.Redis(
                 host=host,
@@ -19,7 +18,6 @@ class RedisService:
                 password=password,
                 decode_responses=True
             )
-            log_success("Connected to Redis")
         except redis.ConnectionError as e:
             log_error(
                 f"Failed to connect to Redis server at {host}:{port}: {e}")
