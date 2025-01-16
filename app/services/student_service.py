@@ -6,6 +6,7 @@ from snowflake import SnowflakeGenerator
 
 from app.globals import Globals
 from app.models.Student import Student
+from app.services.mail_service import MailService
 from app.services.redis_service import RedisService
 from app.tools.jwt_engine import generate_jwt
 from app.tools.password_tools import hash_password
@@ -82,7 +83,22 @@ class StudentService:
         ticket = "tbticket_" + ticket
         RedisService.set(f"register_ticket_{ticket}", email,
                          60 * 60)  # Expires in 1 hour
-        # TODO: Send the ticket by email
+        subject: str = "Confirm Your TekBetter Account"
+        body: str = f"""\
+        Hello,
+
+        Thank you for creating a TekBetter account! To complete your registration, please confirm your email address by clicking the link below:
+
+        {ticket}
+
+        Please note that this link will expire in 1 hour. If you did not request this account, you can safely ignore this email.
+
+        Thank you for choosing TekBetter. We’re excited to have you on board!
+
+        Best regards,  
+        The TekBetter Team
+        """
+        MailService.send_mail(email, subject, body)
         log_debug(f"Register ticket created for {email}: {ticket}")
         return ticket
 
