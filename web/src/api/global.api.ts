@@ -1,4 +1,3 @@
-import {MouliResult} from "../models/MouliResult";
 import api from "./api";
 
 export async function getSyncStatus(): Promise<{

@@ -1,15 +1,9 @@
 import React from "react";
-import TopBar from "../../comps/TopBar";
 import {buildStyles, CircularProgressbar} from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
-    faArrowLeft,
     faArrowRight,
-    faCheckCircle,
-    faCircleInfo,
-    faSkull,
-    faWarning
 } from "@fortawesome/free-solid-svg-icons";
 import {dateToElapsed, dateToString} from "../../tools/DateString";
 import WindowElem from "../../comps/WindowElem";

@@ -1,5 +1,4 @@
 import React, {useEffect} from "react";
-import TopBar from "../comps/TopBar";
 import WindowElem, {BasicBox} from "../comps/WindowElem";
 import {getCalendarToken} from "../api/calendar.api";
 

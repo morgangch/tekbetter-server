@@ -1,32 +1,7 @@
 import React, {useEffect} from "react";
-import TopBar from "../comps/TopBar";
 import WindowElem, {BasicBox} from "../comps/WindowElem";
 import {getCalendarToken, regenCalendarToken} from "../api/calendar.api";
 import {deleteMicrosoftToken, putMicrosoftToken} from "../api/sync.api";
-
-function CopyUrl(props: { cal_name: string, token: string }) {
-
-    const url = `${document.location.origin}/ical/${props.token}/${props.cal_name}.ics`;
-
-    const copy = () => {
-        navigator.clipboard.writeText(url).then(() => {
-            alert("Copied to clipboard !");
-        }, () => {
-            alert("Failed to copy to clipboard !");
-        });
-    }
-
-
-    return <div className={"flex flex-row items-center gap-2 w-full"}>
-        <button onClick={copy} className={"ml-2 h-8 bg-blue-500 text-white px-2 rounded"}>Copy</button>
-
-        <div
-            className={"bg-gray-100 border-gray-300 border text-gray-500 shadow flex flex-row items-center rounded px-2 py-1 flex-grow"}
-        >
-            <p>{url}</p>
-        </div>
-    </div>
-}
 
 export default function SyncPage(): React.ReactElement {
 

@@ -1,5 +1,4 @@
 import api from "./api";
-import {EpiProject} from "../models/Project";
 
 export async function getCalendarToken(): Promise<string> {
     const res = await api.get(`/calendar`);

@@ -2,7 +2,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
     faCheckCircle,
     faChevronDown,
-    faChevronRight, faCircle, faSkull, faWarning, faXmarkCircle,
+    faChevronRight, faSkull, faWarning, faXmarkCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import ProgressBar from "@ramonak/react-progress-bar";

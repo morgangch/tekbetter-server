@@ -15,19 +15,14 @@ import {
 import React from "react";
 import MouliTestSkill from "./MouliTestSkill";
 import Button from "../../comps/Button";
-import {CodingStyleResult, MouliResult} from "../../models/MouliResult";
+import {MouliResult} from "../../models/MouliResult";
 import WindowElem, {BasicBox} from "../../comps/WindowElem";
 import {dateToString} from "../../tools/DateString";
 import ReactApexChart from "react-apexcharts";
 import scoreColor from "../../tools/ScoreColor";
 
-
-function buildCodingStyle(coding_style: CodingStyleResult) {
-
-}
-
 function CodingStyleRow(props: { name: string, value: number }) {
-    const color = props.name === "FATAL" ? "text-red-500" : props.name === "MAJOR" ? "text-yellow-500" : props.name === "MINOR" ? "text-yellow-300" : "text-green-500";
+    //const color = props.name === "FATAL" ? "text-red-500" : props.name === "MAJOR" ? "text-yellow-500" : props.name === "MINOR" ? "text-yellow-300" : "text-green-500";
 
     return <div className={"flex flex-row font-bold"}>
         <p>{props.value}</p>

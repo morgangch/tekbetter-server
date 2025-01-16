@@ -1,5 +1,4 @@
 import api from "./api";
-import {EpiProject} from "../models/Project";
 
 export async function deleteMicrosoftToken() {
     const res = await api.delete(`/sync/microsoft`);
