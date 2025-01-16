@@ -16,6 +16,10 @@ default_values = {
     "JWT_SECRET": None,
     "AES_KEY": None,
     "SCRAPERS_CONFIG_FILE": "scrapers.json",
+    "SMTP_HOST": None,
+    "SMTP_PORT": 587,
+    "SMTP_USER": None,
+    "SMTP_PASSWORD": None
 }
 
 
