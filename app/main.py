@@ -16,61 +16,24 @@ from app.tools.envloader import load_env
 from app.tools.teklogger import log_info, log_debug, log_error, log_success
 from app.services.redis_service import RedisService
 
-
-def shutdown_server():
-    """
-    Shutdown all the services.
-    """
-
-    # Shutdown the Redis service
-    log_info("Closing redis connection...")
-    RedisService.disconnect()
-
-    # Shutdown the MongoDB service
-    log_info("Closing MongoDB connection...")
-    Globals.database.client.close()
-
-    # Shutdown the Flask app
-    log_info("Shutting down Flask app...")
-    Globals.app.shutdown()
-
-    # Exit the program
-    log_info("Exiting...")
-    exit(0)
+_is_initialized = False
 
 
-def create_app():
-    """
-    Create the Flask application and load the routes.
-    """
-    app = Flask(__name__)
+def init_services():
+    """Initialize database connections and services"""
+    global _is_initialized
 
-    # Load the routes
-    load_scrapers_routes(app)
-    load_project_routes(app)
-    load_mouli_routes(app)
-    load_global_routes(app)
-    load_calendar_routes(app)
-    load_sync_routes(app)
-    load_auth_routes(app)
+    if _is_initialized:
+        return
 
-    # Enable CORS
-    CORS(app)
-
-    return app
-
-
-def run():
-    log_info("Welcome to TekBetter server !")
-    log_debug("Debug mode enabled")
     try:
         load_env()
     except Exception as e:
         log_error(str(e))
-        exit(1)
+        raise
 
     # Connect to MongoDB
-    mongo_url = f"mongodb://{os.getenv('MONGO_HOST')}:{os.getenv('MONGO_PORT')}"
+    mongo_url = f"mongodb://{os.getenv('MONGO_HOST')}:{os.getenv('MONGO_PORT')}?directConnection=true"
     log_info("Connecting to MongoDB...")
     Globals.database = pymongo.MongoClient(mongo_url)[os.getenv('MONGO_DB')]
 
@@ -78,28 +41,60 @@ def run():
         Globals.database.list_collection_names()
     except Exception as e:
         log_error(f"Failed to connect to MongoDB server at {mongo_url}: {e}")
-        exit(1)
+        raise
 
     log_success("Connected to MongoDB")
 
     # Connect to Redis
+    log_info("Connecting to Redis...")
     RedisService.connect(
         host=os.getenv("REDIS_HOST"),
         port=os.getenv("REDIS_PORT"),
         db=os.getenv("REDIS_DB"),
         password=os.getenv("REDIS_PASSWORD")
     )
+    log_success("Connected to Redis")
 
     # Load scrapers from config file
     if os.getenv("SCRAPERS_CONFIG_FILE") != "":
         PublicScraperService.load_scrapers_from_config()
         PublicScraperService.reassign_scrapers()
 
-    app = create_app()
-    app.run("0.0.0.0", port=8080, debug=True)
+    _is_initialized = True
 
 
-try:
-    run()
-except KeyboardInterrupt:
-    shutdown_server()
+def create_app():
+    """Create and configure the Flask application"""
+    log_info("Welcome to TekBetter server !")
+    log_debug("Debug mode enabled")
+
+    init_services()
+
+    flask_app = Flask(__name__)
+
+    # Load the routes
+    load_scrapers_routes(flask_app)
+    load_project_routes(flask_app)
+    load_mouli_routes(flask_app)
+    load_global_routes(flask_app)
+    load_calendar_routes(flask_app)
+    load_sync_routes(flask_app)
+    load_auth_routes(flask_app)
+
+    CORS(flask_app)
+
+    return flask_app
+
+
+app = create_app()
+
+if __name__ == "__main__":
+    try:
+        app.run("0.0.0.0", os.getenv("PORT", 8080), debug=True)
+    except KeyboardInterrupt:
+        # Shutdown services
+        log_info("Closing redis connection...")
+        RedisService.disconnect()
+        log_info("Closing MongoDB connection...")
+        if hasattr(Globals, 'database') and Globals.database:
+            Globals.database.client.close()
