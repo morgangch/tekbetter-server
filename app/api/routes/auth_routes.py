@@ -1,4 +1,5 @@
 import re
+import time
 
 from flask import request
 
@@ -61,3 +62,16 @@ def load_auth_routes(app):
 
         token = StudentService.generate_jwt_token(student)
         return {"token": token}, 200
+
+    @app.route("/api/auth/ticket", methods=["POST"])
+    def check_ticket():
+        data = request.json
+        ticket = data.get("ticket", None)
+        if ticket is None:
+            return {"error": "Missing ticket"}, 400
+
+        user = StudentService.get_ticket_email(ticket)
+        if user is None:
+            return {"error": "Invalid ticket"}, 400
+
+        return {"login": user}, 200

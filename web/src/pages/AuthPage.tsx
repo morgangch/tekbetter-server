@@ -1,13 +1,13 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
-    faArrowRight,
+    faArrowRight, faArrowsSpin,
     faCheckCircle,
     faSpinner,
-    faWarning
+    faWarning, faXmarkCircle
 } from "@fortawesome/free-solid-svg-icons";
 import GithubLogo from "../assets/githublogo.svg";
-import {getLoginStatus, loginWithPassword, registerWithTicket} from "../api/auth.api";
+import {getLoginStatus, isValidTicket, loginWithPassword, registerWithTicket} from "../api/auth.api";
 
 
 function AuthButton(props: { text: string, icon: any, onClick: () => Promise<any>, disabled?: boolean }) {
@@ -31,6 +31,8 @@ export default function AuthPage(): React.ReactElement {
     const [login_email, setLoginEmail] = React.useState<string>("");
     const [login_password, setLoginPassword] = React.useState<string>("");
 
+    const [is_ticket_valid, setIsTicketValid] = React.useState<boolean | null>(null);
+
     const params = new URLSearchParams(window.location.search);
 
     const register_ticket = params.get("ticket");
@@ -50,6 +52,15 @@ export default function AuthPage(): React.ReactElement {
         const reg = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
         return reg.test(register_password.password);
     }
+
+    useEffect(() => {
+        if (page === "create_password") {
+            isValidTicket(register_ticket!).then((res) => {
+                setIsTicketValid(res);
+            });
+        }
+    }, []);
+
 
     return (
         <div className={"flex flex-row gap-4 justify-center items-center h-full"}>
@@ -126,7 +137,8 @@ export default function AuthPage(): React.ReactElement {
                         <div className={"mb-2c flex flex-col items-center"}>
                             <FontAwesomeIcon icon={faCheckCircle} className={"text-green-500 text-2xl"}/>
                             <p className={"w-64 text-center text-gray-500"}>
-                                An email has been sent to your Epitech email address with a verification link. Please check your inbox.
+                                An email has been sent to your Epitech email address with a verification link. Please check
+                                your inbox.
                             </p>
                         </div>
                     </>
@@ -135,40 +147,68 @@ export default function AuthPage(): React.ReactElement {
 
                 {
                     page === "create_password" && <>
-                        <div className={"mb-2"}>
-                            <label className={"block"}>Create your password</label>
-                            <div className={"flex flex-row items-center mb-2 gap-1"}>
-                                <FontAwesomeIcon icon={faWarning} className={"text-red-300"}/>
-                                <p className={"text-gray-400 italic"}>Use a secured and personal password. You will use it
-                                    to login to TekBetter.</p>
-                            </div>
-                            <input type={"password"} placeholder={"TekBetter password"}
-                                   className={"w-full p-2 border border-gray-300 rounded"}
-                                   value={register_password.password}
-                                   onChange={(e) => setRegisterPassword({...register_password, password: e.target.value})}
-                            />
-                            <p className={"text-gray-400 text-sm italic"}>
-                                Passwords must be at least 8 characters long and contain at least one uppercase letter, one
-                                lowercase letter, and one number.
-                            </p>
-                            {
-                                !is_valid_password() && <p className={"text-red-500 text-sm"}>Bad password format</p>
-                            }
-                            <input type={"password"} placeholder={"Confirm"}
-                                   className={"w-full p-2 border border-gray-300 rounded"}
-                                   value={register_password.confirm}
-                                   onChange={(e) => setRegisterPassword({...register_password, confirm: e.target.value})}
-                            />
-                            {
-                                register_password.password !== register_password.confirm &&
-                                <p className={"text-red-500 text-sm"}>Passwords do not match</p>
-                            }
-                        </div>
+                        {
+                            is_ticket_valid ? (
+                                <div className={"mb-2"}>
+                                    <label className={"block"}>Create your password</label>
+                                    <div className={"flex flex-row items-center mb-2 gap-1"}>
+                                        <FontAwesomeIcon icon={faWarning} className={"text-red-300"}/>
+                                        <p className={"text-gray-400 italic"}>Use a secured and personal password. You will
+                                            use it
+                                            to login to TekBetter.</p>
+                                    </div>
+                                    <input type={"password"} placeholder={"TekBetter password"}
+                                           className={"w-full p-2 border border-gray-300 rounded"}
+                                           value={register_password.password}
+                                           onChange={(e) => setRegisterPassword({
+                                               ...register_password,
+                                               password: e.target.value
+                                           })}
+                                    />
+                                    <p className={"text-gray-400 text-sm italic"}>
+                                        Passwords must be at least 8 characters long and contain at least one uppercase
+                                        letter, one
+                                        lowercase letter, and one number.
+                                    </p>
+                                    {
+                                        !is_valid_password() &&
+                                        <p className={"text-red-500 text-sm"}>Bad password format</p>
+                                    }
+                                    <input type={"password"} placeholder={"Confirm"}
+                                           className={"w-full p-2 border border-gray-300 rounded"}
+                                           value={register_password.confirm}
+                                           onChange={(e) => setRegisterPassword({
+                                               ...register_password,
+                                               confirm: e.target.value
+                                           })}
+                                    />
+                                    {
+                                        register_password.password !== register_password.confirm &&
+                                        <p className={"text-red-500 text-sm"}>Passwords do not match</p>
+                                    }
+                                </div>) : is_ticket_valid === false ? (
+                                <div className={"mb-2c flex flex-col items-center"}>
+                                    <FontAwesomeIcon icon={faXmarkCircle} className={"text-red-500 text-2xl"}/>
+                                    <p className={"w-64 text-center text-gray-500"}>
+                                        This verification link is invalid or has expired. Please request a new one by refreshing the page.
+                                    </p>
+                                </div>
+                            ) : (
+                                <div className={"mb-2c flex flex-col items-center"}>
+                                    <FontAwesomeIcon icon={faArrowsSpin} className={"text-blue-500 text-2xl"} spin={true}/>
+                                    <p className={"w-64 text-center text-gray-500"}>
+                                        Verifying...
+                                    </p>
+                                </div>
+                            )
+                        }
 
-                        <AuthButton icon={faArrowRight} disabled={register_password.password !== register_password.confirm || !is_valid_password()} text={"Create my account"} onClick={async () => {
-                            const status = await registerWithTicket(register_ticket!, register_password.password);
-                            if (!status) {
-                                alert("Registration failed. Please try again.");
+                            <AuthButton icon={faArrowRight}
+                                        disabled={register_password.password !== register_password.confirm || !is_valid_password()}
+                                        text={"Create my account"} onClick={async () => {
+                                const status = await registerWithTicket(register_ticket!, register_password.password);
+                                if (!status) {
+                                    alert("Registration failed. Please try again.");
                                 return;
                             }
                         }}/>

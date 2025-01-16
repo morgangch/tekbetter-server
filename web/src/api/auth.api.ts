@@ -10,6 +10,13 @@ export async function getLoginStatus(email: string): Promise<"login" | "register
     return "login";
 }
 
+export async function isValidTicket(ticket: string): Promise<boolean> {
+    const res = await api.post(`/auth/ticket`, {
+        ticket: ticket
+    });
+    return res.status === 200;
+}
+
 export async function loginWithPassword(email: string, password: string): Promise<boolean> {
     const res = await api.post(`/auth/login`, {
         email: email,
