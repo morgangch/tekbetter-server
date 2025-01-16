@@ -1,6 +1,7 @@
 services:
   mongodb:
     image: mongo:6-jammy
+    container_name: mongodb-tekbetter
     ports:
       - '27017:27017'
     volumes:
@@ -11,9 +12,7 @@ services:
     container_name: redis-tekbetter
     ports:
       - "6379:6379"
-    environment:
-      - REDIS_PASSWORD=123456
-    command: [ "redis-server", "--requirepass", "123456" ]
+    command: [ "redis-server", "--requirepass", "${REDIS_PASSWORD}" ]
 
 volumes:
   dbdata6:
