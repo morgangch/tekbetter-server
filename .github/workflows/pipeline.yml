@@ -16,6 +16,10 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
 
     steps:
       - name: Checkout repository
@@ -34,6 +38,10 @@ jobs:
           python-version: '3.13'
           cache: 'pip'
           cache-dependency-path: 'requirements.txt'
+
+      - name: Install Cosign
+        if: github.event_name != 'pull_request'
+        uses: sigstore/cosign-installer@v3.1.1
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -86,6 +94,16 @@ jobs:
           build-args: |
             BUILDTIME=${{ steps.meta.outputs.labels['org.opencontainers.image.created'] }}
             VERSION=${{ steps.meta.outputs.labels['org.opencontainers.image.version'] }}
+
+      - name: Sign Docker images
+        if: github.event_name != 'pull_request'
+        run: |
+          echo "${{ secrets.COSIGN_PRIVATE_KEY }}" > cosign.key
+          echo "${{ steps.meta.outputs.tags }}" | tr '\n' '\0' | xargs -0 -I {} sh -c '
+            cosign sign --key cosign.key \
+              --password="${{ secrets.COSIGN_PASSWORD }}" \
+              {}'
+          rm cosign.key
 
       - name: Move cache
         run: |
