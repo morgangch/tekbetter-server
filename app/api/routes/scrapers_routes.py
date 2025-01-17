@@ -16,6 +16,8 @@ from app.services.planning_service import PlanningService
 from app.services.project_service import ProjectService
 from app.services.publicscraper_service import PublicScraperService
 from app.services.student_service import StudentService
+from app.tools.aes_tools import decrypt_token
+
 
 
 def load_scrapers_routes(app):
@@ -30,7 +32,7 @@ def load_scrapers_routes(app):
 
         for student in students:
             res.append({
-                "microsoft_session": student.microsoft_session,
+                "microsoft_session": decrypt_token(student.microsoft_session),
                 "tekbetter_token": student.scraper_token,
             })
 
