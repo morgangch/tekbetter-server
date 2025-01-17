@@ -88,13 +88,13 @@ jobs:
           platforms: linux/amd64,linux/arm64/v8
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
-            ${{ env.REGISTRY_IMAGE }}:${{ env.VERSION }}
+            ${{ env.REGISTRY_IMAGE }}:latest
           labels: |
             org.opencontainers.image.title=${{ github.event.repository.name }}
             org.opencontainers.image.description=${{ github.event.repository.description }}
             org.opencontainers.image.url=${{ github.event.repository.html_url }}
             org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.version=${{ env.VERSION }}
+            org.opencontainers.image.version=latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
           build-args: |
@@ -106,7 +106,7 @@ jobs:
         env:
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
         run: |
-          cosign sign --key env://COSIGN_KEY ${{ env.REGISTRY_IMAGE }}:${{ env.VERSION }}
+          cosign sign --key env://COSIGN_KEY ${{ env.REGISTRY_IMAGE }}:latest
           shell: bash
           env:
           COSIGN_KEY: ${{secrets.COSIGN_KEY}}
