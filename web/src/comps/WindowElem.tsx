@@ -1,7 +1,7 @@
 import React from "react";
 
-export default function WindowElem(props: { title: React.ReactNode, children: React.ReactNode }) {
-    return <div className={"flex flex-col h-full border-gray-100 border shadow rounded-t-2xl"}>
+export default function WindowElem(props: { title: React.ReactNode, className?: string,  children: React.ReactNode }) {
+    return <div className={"flex flex-col h-full border-gray-100 border shadow rounded-t-2xl " + (props.className ? props.className : "")}>
         <div className={"p-2 border-b border-gray-100 bg-gray-50 rounded-t-2xl"}>
             <h2 className={"font-bold text-gray-800"}>{props.title}</h2>
         </div>

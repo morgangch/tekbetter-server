@@ -7,10 +7,10 @@ export default function FullError(props: { title?: string, message?: string }): 
         <div className={"absolute top-0 left-0 w-full h-full bg-black z-1 opacity-60"}/>
 
         <div className={"absolute w-full h-full top-0 left-0 flex justify-center items-center"}>
-            <div className={"bg-white w-1/2 p-6 rounded shadow-lg flex flex-col items-center"}>
+            <div className={"bg-white p-6 rounded shadow-lg flex flex-col items-center"}>
                 <FontAwesomeIcon icon={faXmarkCircle} className={"text-red-500 text-6xl"}/>
 
-                <h1 className={"text-2xl font-bold mt-5"}>{props.title || "An error occured"}</h1>
+                <h1 className={"text-2xl font-bold mt-5 text-nowrap"}>{props.title || "An error occured"}</h1>
                 <p>{props.message || "An error occured, please try again later."}</p>
             </div>
         </div>
