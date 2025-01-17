@@ -97,12 +97,12 @@ jobs:
 
       - name: Sign Docker images
         if: github.event_name != 'pull_request'
+        env:
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
         run: |
           echo "${{ secrets.COSIGN_PRIVATE_KEY }}" > cosign.key
           echo "${{ steps.meta.outputs.tags }}" | tr '\n' '\0' | xargs -0 -I {} sh -c '
-            cosign sign --key cosign.key \
-              --password="${{ secrets.COSIGN_PASSWORD }}" \
-              {}'
+            COSIGN_PASSWORD="${{ secrets.COSIGN_PASSWORD }}" cosign sign --key cosign.key {}'
           rm cosign.key
 
       - name: Move cache
