@@ -13,7 +13,10 @@ import {vars} from "./api/api";
 
 function App() {
 
-    const [error, setError] = React.useState<{ title?: string, message?: string } | null>(null);
+    const [error, setError] = React.useState<{
+        title?: string,
+        message?: string
+    } | null>(null);
 
     useEffect(() => {
         vars.setErrorPopup = (title: string | null, message: string | null) => {
@@ -28,7 +31,8 @@ function App() {
         <BrowserRouter>
             <div className={"h-screen flex flex-col"}>
                 <TopBar/>
-                {error && <FullError title={error.title} message={error.message}/>}
+                {error &&
+                    <FullError title={error.title} message={error.message}/>}
                 <div className={"h-auto grow p-2"}>
                     <Routes>
                         <Route path="/" element={<HomePage/>}/>
@@ -36,12 +40,32 @@ function App() {
                         <Route path="/calendar" element={<CalendarPage/>}/>
                         <Route path="/sync" element={<SyncPage/>}/>
                         <Route path="/moulinettes" element={<MouliPage/>}/>
-                        <Route path="/moulinettes/:project_slug" element={<MouliPage />}/>
+                        <Route path="/moulinettes/:project_slug"
+                               element={<MouliPage/>}/>
                     </Routes>
                 </div>
                 <div>
                     <footer className={"bg-gray-800 text-white p-2"}>
-                        <p className={"text-center"}>Made with ❤️ by Eliot & Maël</p>
+                        <p className={"text-center"}>
+                            Made with ❤️ by
+                            <a
+                                href="https://github.com/EliotAmn"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={"text-blue-400 hover:underline ml-1"}
+                            >
+                                Eliot
+                            </a>
+                            &
+                            <a
+                                href="https://justmael.me"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={"text-blue-400 hover:underline ml-1"}
+                            >
+                                Maël
+                            </a>
+                        </p>
                     </footer>
                 </div>
 
