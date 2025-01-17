@@ -3,6 +3,7 @@ import time
 
 from flask import request
 
+from app.models.Student import Student
 from app.services.student_service import StudentService
 from app.tools.jwt_engine import generate_jwt
 from app.tools.password_tools import check_password
@@ -40,7 +41,7 @@ def load_auth_routes(app):
         if not check_password(password, student.password_hash):
             return {"error": "Invalid email or password"}, 400
 
-        token = generate_jwt(student)
+        token = StudentService.generate_jwt_token(student)
         return {"token": token}, 200
 
     @app.route("/api/auth/register", methods=["POST"])
