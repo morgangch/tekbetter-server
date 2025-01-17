@@ -101,16 +101,16 @@ jobs:
             BUILDTIME=${{ steps.meta.outputs.labels['org.opencontainers.image.created'] }}
             VERSION=${{ steps.meta.outputs.labels['org.opencontainers.image.version'] }}
 
-      - name: Sign Docker images
-        if: github.event_name != 'pull_request'
-        env:
-          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-        run: |
-          cosign sign --key env://COSIGN_KEY ${{ env.REGISTRY_IMAGE }}:${{ env.VERSION }}
-          shell: bash
-          env:
-          COSIGN_KEY: ${{secrets.COSIGN_KEY}}
-          COSIGN_PASSWORD: ${{secrets.COSIGN_PASSWORD}}
+#      - name: Sign Docker images
+#        if: github.event_name != 'pull_request'
+#        env:
+#          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+#        run: |
+#          cosign sign --key env://COSIGN_KEY ${{ env.REGISTRY_IMAGE }}:${{ env.VERSION }}
+#          shell: bash
+#          env:
+#          COSIGN_KEY: ${{secrets.COSIGN_KEY}}
+#          COSIGN_PASSWORD: ${{secrets.COSIGN_PASSWORD}}
 
       - name: Move cache
         run: |
