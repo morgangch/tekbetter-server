@@ -56,7 +56,7 @@ function App() {
                             >
                                 Eliot
                             </a>
-                             &
+                            {" & "}
                             <a
                                 href="https://justmael.me"
                                 target="_blank"
