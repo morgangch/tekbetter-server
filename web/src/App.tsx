@@ -49,19 +49,19 @@ function App() {
                         <p className={"text-center"}>
                             Made with ❤️ by
                             <a
-                                href="https://github.com/EliotAmn"
+                                href="https://example.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className={"text-blue-400 hover:underline ml-1"}
+                                className={"no-underline text-inherit ml-1"}
                             >
                                 Eliot
                             </a>
-                            &
+                             &
                             <a
                                 href="https://justmael.me"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className={"text-blue-400 hover:underline ml-1"}
+                                className={"no-underline text-inherit ml-1"}
                             >
                                 Maël
                             </a>
