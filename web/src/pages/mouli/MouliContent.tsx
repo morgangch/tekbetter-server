@@ -198,7 +198,7 @@ export default function MouliContent(props: { mouli: MouliResult | null }): Reac
                                             <p>Test date: {dateToString(mouli.test_date)}</p>
                                             <p>Test n°{mouli.test_id}</p>
                                             <ElemStatus
-                                                err_content={mouli.isManyMandatoryFailed() ? "Mandatory failed" : null}
+                                                err_content={mouli.delivery_error ? "Delivery Error" : mouli.isManyMandatoryFailed() ? "Mandatory failed" : null}
                                             />
                                         </div>
                                     </div>
