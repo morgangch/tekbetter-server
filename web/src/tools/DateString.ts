@@ -19,7 +19,9 @@ export function dateToElapsed(date: Date) {
     const months = Math.floor(weeks / 4);
     const years = Math.floor(months / 12);
 
-    if (minutes < 60) {
+    if (minutes < 1) {
+        return "Just now";
+    } if (minutes < 60) {
         return `${minutes} minutes ago`;
     } else if (hours < 24) {
         return `${hours} hours ago`;
