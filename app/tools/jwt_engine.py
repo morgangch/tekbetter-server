@@ -3,10 +3,11 @@ import os
 import jwt
 from app.models.Student import Student
 
-jwt_secret = os.getenv("JWT_SECRET")
 
 
 def generate_jwt(student: Student, expiration):
+    jwt_secret = os.getenv("JWT_SECRET")
+
     return jwt.encode({
         "student_id": student.id,
         "login": student.login,
@@ -17,6 +18,7 @@ def generate_jwt(student: Student, expiration):
 
 def decode_jwt(token):
     try:
+        jwt_secret = os.getenv("JWT_SECRET")
         return jwt.decode(token, jwt_secret, algorithms=["HS256"])
     except Exception:
         return None
