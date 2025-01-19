@@ -250,7 +250,7 @@ export default function MouliContent(props: { mouli: MouliResult | null }): Reac
                                                     icon={evolution >= 0  || mouli.total_score === 100 ? faArrowTrendUp : faArrowTrendDown}
                                                     color={evolution >= 0 || mouli.total_score === 100 ? "green" : "red"}/>
                                                 <p className={"font-bold " + ((evolution >= 0 || mouli.total_score === 100) ? "text-green-500" : "text-red-500")}>
-                                                    {evolution}%</p>
+                                                    {Math.round(evolution)}%</p>
                                             </div>
                                         </TopProp>
                                     </div>
