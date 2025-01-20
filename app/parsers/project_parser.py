@@ -17,4 +17,6 @@ def fill_project_from_intra(intra_json: dict, project: Project,
     project.fetch_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     project.code_module = intra_json["codemodule"]
     project.title_module = intra_json["title_module"]
+    project.scolar_year = intra_json["scolaryear"]
+    project.code_instance = intra_json["codeinstance"]
     return project

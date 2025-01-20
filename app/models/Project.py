@@ -13,6 +13,8 @@ class Project:
 
     code_module: str
     title_module: str
+    scolar_year: int
+    code_instance: str
 
     fetch_date: str
 
@@ -33,6 +35,9 @@ class Project:
         self.fetch_date = mongo_data["fetch_date"]
         self.slug = mongo_data.get("slug", None)
 
+        self.scolar_year = mongo_data.get("scolar_year", None)
+        self.code_instance = mongo_data.get("code_instance", None)
+
     def to_dict(self):
         return {
             "_id": self._id,
@@ -44,7 +49,9 @@ class Project:
             "title_module": self.title_module,
             "title": self.title,
             "fetch_date": self.fetch_date,
-            "slug": self.slug
+            "slug": self.slug,
+            "scolar_year": self.scolar_year,
+            "code_instance": self.code_instance
         }
 
     def to_api(self):

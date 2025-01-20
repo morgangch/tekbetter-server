@@ -37,7 +37,7 @@ def load_scrapers_routes(app):
             })
 
         return {
-            "student_interval": 60,
+            "student_interval": 120,
             "students": res
         }
 
@@ -54,7 +54,12 @@ def load_scrapers_routes(app):
         projects = ProjectService.get_student_projects(student.id)
         for project in projects:
             if project.slug is None:
-                asked_slugs.append(project.code_acti)
+                asked_slugs.append({
+                    "code_acti": project.code_acti,
+                    "year": project.scolar_year,
+                    "module": project.code_module,
+                    "instance": project.code_instance,
+                })
 
         start = datetime.now().replace(year=datetime.now().year - 5)
         end = datetime.now().replace(year=datetime.now().year + 1)

@@ -198,7 +198,7 @@ export default function MouliContent(props: { mouli: MouliResult | null }): Reac
                                             <p>Test date: {dateToString(mouli.test_date)}</p>
                                             <p>Test n°{mouli.test_id}</p>
                                             <ElemStatus
-                                                err_content={mouli.isManyMandatoryFailed() ? "Mandatory failed" : null}
+                                                err_content={mouli.delivery_error ? "Delivery Error" : mouli.isManyMandatoryFailed() ? "Mandatory failed" : null}
                                             />
                                         </div>
                                     </div>
@@ -250,7 +250,7 @@ export default function MouliContent(props: { mouli: MouliResult | null }): Reac
                                                     icon={evolution >= 0  || mouli.total_score === 100 ? faArrowTrendUp : faArrowTrendDown}
                                                     color={evolution >= 0 || mouli.total_score === 100 ? "green" : "red"}/>
                                                 <p className={"font-bold " + ((evolution >= 0 || mouli.total_score === 100) ? "text-green-500" : "text-red-500")}>
-                                                    {evolution}%</p>
+                                                    {Math.round(evolution)}%</p>
                                             </div>
                                         </TopProp>
                                     </div>

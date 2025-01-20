@@ -15,6 +15,10 @@ It's required for the next step, else you will automatically be redirected to th
 And go to "Application" tab, then "Cookies" in the left menu.
 Search the `ESTSAUTHPERSISTENT` cookie, and copy its value.
 
+> [!CAUTION]
+> This tutorial is writer for chromium-based browsers, the steps may be different for other browsers.
+> For example, in Firefox, you need to add a Cookie Editor extension to get the cookies.
+
 ![img.png](getcookies.png)
 
 

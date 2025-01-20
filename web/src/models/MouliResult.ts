@@ -87,6 +87,7 @@ export class MouliResult {
     build_trace: string | null;
     banned_content: string | null;
     skills: MouliSkill[];
+    delivery_error: boolean | null;
     evolution: {
         "dates": string[],
         "scores": number[],
@@ -104,6 +105,7 @@ export class MouliResult {
         this.skills = data.skills.map((skill: any) => new MouliSkill(skill));
         this.coding_style = new CodingStyleResult(data.coding_style_report);
         this.evolution = data.evolution;
+        this.delivery_error = data.delivery_error;
     }
 
     crashCount() {
