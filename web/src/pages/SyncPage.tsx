@@ -19,9 +19,9 @@ export default function SyncPage(): React.ReactElement {
         return <div>Loading...</div>
 
     return (
-        <div className="flex flex-row flex-wrap gap-4">
+        <div className="">
             <WindowElem
-                className={"sm:w-[48%] min-w-60 "}
+                className={""}
                 title={<h1 className="text-2xl">Use an internal scraper</h1>}
             >
                 <div className="p-3">
@@ -52,7 +52,7 @@ export default function SyncPage(): React.ReactElement {
                     </p>
 
                     <BasicBox className="p-4 flex flex-wrap items-start gap-2">
-                        <div className="flex-1 min-w-[calc(50%-0.5rem)] sm:min-w-[50%]">
+                        <div className="">
                             <h3 className="font-bold text-gray-700">Update your Microsoft cookie</h3>
                             <p>
                                 If you have changed your Microsoft password, or the token is
@@ -97,7 +97,7 @@ export default function SyncPage(): React.ReactElement {
             </WindowElem>
 
             <WindowElem
-                className="w-full sm:w-[48%] lg:w-1/2"
+                className=""
                 title={<h1 className="text-2xl">Host your own scraper</h1>}
             >
                 <div className="p-3 flex flex-col">
@@ -119,7 +119,7 @@ export default function SyncPage(): React.ReactElement {
                     </a>
 
                     <h3 className="font-bold text-gray-700">Your upload token: </h3>
-                    <code className="bg-gray-100 p-2 rounded">{token}</code>
+                    <code className="bg-gray-100 p-2 rounded overflow-x-auto">{token}</code>
 
                     <h3 className="font-bold text-gray-700">
                         This is the API URL you need to use in the scraper config:

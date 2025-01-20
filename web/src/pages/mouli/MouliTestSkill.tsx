@@ -20,7 +20,7 @@ function MouliTest(props: { test: MouliTestClass }) {
         <p className={"font-bold text-nowrap"}>{test.name}</p>
         {/*<p className={`font-bold ${test.is_passed ? "text-green-600" : "text-red-500"}`}>{test.is_crashed ? "CRASH" : test.is_passed ? "Passed" : "FAIL"}</p>*/}
         <div className={"flex flex-row items-center ml-2"}>
-            <p className={"text-gray-400"}>{test.comment}</p>
+            <p className={"text-gray-400 pl-1 border-opacity-0 hover:border-opacity-100 border-l-2 border-l-gray-300"}>{test.comment}</p>
         </div>
 
     </div>

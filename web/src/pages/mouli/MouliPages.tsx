@@ -11,6 +11,8 @@ import {EpiProject} from "../../models/Project";
 import {getMouliDetails, getProjectMouliHistory} from "../../api/mouli.api";
 import {useNavigate, useParams} from "react-router";
 import scoreColor from "../../tools/ScoreColor";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
 
 function Project(props: { project_slug: string, project_name: string, score: number, last_test: Date }) {
     const params = useParams();
@@ -19,7 +21,7 @@ function Project(props: { project_slug: string, project_name: string, score: num
     const navigate = useNavigate();
 
     return <div
-        className={"shadow text rounded-2xl flex flex-row items-center h-20 p-2 cursor-pointer transition " + (is_selected ? "bg-gray-200" : "hover:bg-gray-100")}
+        className={"shadow text rounded-2xl flex flex-row items-center p-2 cursor-pointer transition " + (is_selected ? "bg-gray-200" : "hover:bg-gray-100")}
         onClick={() => navigate(`/moulinettes/${props.project_slug}`)}>
         <div className={"w-12"}>
             <CircularProgressbar
@@ -64,7 +66,7 @@ export default function MouliPage(): React.ReactElement {
     const [current_mouli, setCurrentMouli] = React.useState<MouliResult | null>(null);
     const [project_slug, setProjectSlug] = React.useState<string | null>(null);
 
-    const [history, setHistory] = React.useState< {
+    const [history, setHistory] = React.useState<{
         test_id: number;
         score: number;
         date: Date;
@@ -83,11 +85,14 @@ export default function MouliPage(): React.ReactElement {
             setCurrentMouli(r);
         });
     }
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         getAllProjects().then((data) => {
             setProjects(data.sort((a, b) => a.start_date > b.start_date ? -1 : 1));
-        }).catch(() => {});
+        }).catch(() => {
+        });
     }, []);
 
     useEffect(() => {
@@ -104,57 +109,56 @@ export default function MouliPage(): React.ReactElement {
         }
     }, [c_project_slug, project_slug]);
 
-
-    //
-    // if (c_project_slug !== project_slug) {
-    //     console.log(c_project_slug, project_slug);
-    //     setHistory(null);
-    //     getProjectMouliHistory(c_project_slug!).then((data) => {
-    //         setHistory(data);
-    //         console.log("Setting project slug to", c_project_slug);
-    //         setProjectSlug(c_project_slug);
-    //         if (data.length > 0)
-    //             load_test(data[0].test_id);
-    //     });
-    //     return <BasicBox>Loading...</BasicBox>
-    // }
-
-
     if (projects === null)
         return <BasicBox>Loading...</BasicBox>
 
     const search_results = projects.filter((project) => project.project_name.toLowerCase().includes(search.toLowerCase()));
 
+
     return (
-        <div className={"flex flex-row gap-1 w-full h-full"}>
-            <div className={"p-2 overflow-y-scroll"}>
+        <div className={"flex flex-row"} style={{
+            height: "calc(100vh - 75px)",
+        }}>
+            <div className={"p-2 overflow-y-auto sm:max-w-96 " + (project_slug === null ? "" : "hidden xl:block")}>
                 <input type="text" placeholder="Search..."
                        className={"w-full p-2 rounded-md bg-gray-100 text-gray-800 mt-2"}
                        onChange={(e) => setSearch(e.target.value)}/>
                 <div
-                    className={"grid grid-cols-2 gap-2 p-2"}>
-
+                    className={"grid grid-cols-2 gap-2 mt-2"}>
                     {
                         search_results
                             .filter((project) => project.mouli !== null)
                             .map((project) => {
                                 return <Project
-                                        project_name={project.project_name}
-                                        project_slug={project.project_slug}
-                                        score={project.mouli?.score!}
-                                        last_test={new Date(project.mouli?.date!)}/>
+                                    project_name={project.project_name}
+                                    project_slug={project.project_slug}
+                                    score={project.mouli?.score!}
+                                    last_test={new Date(project.mouli?.date!)}/>
                             })
                     }
                 </div>
             </div>
-            <div className={"flex flex-row justify-start w-full gap-3"}>
-                <MouliHistory history={history || []} selected={current_mouli?.test_id || -1} onSelect={(new_id: number) => load_test(new_id)}/>
 
-                <div className={"flex-grow"}>
-                    <MouliContent mouli={current_mouli}/>
-                </div>
-            </div>
+            {
+                project_slug == null ? null :
+                    <div className={"flex-grow"}>
+                        <div className={"flex flex-row items-center gap-2 bg-gray-300 xl:hidden"}
+                             onClick={() => navigate("/moulinettes")}>
+                            <FontAwesomeIcon icon={faChevronLeft} className={"ml-2"}/>
+                            <h1 className={"text-2xl font-bold ml-2"}>{project_slug}</h1>
+                        </div>
+                        <div className={"flex flex-row justify-start w-full gap-3"}>
+                            <div className={"w-96 h-full p-2"}>
+                                <MouliHistory history={history || []} selected={current_mouli?.test_id || -1}
+                                              onSelect={(new_id: number) => load_test(new_id)}/>
+                            </div>
 
+                            <div className={"flex-grow overflow-y-auto flex-1"}>
+                                <MouliContent mouli={current_mouli}/>
+                            </div>
+                        </div>
+                    </div>
+            }
         </div>
     );
 }

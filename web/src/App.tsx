@@ -28,50 +28,46 @@ function App() {
     }, []);
 
     return (
-        <BrowserRouter>
-            <div className={"h-screen flex flex-col"}>
-                <TopBar/>
-                {error &&
-                    <FullError title={error.title} message={error.message}/>}
-                <div className={"h-auto grow p-2"}>
-                    <Routes>
-                        <Route path="/" element={<HomePage/>}/>
-                        <Route path="/auth" element={<AuthPage/>}/>
-                        <Route path="/calendar" element={<CalendarPage/>}/>
-                        <Route path="/sync" element={<SyncPage/>}/>
-                        <Route path="/moulinettes" element={<MouliPage/>}/>
-                        <Route path="/moulinettes/:project_slug"
-                               element={<MouliPage/>}/>
-                    </Routes>
-                </div>
-                <div>
-                    <footer className={"bg-gray-800 text-white p-2"}>
-                        <p className={"text-center"}>
-                            Made with ❤️ by
-                            <a
-                                href="https://example.com"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={"no-underline text-inherit ml-1"}
-                            >
-                                Eliot
-                            </a>
-                            {" & "}
-                            <a
-                                href="https://justmael.me"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={"no-underline text-inherit ml-1"}
-                            >
-                                Maël
-                            </a>
-                        </p>
-                    </footer>
-                </div>
-
+        <div className={"h-screen flex flex-col"}>
+            <TopBar/>
+            {error && <FullError title={error.title} message={error.message}/>}
+            <div className={"overflow-y-auto h-screen"}>
+                <Routes>
+                    <Route path="/" element={<HomePage/>}/>
+                    <Route path="/auth" element={<AuthPage/>}/>
+                    <Route path="/calendar" element={<CalendarPage/>}/>
+                    <Route path="/sync" element={<SyncPage/>}/>
+                    <Route path="/moulinettes" element={<MouliPage/>}/>
+                    <Route path="/moulinettes/:project_slug"
+                           element={<MouliPage/>}/>
+                </Routes>
+            </div>
+            <div>
+                <footer className={"bg-gray-800 text-white p-2"}>
+                    <p className={"text-center"}>
+                        Made with ❤️ by
+                        <a
+                            href="https://github.com/EliotAmn"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={"no-underline text-inherit ml-1"}
+                        >
+                            Eliot
+                        </a>
+                        {" & "}
+                        <a
+                            href="https://justmael.me"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={"no-underline text-inherit ml-1"}
+                        >
+                            Maël
+                        </a>
+                    </p>
+                </footer>
             </div>
 
-        </BrowserRouter>
+        </div>
     );
 }
 

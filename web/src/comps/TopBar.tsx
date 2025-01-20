@@ -15,7 +15,7 @@ function NavElement(props: { text: string, icon: any, link: string }) {
 
     return (
         <div
-            className={"flex items-center justify-center text-white cursor-pointer px-5 min-w-36 h-8 rounded-2xl hover:bg-blue-900 transition " + (is_active ? "bg-blue-900" : "")}
+            className={"flex items-center text-white cursor-pointer px-5 h-full hover:bg-blue-900 transition " + (is_active ? "bg-blue-900" : "")}
             onClick={() => navigate(props.link)}>
             <div className={"flex flex-row items-center justify-center"}>
                 <div>
@@ -78,36 +78,22 @@ function SyncStatus() {
 
 export default function TopBar(): React.ReactElement {
     return (
-        <div className={"bg-gray-700"}>
-            <div className={"flex h-14 items-center justify-between"}>
-                <div className={"flex flex-row items-center gap-3"}>
+        <div className={"flex h-10 flex-row items-center bg-gray-700 overflow-x-auto scroll-container"}>
 
-                    <div className={"flex flex-row items-center gap-4 ml-4"}>
-                        <div className={"h-full flex flex-row items-center"}>
-                            <img
-                                src={require("../assets/epitech.png")}
-                                alt={"Epitech"}
-                                className={"w-12"}
-                            />
-                            <p className={"text-white ml-1 font-bold"}>TekBetter</p>
-                        </div>
-                        <SyncStatus/>
-                    </div>
+            <div className={"flex flex-row items-center mr-8"}>
+                <img
+                    src={require("../assets/epitech.png")}
+                    alt={"Epitech"}
+                    className={"w-9 ml-1"}
+                />
+                <p className={"text-white ml-1 mr-2 font-bold"}>TekBetter</p>
+                <SyncStatus/>
+            </div>
 
-                    <div className={"flex gap-4 justify-start"}>
-                        <NavElement text={"Moulinettes"} link={"/moulinettes"} icon={faGraduationCap}/>
-                        <NavElement text={"Calendar"} link={"/calendar"} icon={faCalendarCheck}/>
-                        <NavElement text={"Synchronisation"} link={"/sync"} icon={faCheckCircle}/>
-                    </div>
-                </div>
-
-                {/*<div className={""}>*/}
-                {/*    <img*/}
-                {/*        src={require("../assets/epitech.png")}*/}
-                {/*        alt={"Epitech"}*/}
-                {/*        className={"w-12"}*/}
-                {/*    />*/}
-                {/*</div>*/}
+            <div className={"flex flex-row flex-grow justify-start ml-2 h-full gap-1"}>
+                <NavElement text={"Moulinettes"} link={"/moulinettes"} icon={faGraduationCap}/>
+                <NavElement text={"Calendar"} link={"/calendar"} icon={faCalendarCheck}/>
+                <NavElement text={"Synchronisation"} link={"/sync"} icon={faCheckCircle}/>
             </div>
         </div>
     );

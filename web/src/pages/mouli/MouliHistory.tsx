@@ -8,6 +8,7 @@ import {
 import {dateToElapsed, dateToString} from "../../tools/DateString";
 import WindowElem from "../../comps/WindowElem";
 import scoreColor from "../../tools/ScoreColor";
+import LoadingComp from "../../comps/LoadingComp";
 
 function MouliHistoryItem(props: {
     test_id: number,
@@ -23,7 +24,7 @@ function MouliHistoryItem(props: {
     }
 
     return <div
-        className={"flex text flex-row justify-between items-center p-2 rounded-md shadow hover:bg-gray-100 cursor-pointer transition mb-1"}
+        className={"flex relative text flex-row justify-between items-center p-2 rounded-md shadow hover:bg-gray-100 cursor-pointer transition mb-1 min-w-52"}
         onClick={props.onOpen}
     >
         <div style={{width: "30px"}}>
@@ -35,11 +36,12 @@ function MouliHistoryItem(props: {
                 })
             }/>
         </div>
-        <p className={"font-bold"}>{dateToString(mouli.test_date)}</p>
+        <p className={"font-bold text-sm"}>{dateToString(mouli.test_date)}</p>
 
-        <div className={"flex flex-row gap-2"}>
+        <div className={"absolute right-1 bottom-0 text-xs italic text-gray-300 flex flex-row gap-2"}>
             <p className={""}>{dateToElapsed(mouli.test_date)}</p>
         </div>
+
 
         <div className={"flex flex-row gap-2"}>
             {/*{mouli.isCrashed() && <FontAwesomeIcon icon={faSkull} title={"Crashed"} color={"red"}/>}*/}
@@ -64,10 +66,12 @@ export default function MouliHistory(props: {
     return (
         <WindowElem
             title={<h1 className={"font-bold text-center text"}>Tests history</h1>}
+            className={"h-full overflow-y-auto"}
         >
-            <div className="h-full relative min-w-96">
-                <div className="absolute p-1 inset-0 overflow-y-scroll">
-                    {props.history
+            <div className={"p-2 max-w-96"}>
+                <div className="p-1">
+
+                    {props.history.length === 0 ?  <LoadingComp/> : props.history
                         .sort((a, b) => b.date.getTime() - a.date.getTime())
                         .map((mouli, index) =>
                             [...Array(1)].map((_, idx) => (

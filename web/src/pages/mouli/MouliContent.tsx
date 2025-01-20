@@ -20,6 +20,7 @@ import WindowElem, {BasicBox} from "../../comps/WindowElem";
 import {dateToString} from "../../tools/DateString";
 import ReactApexChart from "react-apexcharts";
 import scoreColor from "../../tools/ScoreColor";
+import LoadingComp from "../../comps/LoadingComp";
 
 function CodingStyleRow(props: { name: string, value: number }) {
     //const color = props.name === "FATAL" ? "text-red-500" : props.name === "MAJOR" ? "text-yellow-500" : props.name === "MINOR" ? "text-yellow-300" : "text-green-500";
@@ -154,7 +155,7 @@ export default function MouliContent(props: { mouli: MouliResult | null }): Reac
     const mouli = props.mouli;
 
     if (!mouli) {
-        return <div></div>
+        return <LoadingComp/>
     }
 
     let scores = mouli.evolution.scores
@@ -162,7 +163,6 @@ export default function MouliContent(props: { mouli: MouliResult | null }): Reac
     let id_index = evo_ids.indexOf(mouli.test_id)
     scores = scores.slice(0, id_index)
 
-    console.log(scores)
     let evolution = mouli.total_score
 
     if (scores.length > 0)
@@ -210,7 +210,7 @@ export default function MouliContent(props: { mouli: MouliResult | null }): Reac
 
                             <div className={"flex flex-row gap-2"}>
                                 <BasicBox className="flex-grow w-full sm:w-[calc(50%-0.5rem)]">
-                                    <div className={"grid grid-cols-2 grid-rows-2"}>
+                                    <div className={"grid grid-cols-1 sm:grid-cols-2 grid-rows-2"}>
                                         <TopProp title={"Banned functions"} icon={faHammer}
                                                  isOk={mouli.banned_content === null}>
                                             <p className={"italic opacity-95 text-red-300 font-bold"}>{mouli.banned_content}</p>
