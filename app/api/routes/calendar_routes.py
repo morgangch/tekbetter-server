@@ -1,3 +1,5 @@
+from datetime import timezone, timedelta, datetime
+
 from flask import request, Response
 from ics import Calendar, Event
 from app.api.middlewares.student_auth_middleware import student_auth_middleware
@@ -42,19 +44,27 @@ def load_calendar_routes(app):
         if type in ["projects", "mixed"]:
             projects = ProjectService.get_student_projects(student.id)
 
+        # Define the French timezone (UTC+1)
+        french_timezone = timezone(timedelta(hours=1))
+
         for activity in activities:
             e = Event()
             e.name = activity.title
             e.location = activity.location
-            e.begin = activity.date_start
-            e.end = activity.date_end
+
+            bg_date = datetime.strptime(activity.date_start, "%Y-%m-%d %H:%M:%S")
+            end_date = datetime.strptime(activity.date_end, "%Y-%m-%d %H:%M:%S")
+            e.begin = bg_date.replace(tzinfo=french_timezone)
+            e.end = end_date.replace(tzinfo=french_timezone)
             cal.events.add(e)
 
         for project in projects:
             e = Event()
             e.name = project.title
-            e.begin = project.date_start
-            e.end = project.date_end
+            bg_date = datetime.strptime(project.date_start, "%Y-%m-%d %H:%M:%S")
+            end_date = datetime.strptime(project.date_end, "%Y-%m-%d %H:%M:%S")
+            e.begin = bg_date.replace(tzinfo=french_timezone)
+            e.end = end_date.replace(tzinfo=french_timezone)
             e.make_all_day()
             cal.events.add(e)
 
