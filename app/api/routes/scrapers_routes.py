@@ -37,7 +37,7 @@ def load_scrapers_routes(app):
             })
 
         return {
-            "student_interval": 60,
+            "student_interval": 120,
             "students": res
         }
 
