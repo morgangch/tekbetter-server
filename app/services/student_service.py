@@ -1,3 +1,4 @@
+import os
 import random
 import string
 from datetime import datetime, timedelta
@@ -81,6 +82,7 @@ class StudentService:
         ticket = ''.join(
             random.choices(string.ascii_letters + string.digits, k=64))
         ticket = "tbticket_" + ticket
+        ticket_url = f"{os.getenv("APP_URL")}/auth?ticket={ticket}"
         RedisService.set(f"register_ticket_{ticket}", email,
                          60 * 60)  # Expires in 1 hour
         subject: str = "Confirm Your TekBetter Account"
@@ -89,7 +91,7 @@ class StudentService:
 
         Thank you for creating a TekBetter account! To complete your registration, please confirm your email address by clicking the link below:
 
-        {ticket}
+        {ticket_url}
 
         Please note that this link will expire in 1 hour. If you did not request this account, you can safely ignore this email.
 

@@ -13,6 +13,7 @@ default_values = {
     "REDIS_PORT": "6379",
     "REDIS_DB": "0",
     "REDIS_PASSWORD": None,
+    "APP_URL": None,
     "JWT_SECRET": None,
     "AES_KEY": None,
     "SCRAPERS_CONFIG_FILE": "scrapers.json",
