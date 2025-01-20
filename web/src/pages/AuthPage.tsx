@@ -61,6 +61,36 @@ export default function AuthPage(): React.ReactElement {
         }
     }, []);
 
+    const btnCreateAccount = async () => {
+        const status = await registerWithTicket(register_ticket!, register_password.password);
+        if (!status) {
+            alert("Registration failed. Please try again.");
+            return;
+        }
+    }
+
+    const btnValidateEmail = async () => {
+        const email_regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        if (!email_regex.test(login_email) || !login_email.endsWith("@epitech.eu")) {
+            alert("Please enter a valid Epitech email address.");
+            return;
+        }
+        const status = await getLoginStatus(login_email);
+        if (status === "login")
+            setPage("password")
+        else if (status === "register")
+            setPage("register")
+    }
+
+    const btnLoginPassword = async () => {
+        const status = await loginWithPassword(login_email, login_password);
+        if (!status) {
+            alert("Login failed. Please check your email and password.");
+            return;
+        }
+    }
+
+
 
     return (
         <div className={"flex flex-row gap-4 justify-center items-center h-full"}>
@@ -89,46 +119,27 @@ export default function AuthPage(): React.ReactElement {
                                    className={"w-full p-2 border border-gray-300 rounded"}
                                    value={login_email}
                                    onChange={(e) => setLoginEmail(e.target.value)}
+                                      onKeyPress={async (e) => {if (e.key === "Enter") await btnValidateEmail()}}
                             />
                         </div>
 
-                        <AuthButton icon={faArrowRight} text={"Continue"} onClick={async () => {
-                            const email_regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-                            if (!email_regex.test(login_email) || !login_email.endsWith("@epitech.eu")) {
-                                alert("Please enter a valid Epitech email address.");
-                                return;
-                            }
-                            const status = await getLoginStatus(login_email);
-                            if (status === "login")
-                                setPage("password")
-                            else if (status === "register")
-                                setPage("register")
-                        }}/>
+                        <AuthButton icon={faArrowRight} text={"Continue"} onClick={btnValidateEmail}/>
                     </>
                 }
 
                 {
                     page === "password" && <>
                         <div className={"mb-2"}>
-                            <label className={"block"}>Enter your password</label>
-                            <div className={"flex flex-row items-center mb-2"}>
-                                <FontAwesomeIcon icon={faWarning} className={"text-red-300"}/>
-                                <p className={"text-gray-400 italic"}>This is not your Epitech account password</p>
-                            </div>
+                            <label className={"block"}>Enter your tekbetter password</label>
                             <input type={"password"} placeholder={"TekBetter password"}
                                    className={"w-full p-2 border border-gray-300 rounded"}
                                    value={login_password}
                                    onChange={(e) => setLoginPassword(e.target.value)}
+                                      onKeyPress={async (e) => {if (e.key === "Enter") await btnLoginPassword()}}
                             />
                         </div>
 
-                        <AuthButton icon={faArrowRight} text={"Login"} onClick={async () => {
-                            const status = await loginWithPassword(login_email, login_password);
-                            if (!status) {
-                                alert("Login failed. Please check your email and password.");
-                                return;
-                            }
-                        }}/>
+                        <AuthButton icon={faArrowRight} text={"Login"} onClick={btnLoginPassword}/>
                     </>
                 }
 
@@ -157,13 +168,14 @@ export default function AuthPage(): React.ReactElement {
                                             use it
                                             to login to TekBetter.</p>
                                     </div>
-                                    <input type={"password"} placeholder={"TekBetter password"}
+                                    <input required type={"password"} placeholder={"TekBetter password"}
                                            className={"w-full p-2 border border-gray-300 rounded"}
                                            value={register_password.password}
                                            onChange={(e) => setRegisterPassword({
                                                ...register_password,
                                                password: e.target.value
                                            })}
+                                           onKeyPress={async (e) => {if (e.key === "Enter") await btnCreateAccount()}}
                                     />
                                     <p className={"text-gray-400 text-sm italic"}>
                                         Passwords must be at least 8 characters long and contain at least one uppercase
@@ -174,13 +186,14 @@ export default function AuthPage(): React.ReactElement {
                                         !is_valid_password() &&
                                         <p className={"text-red-500 text-sm"}>Bad password format</p>
                                     }
-                                    <input type={"password"} placeholder={"Confirm"}
+                                    <input required type={"password"} placeholder={"Confirm"}
                                            className={"w-full p-2 border border-gray-300 rounded"}
                                            value={register_password.confirm}
                                            onChange={(e) => setRegisterPassword({
                                                ...register_password,
                                                confirm: e.target.value
                                            })}
+                                           onKeyPress={async (e) => {if (e.key === "Enter") await btnCreateAccount()}}
                                     />
                                     {
                                         register_password.password !== register_password.confirm &&
@@ -190,7 +203,8 @@ export default function AuthPage(): React.ReactElement {
                                 <div className={"mb-2c flex flex-col items-center"}>
                                     <FontAwesomeIcon icon={faXmarkCircle} className={"text-red-500 text-2xl"}/>
                                     <p className={"w-64 text-center text-gray-500"}>
-                                        This verification link is invalid or has expired. Please request a new one by refreshing the page.
+                                        This verification link is invalid or has expired. Please request a new one by
+                                        refreshing the page.
                                     </p>
                                 </div>
                             ) : (
@@ -202,16 +216,9 @@ export default function AuthPage(): React.ReactElement {
                                 </div>
                             )
                         }
-
-                            <AuthButton icon={faArrowRight}
-                                        disabled={register_password.password !== register_password.confirm || !is_valid_password()}
-                                        text={"Create my account"} onClick={async () => {
-                                const status = await registerWithTicket(register_ticket!, register_password.password);
-                                if (!status) {
-                                    alert("Registration failed. Please try again.");
-                                return;
-                            }
-                        }}/>
+                        <AuthButton icon={faArrowRight}
+                                    disabled={register_password.password !== register_password.confirm || !is_valid_password()}
+                                    text={"Create my account"} onClick={btnCreateAccount}/>
                     </>
                 }
 
