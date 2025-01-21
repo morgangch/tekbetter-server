@@ -22,7 +22,7 @@ function Project(props: {
     seen: boolean,
 }) {
     const params = useParams();
-    const [isNew, setIsNew] = React.useState(!props.seen);
+    const [isNewClicked, setIsNewClicked] = React.useState<boolean>(false);
 
     const is_selected = params.project_slug === props.project_slug;
     const navigate = useNavigate();
@@ -31,8 +31,8 @@ function Project(props: {
         className={"relative shadow text rounded-2xl flex flex-row items-center p-2 cursor-pointer transition " + (is_selected ? "bg-gray-200" : "hover:bg-gray-100")}
         onClick={() => {
             navigate(`/moulinettes/${props.project_slug}`);
-            if (isNew) {
-                setIsNew(false);
+            if (!props.seen && !isNewClicked) {
+                setIsNewClicked(true);
                 markProjectAsSeen(props.project_slug).catch(() => console.error("Failed to mark as read"));
             }
         }}>
@@ -55,7 +55,7 @@ function Project(props: {
             <p className={"text-xs"}>{dateToElapsed(props.last_test)}</p>
         </div>
 
-        {isNew &&
+        {!props.seen && !isNewClicked &&
             <p className={"absolute rounded-full top-0 right-0 text-xs text-white px-1 text-center bg-red-500 opacity-85"}>new
                 !</p>}
     </div>
