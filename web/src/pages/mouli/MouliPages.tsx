@@ -13,6 +13,7 @@ import {useNavigate, useParams} from "react-router";
 import scoreColor from "../../tools/ScoreColor";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
+import LoadingComp from "../../comps/LoadingComp";
 
 function Project(props: { project_slug: string, project_name: string, score: number, last_test: Date }) {
     const params = useParams();
@@ -110,7 +111,7 @@ export default function MouliPage(): React.ReactElement {
     }, [c_project_slug, project_slug]);
 
     if (projects === null)
-        return <BasicBox>Loading...</BasicBox>
+        return <LoadingComp/>
 
     const search_results = projects.filter((project) => project.project_name.toLowerCase().includes(search.toLowerCase()));
 

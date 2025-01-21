@@ -2,6 +2,7 @@ import React, {useEffect} from "react";
 import WindowElem, {BasicBox} from "../comps/WindowElem";
 import {getCalendarToken, regenCalendarToken} from "../api/calendar.api";
 import {deleteMicrosoftToken, putMicrosoftToken} from "../api/sync.api";
+import LoadingComp from "../comps/LoadingComp";
 
 export default function SyncPage(): React.ReactElement {
 
@@ -16,7 +17,7 @@ export default function SyncPage(): React.ReactElement {
     }, []);
 
     if (token === null)
-        return <div>Loading...</div>
+        return <LoadingComp/>
 
     return (
         <div className="">

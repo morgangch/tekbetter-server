@@ -1,6 +1,7 @@
 import React, {useEffect} from "react";
 import WindowElem, {BasicBox} from "../comps/WindowElem";
 import {getCalendarToken} from "../api/calendar.api";
+import LoadingComp from "../comps/LoadingComp";
 
 function CopyUrl(props: { cal_name: string, token: string }) {
 
@@ -37,7 +38,7 @@ export default function CalendarPage(): React.ReactElement {
     }, []);
 
     if (token === null)
-        return <div>Loading...</div>
+        return <LoadingComp/>
 
     return (
         <WindowElem title={<h1 className={"text-2xl"}>iCal export for your epitech calendar</h1>}>
