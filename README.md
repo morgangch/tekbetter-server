@@ -1,4 +1,4 @@
-# TekBetter - An better intranet for Epitech
+# TekBetter - A better intranet for Epitech
 
 ## Description
 
