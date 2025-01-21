@@ -119,7 +119,7 @@ export default function MouliPage(): React.ReactElement {
         <div className={"flex flex-row"} style={{
             height: "calc(100vh - 75px)",
         }}>
-            <div className={"p-2 overflow-y-auto sm:max-w-96 " + (project_slug === null ? "" : "hidden xl:block")}>
+            <div className={"p-2 flex-grow overflow-y-auto sm:max-w-96 min-w-96 " + (project_slug === null ? "" : "hidden xl:block")}>
                 <input type="text" placeholder="Search..."
                        className={"w-full p-2 rounded-md bg-gray-100 text-gray-800 mt-2"}
                        onChange={(e) => setSearch(e.target.value)}/>
@@ -141,7 +141,7 @@ export default function MouliPage(): React.ReactElement {
 
             {
                 project_slug == null ? null :
-                    <div className={"flex-grow overflow-y-auto"}>
+                    <div className={"overflow-y-auto flex-grow"}>
                         <div className={"flex flex-row items-center gap-2 bg-gray-300 xl:hidden"}
                              onClick={() => navigate("/moulinettes")}>
                             <FontAwesomeIcon icon={faChevronLeft} className={"ml-2"}/>
