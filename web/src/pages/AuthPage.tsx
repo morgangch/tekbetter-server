@@ -118,6 +118,7 @@ export default function AuthPage(): React.ReactElement {
                             <input type={"email"} placeholder={"grace.hopper@epitech.eu"}
                                    className={"w-full p-2 border border-gray-300 rounded"}
                                    value={login_email}
+                                   autoComplete="email"
                                    onChange={(e) => setLoginEmail(e.target.value)}
                                       onKeyPress={async (e) => {if (e.key === "Enter") await btnValidateEmail()}}
                             />
@@ -134,6 +135,7 @@ export default function AuthPage(): React.ReactElement {
                             <input type={"password"} placeholder={"TekBetter password"}
                                    className={"w-full p-2 border border-gray-300 rounded"}
                                    value={login_password}
+                                   autoComplete="current-password"
                                    onChange={(e) => setLoginPassword(e.target.value)}
                                       onKeyPress={async (e) => {if (e.key === "Enter") await btnLoginPassword()}}
                             />
@@ -171,6 +173,7 @@ export default function AuthPage(): React.ReactElement {
                                     <input required type={"password"} placeholder={"TekBetter password"}
                                            className={"w-full p-2 border border-gray-300 rounded"}
                                            value={register_password.password}
+                                           autoComplete="new-password"
                                            onChange={(e) => setRegisterPassword({
                                                ...register_password,
                                                password: e.target.value
@@ -189,6 +192,7 @@ export default function AuthPage(): React.ReactElement {
                                     <input required type={"password"} placeholder={"Confirm"}
                                            className={"w-full p-2 border border-gray-300 rounded"}
                                            value={register_password.confirm}
+                                           autoComplete="new-password"
                                            onChange={(e) => setRegisterPassword({
                                                ...register_password,
                                                confirm: e.target.value
