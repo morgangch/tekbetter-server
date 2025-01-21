@@ -33,7 +33,7 @@ def init_services():
         load_env()
     except Exception as e:
         log_error(str(e))
-        raise
+        exit(1)
 
     # Connect to MongoDB
     mongo_url = f"mongodb://{os.getenv('MONGO_HOST')}:{os.getenv('MONGO_PORT')}?directConnection=true"

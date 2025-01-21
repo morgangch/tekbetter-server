@@ -2,14 +2,12 @@ class PublicScraper:
     id: str
     label: str
     access_token: str
-    enabled: bool
 
     def to_dict(self):
         return {
             "id": self.id,
             "label": self.label,
-            "access_token": self.access_token,
-            "enabled": self.enabled
+            "access_token": self.access_token
         }
 
     def get_students(self):

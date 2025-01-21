@@ -27,7 +27,7 @@ class PublicScraperService:
         scrapers = Globals.public_scrapers
         config = get_config()
         for scraper in config:
-            for key in ["id", "label", "enabled", "access_token"]:
+            for key in ["id", "label", "access_token"]:
                 if not scraper.get(key):
                     raise Exception(
                         f"Missing key {key} in scraper configuration")
@@ -37,7 +37,6 @@ class PublicScraperService:
                 scraper["id"])
             ns.id = scraper["id"]
             ns.name = scraper["label"]
-            ns.enabled = scraper["enabled"]
             ns.access_token = scraper["access_token"]
 
             if is_new:

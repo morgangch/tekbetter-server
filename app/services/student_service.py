@@ -11,7 +11,7 @@ from app.services.mail_service import MailService
 from app.services.redis_service import RedisService
 from app.tools.jwt_engine import generate_jwt
 from app.tools.password_tools import hash_password
-from app.tools.teklogger import log_debug
+from app.tools.teklogger import log_debug, log_warning
 
 
 class StudentService:
@@ -85,23 +85,27 @@ class StudentService:
         ticket_url = f"{os.getenv("APP_URL")}/auth?ticket={ticket}"
         RedisService.set(f"register_ticket_{ticket}", email,
                          60 * 60)  # Expires in 1 hour
-        subject: str = "Confirm Your TekBetter Account"
-        body: str = f"""\
-        Hello,
-
-        Thank you for creating a TekBetter account! To complete your registration, please confirm your email address by clicking the link below:
-
-        {ticket_url}
-
-        Please note that this link will expire in 1 hour. If you did not request this account, you can safely ignore this email.
-
-        Thank you for choosing TekBetter. We’re excited to have you on board!
-
-        Best regards,  
-        The TekBetter Team
-        """
-        MailService.send_mail(email, subject, body)
         log_debug(f"Register ticket created for {email}: {ticket}")
+        if os.getenv("ENABLE_MAILER") == "true":
+            subject: str = "Confirm Your TekBetter Account"
+            body: str = f"""\
+            Hello,
+    
+            Thank you for creating a TekBetter account! To complete your registration, please confirm your email address by clicking the link below:
+    
+            {ticket_url}
+    
+            Please note that this link will expire in 1 hour. If you did not request this account, you can safely ignore this email.
+    
+            Thank you for choosing TekBetter. We’re excited to have you on board!
+    
+            Best regards,  
+            The TekBetter Team
+            """
+            MailService.send_mail(email, subject, body)
+        else:
+            log_warning(
+                "Mailer is disabled, not sending email. You can use the following link to confirm your account:" + ticket_url)
         return ticket
 
     @staticmethod

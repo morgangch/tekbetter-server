@@ -7,13 +7,9 @@ export class StaticVars {
         this.setErrorPopup = (title: string | null, message: string | null) => {
         }
     }
-
 }
 
-
-//const backend_url = process.env.REACT_APP_BACKEND_URL || "http://localhost:8080"
-const current_domain = window.location.hostname;
-const backend_url = process.env.NODE_ENV === 'development' ? "https://tekbetter.ovh" : `https://${current_domain}`
+const backend_url = process.env.REACT_APP_API_URL || window.location.origin
 
 const api = axios.create({
     baseURL: `${backend_url}/api/`,
