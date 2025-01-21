@@ -31,6 +31,10 @@ def load_scrapers_routes(app):
         res = []
 
         for student in students:
+            if not student.microsoft_session:
+                student.public_scraper_id = None
+                StudentService.update_student(student)
+                continue
             res.append({
                 "microsoft_session": decrypt_token(student.microsoft_session),
                 "tekbetter_token": student.scraper_token,
