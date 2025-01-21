@@ -147,8 +147,8 @@ export default function MouliPage(): React.ReactElement {
                             <FontAwesomeIcon icon={faChevronLeft} className={"ml-2"}/>
                             <h1 className={"text-2xl font-bold ml-2"}>{project_slug}</h1>
                         </div>
-                        <div className={"flex flex-row justify-start w-full gap-3"}>
-                            <div className={"w-96 h-full p-2"}>
+                        <div className={"flex flex-col xl:flex-row  justify-start w-full gap-3"}>
+                            <div className={"xl:w-96 w-full h-64 xl:h-full p-2"}>
                                 <MouliHistory history={history || []} selected={current_mouli?.test_id || -1}
                                               onSelect={(new_id: number) => load_test(new_id)}/>
                             </div>

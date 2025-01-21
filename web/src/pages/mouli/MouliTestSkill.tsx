@@ -8,11 +8,14 @@ import React from "react";
 import ProgressBar from "@ramonak/react-progress-bar";
 import {MouliSkill, MouliTestClass} from "../../models/MouliResult";
 import scoreColor from "../../tools/ScoreColor";
+import Button from "../../comps/Button";
 
-function MouliTest(props: { test: MouliTestClass }) {
+function MouliTest(props: { test: MouliTestClass, setPopupValue: (value: string) => void }): React.ReactElement {
     const test = props.test;
 
     const color = test.is_passed ? "text-green-500" : "text-red-400";
+
+
 
     return <div className={"flex flex-row items-center gap-1 p-2 rounded-md text-gray-500"}>
         <FontAwesomeIcon icon={test.is_crashed ? faSkull : test.is_passed ? faCheckCircle : faXmarkCircle}
@@ -20,13 +23,20 @@ function MouliTest(props: { test: MouliTestClass }) {
         <p className={"font-bold text-nowrap"}>{test.name}</p>
         {/*<p className={`font-bold ${test.is_passed ? "text-green-600" : "text-red-500"}`}>{test.is_crashed ? "CRASH" : test.is_passed ? "Passed" : "FAIL"}</p>*/}
         <div className={"flex flex-row items-center ml-2"}>
-            <p className={"text-gray-400 pl-1 border-opacity-0 hover:border-opacity-100 border-l-2 border-l-gray-300"}>{test.comment}</p>
+            <p className={"hidden xl:block text-gray-400 pl-1 border-opacity-0 hover:border-opacity-100 border-l-2 border-l-gray-300"}>
+                {test.comment}
+            </p>
+            <p className={"xl:hidden text-gray-400 pl-1 border-opacity-0 hover:border-opacity-100 border-l-2 border-l-gray-300"} onClick={() => {
+                props.setPopupValue(test.comment!)
+            }}>
+                - Show -
+            </p>
         </div>
 
     </div>
 }
 
-export default function MouliTestSkill(props: { skill: MouliSkill }): React.ReactElement {
+export default function MouliTestSkill(props: { skill: MouliSkill, setPopupValue: (value: string) => void }): React.ReactElement {
 
     const skill = props.skill
     const [isExpanded, setIsExpanded] = React.useState(true);
@@ -48,8 +58,8 @@ export default function MouliTestSkill(props: { skill: MouliSkill }): React.Reac
 
 
             <div className={"flex flex-row items-center gap-1"}>
-                <p className={"text-right font-bold"} style={{color:  scoreColor(skill.score).html}}>{skill.score}%</p>
-                <div className={"w-60"}>
+                <p className={"text-right font-bold"} style={{color: scoreColor(skill.score).html}}>{skill.score}%</p>
+                <div className={"w-24 xl:w-60"}>
                     <ProgressBar height={"10px"} baseBgColor={"rgba(0,0,0,0.09)"} completed={skill.score}
                                  bgColor={scoreColor(skill.score).html} isLabelVisible={false}/>
                 </div>
@@ -66,7 +76,7 @@ export default function MouliTestSkill(props: { skill: MouliSkill }): React.Reac
             </div>
 
             {
-                skill.tests === null ? null : skill.tests.map((test, index) => <MouliTest key={index} test={test}/>)
+                skill.tests === null ? null : skill.tests.map((test, index) => <MouliTest setPopupValue={props.setPopupValue} key={index} test={test}/>)
             }
         </div>
     </div>

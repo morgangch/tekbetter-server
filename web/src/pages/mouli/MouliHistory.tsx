@@ -68,7 +68,7 @@ export default function MouliHistory(props: {
             title={<h1 className={"font-bold text-center text"}>Tests history</h1>}
             className={"h-full overflow-y-auto"}
         >
-            <div className={"p-2 max-w-96"}>
+            <div className={"p-2 "}>
                 <div className="p-1">
 
                     {props.history.length === 0 ?  <LoadingComp/> : props.history
