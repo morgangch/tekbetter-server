@@ -1,8 +1,8 @@
 const Thresholds: { [key: number]: string } = {
-    80: "green",
-    75: "lightgreen",
-    65: "yellow",
-    50: "orange",
+    90: "green",
+    70: "lightgreen",
+    50: "yellow",
+    25: "orange",
     0: "red",
 }
 
