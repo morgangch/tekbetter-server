@@ -12,6 +12,7 @@ import {getSyncStatus} from "../api/global.api";
 function NavElement(props: { text: string, icon: any, link: string }) {
     const navigate = useNavigate();
     const is_active = window.location.pathname.startsWith(props.link);
+    const commit_hash = process.env.REACT_APP_COMMIT_HASH || "dev";
 
     return (
         <div
