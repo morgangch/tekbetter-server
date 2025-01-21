@@ -12,8 +12,7 @@ import {getSyncStatus} from "../api/global.api";
 function NavElement(props: { text: string, icon: any, link: string }) {
     const navigate = useNavigate();
     const is_active = window.location.pathname.startsWith(props.link);
-    const commit_hash = process.env.REACT_APP_COMMIT_HASH || "dev";
-    console.log(commit_hash)
+
     return (
         <div
             className={"flex items-center text-white cursor-pointer px-5 h-full hover:bg-blue-900 transition " + (is_active ? "bg-blue-900" : "")}

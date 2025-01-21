@@ -10,6 +10,7 @@ import SyncPage from "./pages/SyncPage";
 import AuthPage from "./pages/AuthPage";
 import FullError from "./comps/FullError";
 import {vars} from "./api/api";
+import Footer from "./comps/Footer";
 
 function App() {
 
@@ -43,28 +44,7 @@ function App() {
                 </Routes>
             </div>
             <div>
-                <footer className={"bg-gray-800 text-white p-2"}>
-                    <p className={"text-center"}>
-                        Made with ❤️ by
-                        <a
-                            href="https://github.com/EliotAmn"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={"no-underline text-inherit ml-1"}
-                        >
-                            Eliot
-                        </a>
-                        {" & "}
-                        <a
-                            href="https://justmael.me"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={"no-underline text-inherit ml-1"}
-                        >
-                            Maël
-                        </a>
-                    </p>
-                </footer>
+                <Footer/>
             </div>
 
         </div>
