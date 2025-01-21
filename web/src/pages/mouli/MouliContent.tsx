@@ -7,9 +7,9 @@ import {
     faCircleInfo,
     faClose,
     faHammer,
-    faLineChart,
+    faLineChart, faList,
     faMagnifyingGlass,
-    faSkull,
+    faSkull, faTerminal,
     faWarning
 } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
@@ -34,9 +34,9 @@ function CodingStyleRow(props: { name: string, value: number }) {
 function TraceWindow(props: { content: string, close: () => void }) {
     return (
         <div>
-            <div className={"absolute top-0 left-0 w-full h-full bg-black z-1 opacity-60"}/>
+            <div className={"absolute top-0 left-0 w-full h-full bg-black z-40 opacity-60"}/>
 
-            <div className={"absolute w-full h-full top-0 left-0 flex justify-center items-center"}>
+            <div className={"absolute w-full h-full top-0 left-0 flex z-50 justify-center items-center"}>
                 <div className={"bg-gray-900 m-2 rounded-md p-2"}>
                     <h1 className={"font-bold text-center text-xl mb-2"}>Details</h1>
                     <div className={"bg-gray-800 p-2 rounded-md"}>
@@ -204,6 +204,13 @@ export default function MouliContent(props: { mouli: MouliResult | null }): Reac
                                             <ElemStatus
                                                 err_content={mouli.delivery_error ? "Delivery Error" : mouli.isManyMandatoryFailed() ? "Mandatory failed" : null}
                                             />
+                                            {mouli.build_trace && (
+                                                <Button
+                                                    icon={faTerminal}
+                                                    text={"Build trace"}
+                                                    onClick={() => setPopupValue(mouli.build_trace)}
+                                                />
+                                            )}
                                         </div>
                                     </div>
                                 </BasicBox>
@@ -261,18 +268,6 @@ export default function MouliContent(props: { mouli: MouliResult | null }): Reac
                                     </div>
                                 </BasicBox>
                             </div>
-
-                            {/*<div className={"flex flex-col gap-2 mt-3"}>*/}
-                            {/*    {mouli.build_trace && (*/}
-                            {/*        <Button*/}
-                            {/*            icon={faList}*/}
-                            {/*            text={"Build trace"}*/}
-                            {/*            onClick={() => setPopupValue(mouli.build_trace)}*/}
-                            {/*        />*/}
-                            {/*    )}*/}
-                            {/*</div>*/}
-                            {/*</BasicBox>*/}
-
                         </div>
 
                     </div>
