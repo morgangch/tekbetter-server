@@ -1,5 +1,5 @@
 import './App.css';
-import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import React, {useEffect} from "react";
 import HomePage from "./pages/HomePage";
 import MouliPage from "./pages/mouli/MouliPages";

@@ -37,11 +37,13 @@ function TraceWindow(props: { content: string, close: () => void }) {
             <div className={"absolute top-0 left-0 w-full h-full bg-black z-1 opacity-60"}/>
 
             <div className={"absolute w-full h-full top-0 left-0 flex justify-center items-center"}>
-                <div className={"bg-gray-900 w-1/2 rounded-md p-2"}>
-                    <h1 className={"font-bold text-center text-xl mb-2"}>Trace details</h1>
+                <div className={"bg-gray-900 m-2 rounded-md p-2"}>
+                    <h1 className={"font-bold text-center text-xl mb-2"}>Details</h1>
                     <div className={"bg-gray-800 p-2 rounded-md"}>
-                        <code>
-                            {props.content}
+                        <code className={"text-xs"}>
+                            {props.content.split("\n").map((line, index) => (
+                                <div key={index}>{line}</div>
+                            ))}
                         </code>
                     </div>
                     <div className={"flex flex-row justify-center mt-5"}>
@@ -177,7 +179,9 @@ export default function MouliContent(props: { mouli: MouliResult | null }): Reac
                     <div className={"flex flex-row justify-between w-full"}>
                         <div className={"flex flex-col gap-2 p-2 rounded-md w-full"}>
                             {/*<BasicBox className="flex flex-row w-full sm:w-[calc(40%-0.5rem)]">*/}
-                            <div className={"flex flex-row justify-between gap-2 w-full"}>
+
+                            <div className={"flex flex-col xl:flex-row justify-between gap-2 w-full"}>
+
                                 <BasicBox className={"min-w-72 flex flex-row items-center"}>
                                     <div className={"flex flex-row items-center gap-2 h-min"}>
                                         <div className={"w-20 z-10"}>
@@ -203,6 +207,7 @@ export default function MouliContent(props: { mouli: MouliResult | null }): Reac
                                         </div>
                                     </div>
                                 </BasicBox>
+
                                 <BasicBox className={"flex flex-row flex-grow justify-center"}>
                                     <MouliChart scores={mouli.evolution.scores} dates={mouli.evolution.dates}/>
                                 </BasicBox>
@@ -275,7 +280,7 @@ export default function MouliContent(props: { mouli: MouliResult | null }): Reac
                 <div className={"texts"}>
                     <h1>Tests</h1>
                     <div className={"space-y-2"}>
-                        {mouli.skills.map(skill => <MouliTestSkill skill={skill}/>)}
+                        {mouli.skills.map(skill => <MouliTestSkill skill={skill} setPopupValue={setPopupValue}/>)}
                     </div>
                 </div>
 
