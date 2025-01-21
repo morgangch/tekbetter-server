@@ -21,6 +21,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Get short commit hash
+        id: get_commit_hash
+        run: echo "commit_hash=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -93,6 +97,7 @@ jobs:
           build-args: |
             BUILDTIME=${{ steps.meta.outputs.labels['org.opencontainers.image.created'] }}
             VERSION=${{ steps.meta.outputs.labels['org.opencontainers.image.version'] || 'latest' }}
+            REACT_APP_COMMIT_HASH=${{ env.commit_hash }}
             
 
       - name: Sign image with a key

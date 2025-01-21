@@ -1,5 +1,9 @@
 # Stage 1: Build React application
 FROM node:20-slim AS react-builder
+
+ARG REACT_APP_COMMIT_HASH
+ENV REACT_APP_COMMIT_HASH=${REACT_APP_COMMIT_HASH}
+
 WORKDIR /app/web
 COPY web/package.json web/package-lock.json ./
 RUN npm ci
