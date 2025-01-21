@@ -2,11 +2,10 @@ import React, {useEffect} from "react";
 import 'react-circular-progressbar/dist/styles.css';
 import MouliContent from "./MouliContent";
 import MouliHistory from "./MouliHistory";
-import {BasicBox} from "../../comps/WindowElem";
 import {buildStyles, CircularProgressbar} from "react-circular-progressbar";
 import {dateToElapsed} from "../../tools/DateString";
 import {MouliResult} from "../../models/MouliResult";
-import getAllProjects from "../../api/project.api";
+import getAllProjects, {markProjectAsSeen} from "../../api/project.api";
 import {EpiProject} from "../../models/Project";
 import {getMouliDetails, getProjectMouliHistory} from "../../api/mouli.api";
 import {useNavigate, useParams} from "react-router";
@@ -15,15 +14,28 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
 import LoadingComp from "../../comps/LoadingComp";
 
-function Project(props: { project_slug: string, project_name: string, score: number, last_test: Date }) {
+function Project(props: {
+    project_slug: string,
+    project_name: string,
+    score: number,
+    last_test: Date,
+    seen: boolean,
+}) {
     const params = useParams();
+    const [isNew, setIsNew] = React.useState(!props.seen);
 
     const is_selected = params.project_slug === props.project_slug;
     const navigate = useNavigate();
 
     return <div
-        className={"shadow text rounded-2xl flex flex-row items-center p-2 cursor-pointer transition " + (is_selected ? "bg-gray-200" : "hover:bg-gray-100")}
-        onClick={() => navigate(`/moulinettes/${props.project_slug}`)}>
+        className={"relative shadow text rounded-2xl flex flex-row items-center p-2 cursor-pointer transition " + (is_selected ? "bg-gray-200" : "hover:bg-gray-100")}
+        onClick={() => {
+            navigate(`/moulinettes/${props.project_slug}`);
+            if (isNew) {
+                setIsNew(false);
+                markProjectAsSeen(props.project_slug).catch(() => console.error("Failed to mark as read"));
+            }
+        }}>
         <div className={"w-12"}>
             <CircularProgressbar
                 value={props.score}
@@ -42,6 +54,10 @@ function Project(props: { project_slug: string, project_name: string, score: num
             <h3 className={"font-bold text-sm"}>{props.project_name}</h3>
             <p className={"text-xs"}>{dateToElapsed(props.last_test)}</p>
         </div>
+
+        {isNew &&
+            <p className={"absolute rounded-full top-0 right-0 text-xs text-white px-1 text-center bg-red-500 opacity-85"}>new
+                !</p>}
     </div>
 
     // return <div
@@ -88,12 +104,18 @@ export default function MouliPage(): React.ReactElement {
     }
     const navigate = useNavigate();
 
-
-    useEffect(() => {
+    const reload_projects = () => {
         getAllProjects().then((data) => {
             setProjects(data.sort((a, b) => a.start_date > b.start_date ? -1 : 1));
-        }).catch(() => {
+        }).catch((e) => {
+            console.error("Failed to load projects", e);
         });
+    }
+
+    useEffect(() => {
+        reload_projects();
+        const interval = setInterval(reload_projects, 1000 * 40);
+        return () => clearInterval(interval);
     }, []);
 
     useEffect(() => {
@@ -120,7 +142,8 @@ export default function MouliPage(): React.ReactElement {
         <div className={"flex flex-row"} style={{
             height: "calc(100vh - 75px)",
         }}>
-            <div className={"p-2 flex-grow overflow-y-auto sm:max-w-96 min-w-96 " + (project_slug === null ? "" : "hidden xl:block")}>
+            <div
+                className={"p-2 flex-grow overflow-y-auto sm:max-w-96 min-w-96 " + (project_slug === null ? "" : "hidden xl:block")}>
                 <input type="text" placeholder="Search..."
                        className={"w-full p-2 rounded-md bg-gray-100 text-gray-800 mt-2"}
                        onChange={(e) => setSearch(e.target.value)}/>
@@ -134,6 +157,7 @@ export default function MouliPage(): React.ReactElement {
                                     project_name={project.project_name}
                                     project_slug={project.project_slug}
                                     score={project.mouli?.score!}
+                                    seen={project.mouli_seen}
                                     last_test={new Date(project.mouli?.date!)}/>
                             })
                     }

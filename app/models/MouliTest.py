@@ -129,7 +129,7 @@ class MouliResult:
     module_code: str
     test_date: str
     commit_hash: str | None
-    student_id: int
+    student_id: str
 
     build_trace: str | None
     banned_content: str | None

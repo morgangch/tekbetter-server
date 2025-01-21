@@ -11,6 +11,14 @@ class ProjectService:
                 Globals.database["projects"].find({"student_id": student_id})]
 
     @staticmethod
+    def get_project_by_slug(student_id: str, slug: str) -> Project | None:
+        p = Globals.database["projects"].find_one(
+            {"slug": slug, "student_id": student_id})
+        if p:
+            return Project(p)
+        return None
+
+    @staticmethod
     def get_latest_fetchdate(student_id: str) -> str:
         p = Globals.database["projects"].find_one({"student_id": student_id},
                                                   sort=[("fetch_date", -1)])
@@ -22,12 +30,18 @@ class ProjectService:
         return p["date_start"] if p else None
 
     @staticmethod
-    def get_project_by_code_acti(acti_code: str, student_id: int):
+    def get_project_by_code_acti(acti_code: str, student_id: str):
         p = Globals.database["projects"].find_one(
             {"code_acti": acti_code, "student_id": student_id})
         if p:
             return Project(p)
         return None
+
+    @staticmethod
+    def make_all_project_as_seen(student_id: str):
+        Globals.database["projects"].update_many({"student_id": student_id},
+                                                {"$set": {"mouli_seen": True}})
+        return True
 
     @staticmethod
     def upload_project(project: Project):
@@ -48,7 +62,7 @@ class ProjectService:
         Globals.database["projects"].delete_one({"_id": project.mongo_id})
 
     @staticmethod
-    def get_modules(student_id: int) -> {str: {str: str}}:
+    def get_modules(student_id: str) -> {str: {str: str}}:
         projects = ProjectService.get_student_projects(student_id)
         modules = {}
         for project in projects:
