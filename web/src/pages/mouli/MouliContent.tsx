@@ -7,7 +7,7 @@ import {
     faCircleInfo,
     faClose,
     faHammer,
-    faLineChart, faList,
+    faLineChart,
     faMagnifyingGlass,
     faSkull, faTerminal,
     faWarning

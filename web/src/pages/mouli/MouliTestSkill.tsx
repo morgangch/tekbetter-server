@@ -8,7 +8,6 @@ import React from "react";
 import ProgressBar from "@ramonak/react-progress-bar";
 import {MouliSkill, MouliTestClass} from "../../models/MouliResult";
 import scoreColor from "../../tools/ScoreColor";
-import Button from "../../comps/Button";
 
 function MouliTest(props: { test: MouliTestClass, setPopupValue: (value: string) => void }): React.ReactElement {
     const test = props.test;
