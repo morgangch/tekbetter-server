@@ -59,6 +59,11 @@ class MouliService:
             Globals.database["moulis"].update_one({"_id": current.mongo_id},
                                                   {"$set": new_data})
         else:
+            from app.services.project_service import ProjectService
             mouli._id = uuid.uuid4().hex
             Globals.database["moulis"].insert_one(mouli.to_dict())
+            proj = ProjectService.get_project_by_slug(mouli.student_id, mouli.project_code)
+            if proj:
+                proj.mouli_seen = False
+                ProjectService.upload_project(proj)
         return mouli

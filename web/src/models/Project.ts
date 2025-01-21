@@ -6,6 +6,7 @@ export class EpiProject {
     module_name: string;
     start_date: Date;
     end_date: Date;
+    mouli_seen: boolean;
     mouli: {
         test_id: number;
         score: number;
@@ -20,11 +21,12 @@ export class EpiProject {
         this.module_name = data.title_module;
         this.start_date = data.date_start;
         this.end_date = data.date_end;
+        this.mouli_seen = data.mouli_seen;
         if (data.mouli) {
             this.mouli = {
                 test_id: data.mouli.test_id,
                 score: data.mouli.score,
-                date: data.mouli.date
+                date: data.mouli.date,
             }
         } else {
             this.mouli = null;
