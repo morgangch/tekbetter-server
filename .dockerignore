@@ -6,6 +6,11 @@
 *.iml
 out
 gen
+
+web/node_modules
+web/.idea
+web/.git
+
 ### Python template
 # Byte-compiled / optimized / DLL files
 __pycache__/
