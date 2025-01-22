@@ -30,7 +30,7 @@ their daily life.
 | AES_KEY              | The key used to encrypt sensible data in database. 64 bytes long required. |               |
 | SCRAPERS_CONFIG_FILE | The path to the scrapers configuration file. Optional                      | scrapers.json |
 | APP_URL              | The app url used to send register links by email.                          |               |
-| ENABLE_MAILER        | Enable the mailer service.                                                 | true          |
+| ENABLE_MAILER        | Enable the mailer service.                                                 | false         |
 
 ### Frontend (`/web/.env`)
 
