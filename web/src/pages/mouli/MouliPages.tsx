@@ -119,15 +119,15 @@ export default function MouliPage(): React.ReactElement {
     }, []);
 
     useEffect(() => {
+
         if (c_project_slug !== project_slug) {
-            console.log(c_project_slug, project_slug);
             setHistory(null);
             getProjectMouliHistory(c_project_slug!).then((data) => {
                 setHistory(data);
-                console.log("Setting project slug to", c_project_slug);
+                const sorted_data = data.sort((a, b) => a.date > b.date ? -1 : 1);
                 setProjectSlug(c_project_slug);
                 if (data.length > 0)
-                    load_test(data[0].test_id);
+                    load_test(sorted_data[0].test_id);
             });
         }
     }, [c_project_slug, project_slug]);
