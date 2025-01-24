@@ -155,6 +155,7 @@ class MouliResult:
         self.commit_hash = mongodata["commit_hash"]
         self.build_trace = mongodata["build_trace"]
         self.make_trace = mongodata["make_trace"] if "make_trace" in mongodata else None
+        self.is_build_failed = mongodata["build_failed"] if "build_failed" in mongodata else False
         self.delivery_error = mongodata["delivery_error"]
         self.banned_content = mongodata["banned_content"]
         self.skills = [MouliSkill(skill) for skill in mongodata["skills"]]
@@ -171,6 +172,18 @@ class MouliResult:
             return 0
         return round(passed_tests / total_tests * 100, 2)
 
+    def is_warning(self):
+        if self.is_build_failed:
+            return True
+        if self.delivery_error:
+            return True
+        for skill in self.skills:
+            if skill.mandatoryfail_count > 0:
+                return True
+            if skill.crash_count > 0:
+                return True
+        return False
+
     def to_dict(self) -> dict:
         return {
             "_id": self._id,
@@ -181,6 +194,7 @@ class MouliResult:
             "student_id": self.student_id,
             "score": self.score,
             "delivery_error": self.delivery_error,
+            "build_failed": self.is_build_failed,
             "test_date": self.test_date,
             "commit_hash": self.commit_hash,
             "build_trace": self.build_trace,
@@ -204,6 +218,7 @@ class MouliResult:
             "student_id": self.student_id,
             "score": self.score,
             "delivery_error": self.delivery_error,
+            "is_build_failed": self.is_build_failed,
             "test_date": self.test_date,
             "commit_hash": self.commit_hash,
             "evolution": {

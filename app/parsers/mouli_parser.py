@@ -94,6 +94,7 @@ def build_mouli_from_myepitech(test_id: int, mouli_json: dict,
 
     mouli.build_trace = test_trace
     mouli.make_trace = make_trace
+    mouli.is_build_failed = make_trace is not None
 
     mouli.banned_content = [i['comment'] for i in mouli_json["externalItems"]
                             if i['type'] == "banned"]

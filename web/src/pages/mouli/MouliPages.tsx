@@ -11,7 +11,7 @@ import {getMouliDetails, getProjectMouliHistory} from "../../api/mouli.api";
 import {useNavigate, useParams} from "react-router";
 import scoreColor from "../../tools/ScoreColor";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
+import {faChevronLeft, faSkull, faWarning} from "@fortawesome/free-solid-svg-icons";
 import LoadingComp from "../../comps/LoadingComp";
 
 function Project(props: {
@@ -20,6 +20,7 @@ function Project(props: {
     score: number,
     last_test: Date,
     seen: boolean,
+    is_warning?: boolean
 }) {
     const params = useParams();
     const [isNewClicked, setIsNewClicked] = React.useState<boolean>(false);
@@ -36,6 +37,12 @@ function Project(props: {
                 markProjectAsSeen(props.project_slug).catch(() => console.error("Failed to mark as read"));
             }
         }}>
+
+
+        {props.is_warning && <div className={"absolute right-2 bottom-0"}>
+            <FontAwesomeIcon icon={faWarning} className={"text-red-500 text-xs"}/>
+        </div>}
+
         <div className={"w-12"}>
             <CircularProgressbar
                 value={props.score}
@@ -158,6 +165,8 @@ export default function MouliPage(): React.ReactElement {
                                     project_slug={project.project_slug}
                                     score={project.mouli?.score!}
                                     seen={project.mouli_seen}
+                                    key={project.project_slug}
+                                    is_warning={project.mouli?.is_warning}
                                     last_test={new Date(project.mouli?.date!)}/>
                             })
                     }
