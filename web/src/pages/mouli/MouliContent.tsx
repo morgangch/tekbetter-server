@@ -210,7 +210,7 @@ export default function MouliContent(props: { mouli: MouliResult | null }): Reac
                                             <p>Test date: {dateToString(mouli.test_date)}</p>
                                             <p>Test n°{mouli.test_id}</p>
                                             <ElemStatus
-                                                err_content={mouli.delivery_error ? "Delivery Error" : mouli.isManyMandatoryFailed() ? "Mandatory failed" : null}
+                                                err_content={mouli.delivery_error ? "Delivery Error" : mouli.isManyMandatoryFailed() ? "Mandatory failed" : mouli.is_build_failed ? "Build failed" : null}
                                             />
                                             <div className={"flex flex-row gap-2 justify-start mt-1"}>
 
