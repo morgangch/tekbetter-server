@@ -9,7 +9,7 @@ import {
     faHammer,
     faLineChart,
     faMagnifyingGlass,
-    faSkull, faTerminal,
+    faSkull, faTerminal, faUserCheck,
     faWarning
 } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
@@ -204,13 +204,23 @@ export default function MouliContent(props: { mouli: MouliResult | null }): Reac
                                             <ElemStatus
                                                 err_content={mouli.delivery_error ? "Delivery Error" : mouli.isManyMandatoryFailed() ? "Mandatory failed" : null}
                                             />
-                                            {mouli.build_trace && (
+                                            <div className={"flex flex-row gap-2 justify-start mt-1"}>
+
+                                                {mouli.build_trace && (
+                                                    <Button
+                                                        icon={faTerminal}
+                                                        text={"Console"}
+                                                        onClick={() => setPopupValue(mouli.build_trace)}
+                                                    />
+                                                )}{mouli.make_trace && (
                                                 <Button
-                                                    icon={faTerminal}
-                                                    text={"Build trace"}
-                                                    onClick={() => setPopupValue(mouli.build_trace)}
+                                                    icon={faHammer}
+                                                    text={"Build"}
+                                                    onClick={() => setPopupValue(mouli.make_trace)}
                                                 />
                                             )}
+                                            </div>
+
                                         </div>
                                     </div>
                                 </BasicBox>
@@ -259,12 +269,55 @@ export default function MouliContent(props: { mouli: MouliResult | null }): Reac
                                         <TopProp title={"Evolution"} icon={faLineChart}>
                                             <div className={"px-1 flex flex-row items-center gap-2"}>
                                                 <FontAwesomeIcon
-                                                    icon={evolution >= 0  || mouli.total_score === 100 ? faArrowTrendUp : faArrowTrendDown}
+                                                    icon={evolution >= 0 || mouli.total_score === 100 ? faArrowTrendUp : faArrowTrendDown}
                                                     color={evolution >= 0 || mouli.total_score === 100 ? "green" : "red"}/>
                                                 <p className={"font-bold " + ((evolution >= 0 || mouli.total_score === 100) ? "text-green-500" : "text-red-500")}>
                                                     {Math.round(evolution)}%</p>
                                             </div>
                                         </TopProp>
+                                        {
+                                            (mouli.coverage_branches && mouli.coverage_lines) && (mouli.coverage_branches + mouli.coverage_lines) > 0 ?
+
+                                            <TopProp title={"Unit tests coverage"} icon={faUserCheck}>
+                                                <div
+                                                    className={"px-1 flex flex-row items-center justify-around p-1 gap-2"}>
+                                                    <div className={"flex flex-col items-center"}>
+                                                        <p>Lines</p>
+
+                                                        <div className={"w-16 z-10"}>
+                                                            <CircularProgressbar
+                                                                value={mouli.coverage_lines!}
+                                                                text={`${mouli.coverage_lines!}%`}
+                                                                strokeWidth={8}
+
+                                                                styles={buildStyles({
+                                                                    textColor: scoreColor(mouli.coverage_lines!).html,
+                                                                    pathColor: scoreColor(mouli.coverage_lines!).html,
+                                                                    trailColor: "rgba(0,0,0,0.09)",
+                                                                })}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className={"flex flex-col items-center"}>
+                                                        <p>Branches</p>
+
+                                                        <div className={"w-16 z-10"}>
+                                                            <CircularProgressbar
+                                                                value={mouli.coverage_branches!}
+                                                                text={`${mouli.coverage_branches!}%`}
+                                                                strokeWidth={8}
+
+                                                                styles={buildStyles({
+                                                                    textColor: scoreColor(mouli.coverage_branches!).html,
+                                                                    pathColor: scoreColor(mouli.coverage_branches!).html,
+                                                                    trailColor: "rgba(0,0,0,0.09)",
+                                                                })}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </TopProp> : null
+                                        }
                                     </div>
                                 </BasicBox>
                             </div>

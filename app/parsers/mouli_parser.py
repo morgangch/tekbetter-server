@@ -62,6 +62,13 @@ def _build_skill(skill_json: dict) -> MouliSkill:
     skill.title = skill_json["name"]
     return skill
 
+def _get_external_item(mouli_json: dict, type: str) -> (float, str):
+    for item in mouli_json["externalItems"]:
+        if "type" in item and item["type"] == type:
+            value = item["value"] if "value" in item else None
+            comment = item["comment"] if "comment" in item else None
+            return value, comment
+    return None, None
 
 def build_mouli_from_myepitech(test_id: int, mouli_json: dict,
                                student_id: int) -> MouliResult:
@@ -76,12 +83,17 @@ def build_mouli_from_myepitech(test_id: int, mouli_json: dict,
     mouli.test_id = test_id
     mouli.commit_hash = mouli_json.get("gitCommit", "")
 
-    trace_types = ["trace-pool"]
-    mouli.build_trace = None
-    for item in mouli_json["externalItems"]:
-        if item["type"] in trace_types:
-            mouli.build_trace = item["comment"]
-            break
+    _, test_trace = _get_external_item(mouli_json, "trace-pool")
+    _, make_trace = _get_external_item(mouli_json, "make-error")
+
+    cov_lines, _ = _get_external_item(mouli_json, "coverage.lines")
+    mouli.coverage_lines = cov_lines
+
+    cov_branches, _ = _get_external_item(mouli_json, "coverage.branches")
+    mouli.coverage_branches = cov_branches
+
+    mouli.build_trace = test_trace
+    mouli.make_trace = make_trace
 
     mouli.banned_content = [i['comment'] for i in mouli_json["externalItems"]
                             if i['type'] == "banned"]
