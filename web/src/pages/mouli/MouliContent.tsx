@@ -247,20 +247,21 @@ export default function MouliContent(props: { mouli: MouliResult | null }): Reac
                                         </TopProp>
 
                                         <TopProp title={"Coding style"} icon={faMagnifyingGlass}>
-                                            <div className={"px-1"}>
-                                                <ElemStatus
-                                                    err_content={mouli.coding_style.isPerfect() ? null : (
-                                                        <div>
-                                                            <CodingStyleRow name={"MAJOR"}
-                                                                            value={mouli.coding_style.major_count}/>
-                                                            <CodingStyleRow name={"MINOR"}
-                                                                            value={mouli.coding_style.minor_count}/>
-                                                            <CodingStyleRow name={"INFO"}
-                                                                            value={mouli.coding_style.info_count}/>
-                                                        </div>
-                                                    )}
-                                                />
-                                            </div>
+                                            {/*<div className={"px-1"}>*/}
+                                            {/*    <ElemStatus*/}
+                                            {/*        err_content={mouli.coding_style.isPerfect() ? null : (*/}
+                                            {/*            <div>*/}
+                                            {/*                <CodingStyleRow name={"MAJOR"}*/}
+                                            {/*                                value={mouli.coding_style.major_count}/>*/}
+                                            {/*                <CodingStyleRow name={"MINOR"}*/}
+                                            {/*                                value={mouli.coding_style.minor_count}/>*/}
+                                            {/*                <CodingStyleRow name={"INFO"}*/}
+                                            {/*                                value={mouli.coding_style.info_count}/>*/}
+                                            {/*            </div>*/}
+                                            {/*        )}*/}
+                                            {/*    />*/}
+                                            {/*</div>*/}
+                                            <p className={"italic text-yellow-400"}>Feature not implemented yet</p>
                                         </TopProp>
 
                                         <TopProp title={"Crash verification"} icon={faSkull}
