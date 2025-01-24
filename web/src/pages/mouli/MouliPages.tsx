@@ -29,7 +29,7 @@ function Project(props: {
     const navigate = useNavigate();
 
     return <div
-        className={"relative shadow text rounded-2xl flex flex-row items-center p-2 cursor-pointer transition " + (is_selected ? "bg-gray-200" : "hover:bg-gray-100")}
+        className={"relative shadow text rounded-2xl flex flex-row items-center p-2 cursor-pointer transition " + (is_selected ? "bg-gray-100" : "hover:bg-gray-100")}
         onClick={() => {
             navigate(`/moulinettes/${props.project_slug}`);
             if (!props.seen && !isNewClicked) {
