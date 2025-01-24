@@ -1,3 +1,4 @@
+import base64
 from datetime import datetime
 
 from flask import request
@@ -15,6 +16,7 @@ from app.services.mouli_service import MouliService
 from app.services.planning_service import PlanningService
 from app.services.project_service import ProjectService
 from app.services.publicscraper_service import PublicScraperService
+from app.services.student_picture_service import StudentPictureService
 from app.services.student_service import StudentService
 from app.tools.aes_tools import decrypt_token
 
@@ -77,7 +79,13 @@ def load_scrapers_routes(app):
         if proj_start and plan_start:
             start = proj_start if proj_start < plan_start else plan_start
 
-        return {"known_tests": moulis_ids, "asked_slugs": asked_slugs, "fetch_start": start.strftime("%Y-%m-%d"), "fetch_end": end.strftime("%Y-%m-%d")}
+        return {
+            "known_tests": moulis_ids,
+            "asked_slugs": asked_slugs,
+            "asked_pictures": [] if StudentPictureService.is_picture_exists(student.login) else [student.login],
+            "fetch_start": start.strftime("%Y-%m-%d"),
+            "fetch_end": end.strftime("%Y-%m-%d")
+        }
 
     @app.route("/api/scraper/push", methods=["POST"])
     @scraper_auth_middleware()
@@ -121,5 +129,10 @@ def load_scrapers_routes(app):
                     continue
                 project.slug = slug if slug else "unknown"
                 ProjectService.upload_project(project)
+
+        if "students_pictures" in data and data["students_pictures"]:
+            for student_login, picture in data["students_pictures"].items():
+                if student.login == student_login:
+                    StudentPictureService.add_student_picture(student_login, base64.b64decode(picture))
 
         return {"message": "Data pushed"}
