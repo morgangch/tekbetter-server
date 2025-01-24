@@ -38,9 +38,17 @@ function TraceWindow(props: { content: string, close: () => void }) {
 
             <div className={"absolute w-full h-full top-0 left-0 flex z-50 justify-center items-center"}>
                 <div className={"bg-gray-900 m-2 rounded-md p-2"}>
-                    <h1 className={"font-bold text-center text-xl mb-2"}>Details</h1>
-                    <div className={"bg-gray-800 p-2 rounded-md"}>
-                        <code className={"text-xs"}>
+                    <div className={"flex flex-row items-start justify-between"}>
+                        <FontAwesomeIcon icon={faTerminal} />
+                        <h1 className={"font-bold text-center text-xl mb-2"}>Details view</h1>
+                        <FontAwesomeIcon className={"text-xl cursor-pointer"} icon={faClose} onClick={() => props.close()}/>
+                    </div>
+
+                    <div className={"bg-gray-800 p-2 rounded-md overflow-y-auto overflow-x-auto"} style={{
+                        maxHeight: "calc(100vh - 12rem)",
+                        maxWidth: "calc(100vw - 2rem)"
+                    }}>
+                        <code className={"text-xs "}>
                             {props.content.split("\n").map((line, index) => (
                                 <div key={index}>{line}</div>
                             ))}
@@ -278,45 +286,45 @@ export default function MouliContent(props: { mouli: MouliResult | null }): Reac
                                         {
                                             (mouli.coverage_branches && mouli.coverage_lines) && (mouli.coverage_branches + mouli.coverage_lines) > 0 ?
 
-                                            <TopProp title={"Unit tests coverage"} icon={faUserCheck}>
-                                                <div
-                                                    className={"px-1 flex flex-row items-center justify-around p-1 gap-2"}>
-                                                    <div className={"flex flex-col items-center"}>
-                                                        <p>Lines</p>
+                                                <TopProp title={"Unit tests coverage"} icon={faUserCheck}>
+                                                    <div
+                                                        className={"px-1 flex flex-row items-center justify-around p-1 gap-2"}>
+                                                        <div className={"flex flex-col items-center"}>
+                                                            <p>Lines</p>
 
-                                                        <div className={"w-16 z-10"}>
-                                                            <CircularProgressbar
-                                                                value={mouli.coverage_lines!}
-                                                                text={`${mouli.coverage_lines!}%`}
-                                                                strokeWidth={8}
+                                                            <div className={"w-16 z-10"}>
+                                                                <CircularProgressbar
+                                                                    value={mouli.coverage_lines!}
+                                                                    text={`${mouli.coverage_lines!}%`}
+                                                                    strokeWidth={8}
 
-                                                                styles={buildStyles({
-                                                                    textColor: scoreColor(mouli.coverage_lines!).html,
-                                                                    pathColor: scoreColor(mouli.coverage_lines!).html,
-                                                                    trailColor: "rgba(0,0,0,0.09)",
-                                                                })}
-                                                            />
+                                                                    styles={buildStyles({
+                                                                        textColor: scoreColor(mouli.coverage_lines!).html,
+                                                                        pathColor: scoreColor(mouli.coverage_lines!).html,
+                                                                        trailColor: "rgba(0,0,0,0.09)",
+                                                                    })}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div className={"flex flex-col items-center"}>
+                                                            <p>Branches</p>
+
+                                                            <div className={"w-16 z-10"}>
+                                                                <CircularProgressbar
+                                                                    value={mouli.coverage_branches!}
+                                                                    text={`${mouli.coverage_branches!}%`}
+                                                                    strokeWidth={8}
+
+                                                                    styles={buildStyles({
+                                                                        textColor: scoreColor(mouli.coverage_branches!).html,
+                                                                        pathColor: scoreColor(mouli.coverage_branches!).html,
+                                                                        trailColor: "rgba(0,0,0,0.09)",
+                                                                    })}
+                                                                />
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <div className={"flex flex-col items-center"}>
-                                                        <p>Branches</p>
-
-                                                        <div className={"w-16 z-10"}>
-                                                            <CircularProgressbar
-                                                                value={mouli.coverage_branches!}
-                                                                text={`${mouli.coverage_branches!}%`}
-                                                                strokeWidth={8}
-
-                                                                styles={buildStyles({
-                                                                    textColor: scoreColor(mouli.coverage_branches!).html,
-                                                                    pathColor: scoreColor(mouli.coverage_branches!).html,
-                                                                    trailColor: "rgba(0,0,0,0.09)",
-                                                                })}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </TopProp> : null
+                                                </TopProp> : null
                                         }
                                     </div>
                                 </BasicBox>
