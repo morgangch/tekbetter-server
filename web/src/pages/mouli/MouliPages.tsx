@@ -94,6 +94,7 @@ export default function MouliPage(): React.ReactElement {
         test_id: number;
         score: number;
         date: Date;
+        is_warning: boolean;
     }[] | null>(null);
 
     const [search, setSearch] = React.useState<string>("");
