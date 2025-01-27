@@ -2,14 +2,14 @@ import {buildStyles, CircularProgressbar} from "react-circular-progressbar";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
     faArrowTrendDown,
-    faArrowTrendUp,
+    faArrowTrendUp, faBalanceScale,
     faCheckCircle,
     faCircleInfo,
     faClose,
     faHammer,
     faLineChart,
     faMagnifyingGlass,
-    faSkull, faTerminal, faUserCheck,
+    faSkull, faSquareArrowUpRight, faTerminal, faUserCheck,
     faWarning
 } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
@@ -21,6 +21,9 @@ import {dateToString} from "../../tools/DateString";
 import ReactApexChart from "react-apexcharts";
 import scoreColor from "../../tools/ScoreColor";
 import LoadingComp from "../../comps/LoadingComp";
+import ReactDiffViewer from "react-diff-viewer";
+import MouliGotExpected from "../../models/MouliGotExpected";
+import extractGotExpected from "../../tools/GotExpectedExtractor";
 
 function CodingStyleRow(props: { name: string, value: number }) {
     //const color = props.name === "FATAL" ? "text-red-500" : props.name === "MAJOR" ? "text-yellow-500" : props.name === "MINOR" ? "text-yellow-300" : "text-green-500";
@@ -39,9 +42,10 @@ function TraceWindow(props: { content: string, close: () => void }) {
             <div className={"absolute w-full h-full top-0 left-0 flex z-50 justify-center items-center"}>
                 <div className={"bg-gray-900 m-2 rounded-md p-2"}>
                     <div className={"flex flex-row items-start justify-between"}>
-                        <FontAwesomeIcon icon={faTerminal} />
+                        <FontAwesomeIcon icon={faTerminal}/>
                         <h1 className={"font-bold text-center text-xl mb-2"}>Details view</h1>
-                        <FontAwesomeIcon className={"text-xl cursor-pointer"} icon={faClose} onClick={() => props.close()}/>
+                        <FontAwesomeIcon className={"text-xl cursor-pointer"} icon={faClose}
+                                         onClick={() => props.close()}/>
                     </div>
 
                     <div className={"bg-gray-800 p-2 rounded-md overflow-y-auto overflow-x-auto"} style={{
@@ -53,6 +57,57 @@ function TraceWindow(props: { content: string, close: () => void }) {
                                 <div key={index}>{line}</div>
                             ))}
                         </code>
+                    </div>
+                    <div className={"flex flex-row justify-center mt-5"}>
+                        <Button icon={faClose} text={"Close"} onClick={() => {
+                            props.close();
+                        }}/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
+}
+
+function TextComparePopup(props: { instance: MouliGotExpected, close: () => void }) {
+
+    return (
+        <div>
+            <div className={"absolute top-0 left-0 w-full h-full bg-black z-40 opacity-60"}/>
+
+            <div className={"absolute w-full h-full top-0 left-0 flex z-50 justify-center items-center"}>
+                <div className={"bg-gray-100 m-2 rounded-md p-2"}>
+                    <div className={"flex flex-row items-start justify-between"}>
+                        <FontAwesomeIcon icon={faBalanceScale}/>
+                        <h1 className={"font-bold text-center text-xl mb-2"}>Result comparator</h1>
+                        <FontAwesomeIcon className={"text-xl cursor-pointer"} icon={faClose}
+                                         onClick={() => props.close()}/>
+                    </div>
+
+                    <div className={"p-2 rounded-md overflow-y-auto overflow-x-auto"} style={{
+                        maxHeight: "calc(100vh - 12rem)",
+                        maxWidth: "calc(100vw - 2rem)"
+                    }}>
+                        <ReactDiffViewer
+                            leftTitle={"Got"}
+                            showDiffOnly={false}
+                            rightTitle={"Expected"}
+                            oldValue={props.instance.got}
+                            newValue={props.instance.expected}
+                            splitView={true}
+
+                            styles={{
+                                contentText: {
+                                    minWidth: "100px",
+                                    fontSize: "13px",
+                                },
+                                lineNumber: {
+                                    textAlign: "right",
+                                },
+                            }}
+                        />
+
                     </div>
                     <div className={"flex flex-row justify-center mt-5"}>
                         <Button icon={faClose} text={"Close"} onClick={() => {
@@ -161,6 +216,7 @@ function MouliChart(props: { scores: number[], dates: string[] }) {
 export default function MouliContent(props: { mouli: MouliResult | null }): React.ReactElement {
 
     const [popupValue, setPopupValue] = React.useState<string | null>(null);
+    const [textCompareData, setTextCompareData] = React.useState<MouliGotExpected | null>(null);
 
     const mouli = props.mouli;
 
@@ -174,15 +230,22 @@ export default function MouliContent(props: { mouli: MouliResult | null }): Reac
     scores = scores.slice(0, id_index)
 
     let evolution = mouli.total_score
+    let gotExpecteds = extractGotExpected(mouli.build_trace || "");
+
 
     if (scores.length > 0)
         evolution = mouli.total_score - scores[scores.length - 1]
+
 
     return (
         <WindowElem
             title={<h1 className={"font-bold text-center text"}>{mouli.project_name} test results</h1>}>
             <div className={"p-2 text"}>
+
                 {popupValue && <TraceWindow content={popupValue} close={() => setPopupValue(null)}/>}
+                {textCompareData &&
+                    <TextComparePopup instance={textCompareData} close={() => setTextCompareData(null)}/>}
+
                 <div className={"flex flex-row justify-between texts"}>
                     <div className={"flex flex-row justify-between w-full"}>
                         <div className={"flex flex-col gap-2 p-2 rounded-md w-full"}>
@@ -326,6 +389,24 @@ export default function MouliContent(props: { mouli: MouliResult | null }): Reac
                                                         </div>
                                                     </div>
                                                 </TopProp> : null
+                                        }
+                                        {
+                                            (gotExpecteds.length > 0 ? (
+
+                                                <TopProp title={"Got/Expected"} icon={faBalanceScale}>
+                                                    <div
+                                                        className={"px-1 flex flex-row items-center justify-around p-1 gap-2"}>
+                                                        {gotExpecteds.map((instance, index) => (
+                                                            <Button
+                                                                key={index}
+                                                                text={"Compare"}
+                                                                icon={faSquareArrowUpRight}
+                                                                onClick={() => setTextCompareData(instance)}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                </TopProp>
+                                            ) : null)
                                         }
                                     </div>
                                 </BasicBox>
