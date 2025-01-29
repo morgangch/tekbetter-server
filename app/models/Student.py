@@ -6,6 +6,8 @@ class Student:
     last_name: str = None
     city: str = "Epitech"
     promo_year: int = None
+    scolaryear: int = None
+    scolaryear_id: int = None
     credits: int = None
     gpa: float = None
     scraper_token: str = None
@@ -23,6 +25,8 @@ class Student:
             "last_name": self.last_name,
             "city": self.city,
             "promo_year": self.promo_year,
+            "scolaryear": self.scolaryear,
+            "scolaryear_id": self.scolaryear_id,
             "credits": self.credits,
             "gpa": self.gpa,
             "last_update": self.last_update,
@@ -45,6 +49,8 @@ class Student:
         self.last_name = mongo_data.get("last_name", None)
         self.city = mongo_data.get("city", "Epitech")
         self.promo_year = mongo_data.get("promo_year", None)
+        self.scolaryear = mongo_data.get("scolaryear", None)
+        self.scolaryear_id = mongo_data.get("scolaryear_id", None)
         self.credits = mongo_data.get("credits", None)
         self.gpa = mongo_data.get("gpa", None)
         self.scraper_token = mongo_data.get("scraper_token", None)
@@ -56,3 +62,10 @@ class Student:
         from app.services.publicscraper_service import PublicScraperService
         return PublicScraperService.get_scraper(
             self.public_scraper_id) if self.public_scraper_id else None
+
+    @property
+    def required_credits(self):
+        if self.scolaryear_id is None:
+            return None
+        credits_per_year = 60
+        return credits_per_year * self.scolaryear_id

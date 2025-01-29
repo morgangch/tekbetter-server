@@ -11,6 +11,7 @@ import AuthPage from "./pages/AuthPage";
 import FullError from "./comps/FullError";
 import {vars} from "./api/api";
 import Footer from "./comps/Footer";
+import ModulePage from "./pages/module/ModulePage";
 
 function App() {
 
@@ -39,6 +40,7 @@ function App() {
                     <Route path="/calendar" element={<CalendarPage/>}/>
                     <Route path="/sync" element={<SyncPage/>}/>
                     <Route path="/moulinettes" element={<MouliPage/>}/>
+                    <Route path="/modules" element={<ModulePage/>}/>
                     <Route path="/moulinettes/:project_slug"
                            element={<MouliPage/>}/>
                 </Routes>

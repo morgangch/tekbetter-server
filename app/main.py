@@ -6,6 +6,7 @@ from flask_cors import CORS
 from app.api.routes.auth_routes import load_auth_routes
 from app.api.routes.calendar_routes import load_calendar_routes
 from app.api.routes.global_routes import load_global_routes
+from app.api.routes.modules_routes import load_module_routes
 from app.api.routes.mouli_routes import load_mouli_routes
 from app.api.routes.project_routes import load_project_routes
 from app.api.routes.scrapers_routes import load_scrapers_routes
@@ -78,6 +79,7 @@ def create_app():
     # Load the routes
     load_scrapers_routes(flask_app)
     load_project_routes(flask_app)
+    load_module_routes(flask_app)
     load_mouli_routes(flask_app)
     load_global_routes(flask_app)
     load_calendar_routes(flask_app)
