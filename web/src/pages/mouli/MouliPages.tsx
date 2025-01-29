@@ -5,13 +5,13 @@ import MouliHistory from "./MouliHistory";
 import {buildStyles, CircularProgressbar} from "react-circular-progressbar";
 import {dateToElapsed} from "../../tools/DateString";
 import {MouliResult} from "../../models/MouliResult";
-import getAllProjects, {markProjectAsSeen} from "../../api/project.api";
+import getAllProjects, {markAllProjectsAsSeen, markProjectAsSeen} from "../../api/project.api";
 import {EpiProject} from "../../models/Project";
 import {getMouliDetails, getProjectMouliHistory} from "../../api/mouli.api";
 import {useNavigate, useParams} from "react-router";
 import scoreColor from "../../tools/ScoreColor";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faChevronLeft, faWarning} from "@fortawesome/free-solid-svg-icons";
+import {faCheck, faChevronLeft, faWarning} from "@fortawesome/free-solid-svg-icons";
 import LoadingComp from "../../comps/LoadingComp";
 
 function Project(props: {
@@ -155,6 +155,23 @@ export default function MouliPage(): React.ReactElement {
                 <input type="text" placeholder="Search..."
                        className={"w-full p-2 rounded-md bg-gray-100 text-gray-800 mt-2"}
                        onChange={(e) => setSearch(e.target.value)}/>
+
+                <div className={"w-min"}>
+                    {search_results.filter((project) => !project.mouli_seen && project.mouli !== null).length > 0 ? (
+                        <div
+                            className={"flex select-none text-nowrap px-1 flex-row items-center justify-start gap-2 mt-2 bg-red-400 text-white rounded cursor-pointer hover:bg-red-500 transition"}
+                            onClick={() => {
+                                markAllProjectsAsSeen().then(() => {
+                                    reload_projects();
+                                }).catch(() => console.error("Failed to mark all as read"));
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faCheck} className={"text-xs"}/>
+                            <p className={"text-xs"}>mark all as read</p>
+                        </div>) : null}
+
+                </div>
+
                 <div
                     className={"grid grid-cols-2 gap-2 mt-2"}>
                     {
