@@ -11,7 +11,7 @@ import {getMouliDetails, getProjectMouliHistory} from "../../api/mouli.api";
 import {useNavigate, useParams} from "react-router";
 import scoreColor from "../../tools/ScoreColor";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faChevronLeft, faSkull, faWarning} from "@fortawesome/free-solid-svg-icons";
+import {faChevronLeft, faWarning} from "@fortawesome/free-solid-svg-icons";
 import LoadingComp from "../../comps/LoadingComp";
 
 function Project(props: {

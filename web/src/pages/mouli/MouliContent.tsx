@@ -25,15 +25,6 @@ import ReactDiffViewer from "react-diff-viewer";
 import MouliGotExpected from "../../models/MouliGotExpected";
 import extractGotExpected from "../../tools/GotExpectedExtractor";
 
-function CodingStyleRow(props: { name: string, value: number }) {
-    //const color = props.name === "FATAL" ? "text-red-500" : props.name === "MAJOR" ? "text-yellow-500" : props.name === "MINOR" ? "text-yellow-300" : "text-green-500";
-
-    return <div className={"flex flex-row font-bold"}>
-        <p>{props.value}</p>
-        <p className={"ml-2"}>{props.name}</p>
-    </div>
-}
-
 function TraceWindow(props: { content: string, close: () => void }) {
     return (
         <div>
