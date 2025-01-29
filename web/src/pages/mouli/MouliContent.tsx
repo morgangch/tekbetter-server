@@ -39,8 +39,9 @@ function TraceWindow(props: { content: string, close: () => void }) {
         <div>
             <div className={"absolute top-0 left-0 w-full h-full bg-black z-40 opacity-60"}/>
 
-            <div className={"absolute w-full h-full top-0 left-0 flex z-50 justify-center items-center"}>
-                <div className={"bg-gray-900 m-2 rounded-md p-2"}>
+            <div className={"absolute w-full h-full top-0 left-0 flex z-50 justify-center items-center"}
+                 onClick={(e) => props.close()}>
+                <div className={"bg-gray-900 m-2 rounded-md p-2"} onClick={(e) => e.stopPropagation()}>
                     <div className={"flex flex-row items-start justify-between"}>
                         <FontAwesomeIcon icon={faTerminal}/>
                         <h1 className={"font-bold text-center text-xl mb-2"}>Details view</h1>
@@ -76,8 +77,8 @@ function TextComparePopup(props: { instance: MouliGotExpected, close: () => void
         <div>
             <div className={"absolute top-0 left-0 w-full h-full bg-black z-40 opacity-60"}/>
 
-            <div className={"absolute w-full h-full top-0 left-0 flex z-50 justify-center items-center"}>
-                <div className={"bg-gray-100 m-2 rounded-md p-2"}>
+            <div className={"absolute w-full h-full top-0 left-0 flex z-50 justify-center items-center"} onClick={() => props.close()}>
+                <div className={"bg-gray-100 m-2 rounded-md p-2"} onClick={(e) => e.stopPropagation()}>
                     <div className={"flex flex-row items-start justify-between"}>
                         <FontAwesomeIcon icon={faBalanceScale}/>
                         <h1 className={"font-bold text-center text-xl mb-2"}>Result comparator</h1>
