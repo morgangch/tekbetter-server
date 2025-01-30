@@ -75,6 +75,7 @@ def create_app():
     log_debug("Debug mode enabled")
 
     init_services()
+    MouliService.refresh_all_cache()
 
     flask_app = Flask(__name__, static_folder=os.getenv("DASHBOARD_BUILD_PATH", "../web/build"))
 
@@ -106,8 +107,6 @@ app = create_app()
 
 if __name__ == "__main__":
     try:
-        log_info("Starting server...")
-        MouliService.refresh_all_cache()
         app.run("0.0.0.0", os.getenv("PORT", 8080), debug=True)
     except KeyboardInterrupt:
         # Shutdown services
