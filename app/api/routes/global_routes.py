@@ -25,6 +25,9 @@ def load_global_routes(app):
     def global_picture(student_login):
         picture_bytes = StudentPictureService.get_student_picture(student_login)
 
+        if not picture_bytes:
+            return {"message": "Student picture not found"}, 404
+
         response = make_response(picture_bytes)
         response.headers.set('Content-Type', 'image/jpeg')
         response.headers.set(
