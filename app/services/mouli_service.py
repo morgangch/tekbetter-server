@@ -72,18 +72,18 @@ class MouliService:
             if proj:
                 proj.mouli_seen = False
                 ProjectService.upload_project(proj)
-        MouliService.cache_passed_tests(mouli, student.promo_year)
+        MouliService.cache_passed_tests(mouli, student.promo_year, student.city)
         return mouli
 
     @staticmethod
-    def fill_passed_users(mouli: MouliResult, promyear: int):
+    def fill_passed_users(mouli: MouliResult, promyear: int, city: str):
         for skill in mouli.skills:
-            usrs = RedisService.get(f"{promyear}:{mouli.project_code}:{base64.b64encode(skill.title.encode()).decode()}")
+            usrs = RedisService.get(f"{promyear}:{city}:{mouli.project_code}:{base64.b64encode(skill.title.encode()).decode()}")
             usrs = json.loads(usrs) if usrs else []
             skill.passed_students = usrs if usrs else []
             if skill.tests is not None:
                 for test in skill.tests:
-                    usrs = RedisService.get(f"{promyear}:{mouli.project_code}:{base64.b64encode(skill.title.encode()).decode()}:{base64.b64encode(test.title.encode()).decode()}")
+                    usrs = RedisService.get(f"{promyear}:{city}:{mouli.project_code}:{base64.b64encode(skill.title.encode()).decode()}:{base64.b64encode(test.title.encode()).decode()}")
                     test.passed_students = json.loads(usrs) if usrs else []
 
     @staticmethod
@@ -102,20 +102,20 @@ class MouliService:
                 if len(by_slugs[slug]) > 0:
                     latests.append(by_slugs[slug][0])
             for mouli in latests:
-                MouliService.cache_passed_tests(mouli=mouli, promyear=student.promo_year)
+                MouliService.cache_passed_tests(mouli=mouli, promyear=student.promo_year, city=student.city)
 
 
     @staticmethod
-    def cache_passed_tests(mouli: MouliResult, promyear: int):
+    def cache_passed_tests(mouli: MouliResult, promyear: int, city: str) -> dict:
         # promyear:slug:skill
         # promyear:slug:skill:test_title
         passed = {}
 
         for skill in mouli.skills:
-            passed[f"{promyear}:{mouli.project_code}:{base64.b64encode(skill.title.encode()).decode()}"] = skill.score == 100
+            passed[f"{promyear}:{city}:{mouli.project_code}:{base64.b64encode(skill.title.encode()).decode()}"] = skill.score == 100
             if skill.tests is not None:
                 for test in skill.tests:
-                    passed[f"{promyear}:{mouli.project_code}:{base64.b64encode(skill.title.encode()).decode()}:{base64.b64encode(test.title.encode()).decode()}"] = test.passed
+                    passed[f"{promyear}:{city}:{mouli.project_code}:{base64.b64encode(skill.title.encode()).decode()}:{base64.b64encode(test.title.encode()).decode()}"] = test.passed
 
         # Update redis
         for key, value in passed.items():
