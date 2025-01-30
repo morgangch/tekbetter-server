@@ -129,4 +129,4 @@ class StudentService:
 
     @staticmethod
     def generate_jwt_token(student: Student):
-        return generate_jwt(student, datetime.utcnow() + timedelta(days=7))
+        return generate_jwt(student, datetime.utcnow() + timedelta(days=900))
