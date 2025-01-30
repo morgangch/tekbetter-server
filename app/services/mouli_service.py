@@ -6,6 +6,7 @@ from app.globals import Globals
 from app.models.MouliTest import MouliResult, MouliTest, MouliSkill
 from app.services.redis_service import RedisService
 from app.services.student_service import StudentService
+from app.tools.teklogger import log_info, log_success
 
 
 class MouliService:
@@ -45,6 +46,12 @@ class MouliService:
             result[1].append(m.score)
             result[2].append(m.test_id)
         return result
+
+
+    @staticmethod
+    def get_student_moulis(student_id: str) -> [MouliResult]:
+        moulis = Globals.database["moulis"].find({"student_id": student_id})
+        return [MouliResult(m) for m in moulis]
 
     @staticmethod
     def get_student_mouliids(student_id: int) -> [int]:
@@ -88,11 +95,12 @@ class MouliService:
 
     @staticmethod
     def refresh_all_cache():
+        log_info("Refreshing all test-passed cache")
         students = StudentService.get_all_students()
         for student in students:
             by_slugs = {}
             latests = []
-            moulis = [MouliService.get_mouli_by_id(m, student.id) for m in MouliService.get_student_mouliids(student.id)]
+            moulis = MouliService.get_student_moulis(student.id)
             for mouli in moulis:
                 if mouli.project_code not in by_slugs:
                     by_slugs[mouli.project_code] = []
@@ -101,9 +109,11 @@ class MouliService:
             for slug in by_slugs:
                 if len(by_slugs[slug]) > 0:
                     latests.append(by_slugs[slug][0])
+            i = 0
             for mouli in latests:
+                i += 1
                 MouliService.cache_passed_tests(mouli=mouli, promyear=student.promo_year, city=student.city)
-
+            log_success(f"Refreshed cache for student {student.student_label} ({i} tests)")
 
     @staticmethod
     def cache_passed_tests(mouli: MouliResult, promyear: int, city: str) -> dict:
@@ -118,6 +128,7 @@ class MouliService:
                     passed[f"{promyear}:{city}:{mouli.project_code}:{base64.b64encode(skill.title.encode()).decode()}:{base64.b64encode(test.title.encode()).decode()}"] = test.passed
 
         # Update redis
+        pass
         for key, value in passed.items():
             current_students = RedisService.get(key)
 
