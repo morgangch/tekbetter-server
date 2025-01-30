@@ -1,6 +1,11 @@
+import base64
+import json
 import uuid
+from datetime import datetime
 from app.globals import Globals
-from app.models.MouliTest import MouliResult
+from app.models.MouliTest import MouliResult, MouliTest, MouliSkill
+from app.services.redis_service import RedisService
+from app.services.student_service import StudentService
 
 
 class MouliService:
@@ -52,6 +57,7 @@ class MouliService:
 
     @staticmethod
     def upload_mouli(mouli: MouliResult):
+        student = StudentService.get_student_by_id(mouli.student_id)
         current = MouliService.get_mouli_by_id(mouli.test_id, mouli.student_id)
         if current:
             new_data = current.to_dict()
@@ -66,4 +72,63 @@ class MouliService:
             if proj:
                 proj.mouli_seen = False
                 ProjectService.upload_project(proj)
+        MouliService.cache_passed_tests(mouli, student.promo_year)
         return mouli
+
+    @staticmethod
+    def fill_passed_users(mouli: MouliResult, promyear: int):
+        for skill in mouli.skills:
+            usrs = RedisService.get(f"{promyear}:{mouli.project_code}:{base64.b64encode(skill.title.encode()).decode()}")
+            usrs = json.loads(usrs) if usrs else []
+            skill.passed_students = usrs if usrs else []
+            if skill.tests is not None:
+                for test in skill.tests:
+                    usrs = RedisService.get(f"{promyear}:{mouli.project_code}:{base64.b64encode(skill.title.encode()).decode()}:{base64.b64encode(test.title.encode()).decode()}")
+                    test.passed_students = json.loads(usrs) if usrs else []
+
+    @staticmethod
+    def refresh_all_cache():
+        students = StudentService.get_all_students()
+        for student in students:
+            by_slugs = {}
+            latests = []
+            moulis = [MouliService.get_mouli_by_id(m, student.id) for m in MouliService.get_student_mouliids(student.id)]
+            for mouli in moulis:
+                if mouli.project_code not in by_slugs:
+                    by_slugs[mouli.project_code] = []
+                by_slugs[mouli.project_code].append(mouli)
+                by_slugs[mouli.project_code].sort(key=lambda m: m.test_id, reverse=True)
+            for slug in by_slugs:
+                if len(by_slugs[slug]) > 0:
+                    latests.append(by_slugs[slug][0])
+            for mouli in latests:
+                MouliService.cache_passed_tests(mouli=mouli, promyear=student.promo_year)
+
+
+    @staticmethod
+    def cache_passed_tests(mouli: MouliResult, promyear: int):
+        # promyear:slug:skill
+        # promyear:slug:skill:test_title
+        passed = {}
+
+        for skill in mouli.skills:
+            passed[f"{promyear}:{mouli.project_code}:{base64.b64encode(skill.title.encode()).decode()}"] = skill.score == 100
+            if skill.tests is not None:
+                for test in skill.tests:
+                    passed[f"{promyear}:{mouli.project_code}:{base64.b64encode(skill.title.encode()).decode()}:{base64.b64encode(test.title.encode()).decode()}"] = test.passed
+
+        # Update redis
+        for key, value in passed.items():
+            current_students = RedisService.get(key)
+
+            if current_students is None:
+                current_students = []
+            else:
+                current_students = json.loads(current_students)
+            if mouli.student_id not in current_students and value:
+                current_students.append(mouli.student_id)
+            if mouli.student_id in current_students and not value:
+                current_students.remove(mouli.student_id)
+            RedisService.set(key, json.dumps(current_students))
+
+        return passed

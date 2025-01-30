@@ -12,6 +12,7 @@ import FullError from "./comps/FullError";
 import {vars} from "./api/api";
 import Footer from "./comps/Footer";
 import ModulePage from "./pages/module/ModulePage";
+import SettingsPage from "./pages/SettingsPage";
 
 function App() {
 
@@ -43,6 +44,7 @@ function App() {
                     <Route path="/modules" element={<ModulePage/>}/>
                     <Route path="/moulinettes/:project_slug"
                            element={<MouliPage/>}/>
+                    <Route path="/settings" element={<SettingsPage/>}/>
                 </Routes>
             </div>
             <div>

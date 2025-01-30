@@ -85,7 +85,7 @@ class StudentService:
         ticket_url = f"{os.getenv("APP_URL")}/auth?ticket={ticket}"
         RedisService.set(f"register_ticket_{ticket}", email,
                          60 * 60)  # Expires in 1 hour
-        log_debug(f"Register ticket created for {email}: {ticket}")
+        log_debug(f"Register ticket created for {email}: {ticket_url}")
         if os.getenv("ENABLE_MAILER") == "true":
             subject: str = "Confirm Your TekBetter Account"
             body: str = f"""\

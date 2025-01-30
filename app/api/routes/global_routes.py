@@ -20,6 +20,18 @@ def load_global_routes(app):
             "projects": latest_project
         }
 
+
+    @app.route("/api/student/<string:student_id>", methods=["GET"])
+    @student_auth_middleware()
+    def get_student(student_id):
+        student = request.student
+
+        return {
+            "login": student.login,
+            "id": student.id,
+            "name": f"{student.first_name} {student.last_name}",
+        }
+
     @app.route("/api/global/picture/<string:student_login>", methods=["GET"])
    # @student_auth_middleware()
     def global_picture(student_login):
