@@ -113,7 +113,7 @@ class MouliService:
             for mouli in latests:
                 i += 1
                 MouliService.cache_passed_tests(mouli=mouli, promyear=student.promo_year, city=student.city)
-            log_success(f"Refreshed cache for student {student.student_label} ({i} tests)")
+            log_success(f"Refreshed cache for student {student.login} ({i} tests)")
 
     @staticmethod
     def cache_passed_tests(mouli: MouliResult, promyear: int, city: str) -> dict:
