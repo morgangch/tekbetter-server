@@ -171,6 +171,7 @@ export default function ModulePage(): React.ReactElement {
     const other_road_modules = year_modules
         .filter((m) => !m.is_roadblock)
         .filter((m) => !roadblock_modules.includes(m.module_code))
+        .sort((a, b) => a.student_registered ? -1 : 1);
 
 
     const available_years = api_data.modules.map((m) => m.school_year).filter((v, i, a) => a.indexOf(v) === i).sort((a, b) => a > b ? 1 : -11);
