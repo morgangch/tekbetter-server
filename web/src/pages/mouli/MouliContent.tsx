@@ -44,9 +44,9 @@ function TraceWindow(props: { content: string, close: () => void }) {
                         maxHeight: "calc(100vh - 12rem)",
                         maxWidth: "calc(100vw - 2rem)"
                     }}>
-                        <code className={"text-xs "}>
+                        <code className={"text-xs"}>
                             {props.content.split("\n").map((line, index) => (
-                                <div key={index}>{line}</div>
+                                <div className={"text-white"} key={index}>{line}</div>
                             ))}
                         </code>
                     </div>
