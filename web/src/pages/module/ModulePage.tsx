@@ -15,7 +15,6 @@ import getModules from "../../api/module.api";
 import LoadingComp from "../../comps/LoadingComp";
 import Button from "../../comps/Button";
 
-
 function RoadBlock(props: {
     children: React.ReactNode,
     title: string,
