@@ -107,6 +107,7 @@ app = create_app()
 if __name__ == "__main__":
     try:
         MouliService.refresh_all_cache()
+        log_info("Starting server...")
         app.run("0.0.0.0", os.getenv("PORT", 8080), debug=True)
     except KeyboardInterrupt:
         # Shutdown services
