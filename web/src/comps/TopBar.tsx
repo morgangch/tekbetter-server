@@ -1,7 +1,7 @@
 import {useNavigate} from "react-router";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
-    faCalendarCheck, faCheckCircle,
+    faCalendarCheck, faCheckCircle, faGears,
     faGraduationCap, faShareNodes,
     faWarning
 } from "@fortawesome/free-solid-svg-icons";
@@ -95,6 +95,7 @@ export default function TopBar(): React.ReactElement {
                 <NavElement text={"Modules"} link={"/modules"} icon={faShareNodes}/>
                 <NavElement text={"Calendar"} link={"/calendar"} icon={faCalendarCheck}/>
                 <NavElement text={"Synchronisation"} link={"/sync"} icon={faCheckCircle}/>
+                <NavElement text={"Settings"} link={"/settings"} icon={faGears}/>
             </div>
         </div>
     );
