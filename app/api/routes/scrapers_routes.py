@@ -103,7 +103,7 @@ def load_scrapers_routes(app):
         required_keys = ["intra_profile", "intra_projects", "intra_planning", "new_moulis", "projects_slugs", "students_pictures", "modules"]
         for key in required_keys:
             if key not in data:
-                log_warning(f"Failed to retrieve data from scraper for user {student.student_label} : Missing key {key}")
+                log_warning(f"Failed to retrieve data from scraper for user {student.login} : Missing key {key}")
                 return {"message": f"Missing key {key}"}, 400
 
         if data["intra_profile"] is not None:
