@@ -4,6 +4,7 @@ from app.api.middlewares.student_auth_middleware import student_auth_middleware
 from app.services.planning_service import PlanningService
 from app.services.project_service import ProjectService
 from app.services.student_picture_service import StudentPictureService
+from app.services.student_service import StudentService
 
 
 def load_global_routes(app):
@@ -25,6 +26,12 @@ def load_global_routes(app):
     @student_auth_middleware()
     def get_student(student_id):
         student = request.student
+
+        stud = StudentService.get_student_by_id(student_id)
+        if not stud:
+            return {"message": "Student not found"}, 404
+        if not student.is_consent_share or not stud.is_consent_share:
+            return {"message": "Student not found"}, 404
 
         return {
             "login": student.login,
