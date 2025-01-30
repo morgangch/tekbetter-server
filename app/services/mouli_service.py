@@ -92,8 +92,9 @@ class MouliService:
             if skill.tests is not None:
                 for test in skill.tests:
                     usrs = RedisService.get(f"{promyear}:{city}:{mouli.project_code}:{base64.b64encode(skill.title.encode()).decode()}:{base64.b64encode(test.title.encode()).decode()}")
-                    usrs = StudentService.filter_share_consent(usrs)
-                    test.passed_students = json.loads(usrs) if usrs else []
+                    usrs = json.loads(usrs) if usrs else []
+                    usrs = StudentService.filter_share_consent(usrs) if usrs else []
+                    test.passed_students = usrs if usrs else []
 
     @staticmethod
     def refresh_all_cache():

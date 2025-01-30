@@ -25,8 +25,8 @@ class StudentService:
 
     @staticmethod
     def filter_share_consent(student_ids: [str]) -> [str]:
-        students = Globals.database["students"].find(
-            {"_id": {"$in": [sid for sid in student_ids]}, "is_consent_share": True})
+        students = Globals.database["students"].find({"_id": {"$in": [str(sid) for sid in student_ids]}, "is_consent_share": True})
+
         return [student["_id"] for student in students if student]
 
     @staticmethod
