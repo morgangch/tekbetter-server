@@ -24,7 +24,7 @@ def load_global_routes(app):
 
     @app.route("/api/student/<string:student_id>", methods=["GET"])
     @student_auth_middleware()
-    def get_student(student_id):
+    def get_student(student_id: str):
         student = request.student
 
         stud = StudentService.get_student_by_id(student_id)
@@ -34,9 +34,9 @@ def load_global_routes(app):
             return {"message": "Student not found"}, 404
 
         return {
-            "login": student.login,
-            "id": student.id,
-            "name": f"{student.first_name} {student.last_name}",
+            "login": stud.login,
+            "id": stud.id,
+            "name": f"{stud.first_name} {stud.last_name}",
         }
 
     @app.route("/api/global/picture/<string:student_login>", methods=["GET"])

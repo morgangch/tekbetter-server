@@ -75,7 +75,6 @@ def create_app():
     log_debug("Debug mode enabled")
 
     init_services()
-    MouliService.refresh_all_cache()
 
     flask_app = Flask(__name__, static_folder=os.getenv("DASHBOARD_BUILD_PATH", "../web/build"))
 
@@ -100,6 +99,8 @@ def create_app():
             return send_from_directory(flask_app.static_folder, 'index.html')
 
     CORS(flask_app)
+    MouliService.refresh_all_cache()
+
     return flask_app
 
 

@@ -21,9 +21,15 @@ class StudentService:
         return Student(student) if student else None
 
     @staticmethod
-    def get_student_by_id(student_id: str) -> Student:
-        student = Globals.database["students"].find_one({"_id": student_id})
+    def get_student_by_id(student_id: str) -> Student or None:
+        student = Globals.database["students"].find_one({"_id": int(student_id)})
         return Student(student) if student else None
+
+    @staticmethod
+    def filter_share_consent(student_ids: [str]) -> [str]:
+        students = Globals.database["students"].find(
+            {"_id": {"$in": [int(sid) for sid in student_ids]}, "is_consent_share": True})
+        return [str(student["_id"]) for student in students if student]
 
     @staticmethod
     def get_students_by_public_scraper(scraper_id: str) -> [Student]:

@@ -1,7 +1,7 @@
 export default class StudentData {
     login: string;
     name: string;
-    id: number;
+    id: string;
 
     constructor(data: any) {
         this.login = data.login;

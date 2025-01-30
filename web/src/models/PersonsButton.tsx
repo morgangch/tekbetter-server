@@ -10,14 +10,14 @@ function PersonsModal(props: { students_ids: string[], mouseX: number, mouseY: n
     const [students, setStudents] = React.useState<StudentData[] | null>(null);
 
     useEffect(() => {
-        let students = props.students_ids.map(id => getStudentData(parseInt(id)));
+        let students = props.students_ids.map(id => getStudentData(id));
         Promise.all(students).then((data) => {
             setStudents(data);
         });
     }, []);
 
     return (
-        <div className={"absolute bg-white p-4 rounded-lg"} style={{left: props.mouseX - 400, top: props.mouseY - 300}}>
+        <div className={"absolute bg-white p-4 rounded-lg w-96"} style={{left: props.mouseX - 390, top: props.mouseY - 110}}>
             <div className={"flex flex-row items-center gap-2 text-lg"}>
                 <FontAwesomeIcon icon={faCheckCircle} className={"text-green-500"}/>
                 <h1 className={"text-xl font-bold"}>Validated students</h1>
@@ -50,7 +50,7 @@ export default function PersonsButton(props: { students_ids: string[] }) {
     const [mousePosition, setMousePosition] = React.useState({x: 0, y: 0});
 
     return <div title={"Show validated students"}
-                className={"flex flex-row items-center rounded bg-gray-200 text-gray-600 px-1 text-xs py-1 gap-1 hover:bg-gray-300 cursor-pointer"}
+                className={"flex flex-row items-center rounded bg-gray-200 text-gray-600 px-1 h-6 text-xs py-1 gap-1 hover:bg-gray-300 cursor-pointer " + (props.students_ids.length === 0 ? "hidden" : "")}
                 onClick={(e) => {
                     e.stopPropagation();
                     setIsOpen(true);

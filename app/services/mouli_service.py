@@ -87,10 +87,12 @@ class MouliService:
         for skill in mouli.skills:
             usrs = RedisService.get(f"{promyear}:{city}:{mouli.project_code}:{base64.b64encode(skill.title.encode()).decode()}")
             usrs = json.loads(usrs) if usrs else []
+            usrs = StudentService.filter_share_consent(usrs)
             skill.passed_students = usrs if usrs else []
             if skill.tests is not None:
                 for test in skill.tests:
                     usrs = RedisService.get(f"{promyear}:{city}:{mouli.project_code}:{base64.b64encode(skill.title.encode()).decode()}:{base64.b64encode(test.title.encode()).decode()}")
+                    usrs = StudentService.filter_share_consent(usrs)
                     test.passed_students = json.loads(usrs) if usrs else []
 
     @staticmethod

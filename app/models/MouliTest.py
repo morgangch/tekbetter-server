@@ -38,7 +38,7 @@ class MouliTest:
             "is_skipped": self.skipped,
             "is_mandatory": self.mandatory,
             "comment": self.comment,
-            "passed_students": self.passed_students
+            "passed_students": [str(student) for student in self.passed_students]
         }
 
 
@@ -89,7 +89,8 @@ class MouliSkill:
             "mandatoryfail_count": self.mandatoryfail_count,
             "tests": [test.to_api() for test in
                       self.tests] if self.tests is not None else None,
-            "passed_students": self.passed_students
+            "passed_students": [str(student) for student in self.passed_students]
+
         }
 
 
@@ -154,7 +155,7 @@ class MouliResult:
         self.project_name = mongodata["project_name"]
         self.project_code = mongodata["project_code"]
         self.module_code = mongodata["module_code"]
-        self.student_id = mongodata["student_id"]
+        self.student_id = str(mongodata["student_id"])
         self.test_date = mongodata["test_date"]
         self.commit_hash = mongodata["commit_hash"]
         self.build_trace = mongodata["build_trace"]

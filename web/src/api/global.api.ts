@@ -14,9 +14,11 @@ export async function getSyncStatus(): Promise<{
     }
 }
 
-export async function getStudentData(id: number): Promise<StudentData> {
+export async function getStudentData(id: string): Promise<StudentData> {
 
     let results = vars.studentsCache.filter(student => student.id === id);
+    console.log("results", results);
+
     if (results.length === 1) {
         return results[0];
     }
