@@ -11,6 +11,7 @@ export class EpiProject {
         test_id: number;
         score: number;
         date: Date;
+        is_warning: boolean;
     } | null;
 
     constructor(data: any) {
@@ -27,6 +28,7 @@ export class EpiProject {
                 test_id: data.mouli.test_id,
                 score: data.mouli.score,
                 date: data.mouli.date,
+                is_warning: data.mouli.is_warning,
             }
         } else {
             this.mouli = null;

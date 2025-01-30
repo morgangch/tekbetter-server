@@ -85,6 +85,7 @@ export class MouliResult {
     commit: string | null;
     coding_style: CodingStyleResult;
     build_trace: string | null;
+    make_trace: string | null;
     banned_content: string | null;
     skills: MouliSkill[];
     delivery_error: boolean | null;
@@ -92,7 +93,10 @@ export class MouliResult {
         "dates": string[],
         "scores": number[],
         "ids": number[]
-    }
+    };
+    coverage_lines: number | null;
+    coverage_branches: number | null;
+    is_build_failed: boolean;
 
     constructor(data: any) {
         this.test_id = data.test_id;
@@ -101,11 +105,17 @@ export class MouliResult {
         this.total_score = data.score;
         this.commit = data.commit_hash.slice(0, 8);
         this.build_trace = data.build_trace;
+        this.make_trace = data.make_trace;
+        this.is_build_failed = data.is_build_failed;
+
         this.banned_content = data.banned_content;
         this.skills = data.skills.map((skill: any) => new MouliSkill(skill));
         this.coding_style = new CodingStyleResult(data.coding_style_report);
         this.evolution = data.evolution;
         this.delivery_error = data.delivery_error;
+
+        this.coverage_lines = data.coverage_lines;
+        this.coverage_branches = data.coverage_branches;
     }
 
     crashCount() {
@@ -116,6 +126,9 @@ export class MouliResult {
         return this.skills.filter(skill => skill.isCrashed()).length > 0;
     }
 
+    isWarning() {
+        return this.skills.filter(skill => skill.isWarning()).length > 0 || this.is_build_failed || this.isCrashed();
+    }
     isManyMandatoryFailed() {
         return this.skills.filter(skill => skill.mandatory_failed_count > 0).length > 0;
     }

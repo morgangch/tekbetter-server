@@ -5,13 +5,16 @@ from flask import request
 
 from app.api.middlewares.scraper_auth_middleware import \
     scraper_auth_middleware, public_scraper_auth_middleware
+from app.models.Module import Module
 from app.models.PlanningEvent import PlanningEvent
 from app.models.Project import Project
 from app.models.PublicScraper import PublicScraper
+from app.parsers.module_parser import fill_module_from_intra
 from app.parsers.mouli_parser import build_mouli_from_myepitech
 from app.parsers.planning_parser import fill_event_from_intra
 from app.parsers.project_parser import fill_project_from_intra
 from app.parsers.student_parser import fill_student_from_intra
+from app.services.module_service import ModuleService
 from app.services.mouli_service import MouliService
 from app.services.planning_service import PlanningService
 from app.services.project_service import ProjectService
@@ -19,7 +22,6 @@ from app.services.publicscraper_service import PublicScraperService
 from app.services.student_picture_service import StudentPictureService
 from app.services.student_service import StudentService
 from app.tools.aes_tools import decrypt_token
-
 
 
 def load_scrapers_routes(app):
@@ -81,6 +83,7 @@ def load_scrapers_routes(app):
 
         return {
             "known_tests": moulis_ids,
+            "known_modules": [m.code_module for m in ModuleService.get_recent_fetched_modules(student.id)],
             "asked_slugs": asked_slugs,
             "asked_pictures": [] if StudentPictureService.is_picture_exists(student.login) else [student.login],
             "fetch_start": start.strftime("%Y-%m-%d"),
@@ -134,5 +137,13 @@ def load_scrapers_routes(app):
             for student_login, picture in data["students_pictures"].items():
                 if student.login == student_login:
                     StudentPictureService.add_student_picture(student_login, base64.b64decode(picture))
+
+        if "modules" in data and data["modules"]:
+            for module_data in data["modules"]:
+                module = Module()
+                module.student_id = student.id
+                if not fill_module_from_intra(module_data, module, student.id):
+                    continue
+                ModuleService.upload_module(module)
 
         return {"message": "Data pushed"}

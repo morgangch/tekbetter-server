@@ -2,7 +2,7 @@ import {useNavigate} from "react-router";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
     faCalendarCheck, faCheckCircle,
-    faGraduationCap,
+    faGraduationCap, faShareNodes,
     faWarning
 } from "@fortawesome/free-solid-svg-icons";
 import {dateToElapsed} from "../tools/DateString";
@@ -92,6 +92,7 @@ export default function TopBar(): React.ReactElement {
 
             <div className={"flex flex-row flex-grow justify-start ml-2 h-full gap-1"}>
                 <NavElement text={"Moulinettes"} link={"/moulinettes"} icon={faGraduationCap}/>
+                <NavElement text={"Modules"} link={"/modules"} icon={faShareNodes}/>
                 <NavElement text={"Calendar"} link={"/calendar"} icon={faCalendarCheck}/>
                 <NavElement text={"Synchronisation"} link={"/sync"} icon={faCheckCircle}/>
             </div>

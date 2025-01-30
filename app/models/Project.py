@@ -74,7 +74,8 @@ class Project:
             "mouli": {
                 "test_id": latest_mouli.test_id,
                 "score": latest_mouli.score,
-                "date": latest_mouli.test_date
+                "date": latest_mouli.test_date,
+                "is_warning": latest_mouli.is_warning()
             } if latest_mouli else None
         }
 

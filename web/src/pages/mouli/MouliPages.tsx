@@ -5,13 +5,13 @@ import MouliHistory from "./MouliHistory";
 import {buildStyles, CircularProgressbar} from "react-circular-progressbar";
 import {dateToElapsed} from "../../tools/DateString";
 import {MouliResult} from "../../models/MouliResult";
-import getAllProjects, {markProjectAsSeen} from "../../api/project.api";
+import getAllProjects, {markAllProjectsAsSeen, markProjectAsSeen} from "../../api/project.api";
 import {EpiProject} from "../../models/Project";
 import {getMouliDetails, getProjectMouliHistory} from "../../api/mouli.api";
 import {useNavigate, useParams} from "react-router";
 import scoreColor from "../../tools/ScoreColor";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
+import {faCheck, faChevronLeft, faWarning} from "@fortawesome/free-solid-svg-icons";
 import LoadingComp from "../../comps/LoadingComp";
 
 function Project(props: {
@@ -20,6 +20,7 @@ function Project(props: {
     score: number,
     last_test: Date,
     seen: boolean,
+    is_warning?: boolean
 }) {
     const params = useParams();
     const [isNewClicked, setIsNewClicked] = React.useState<boolean>(false);
@@ -28,7 +29,7 @@ function Project(props: {
     const navigate = useNavigate();
 
     return <div
-        className={"relative shadow text rounded-2xl flex flex-row items-center p-2 cursor-pointer transition " + (is_selected ? "bg-gray-200" : "hover:bg-gray-100")}
+        className={"relative shadow text rounded-2xl flex flex-row items-center p-2 cursor-pointer transition " + (is_selected ? "bg-gray-100" : "hover:bg-gray-100")}
         onClick={() => {
             navigate(`/moulinettes/${props.project_slug}`);
             if (!props.seen && !isNewClicked) {
@@ -36,6 +37,12 @@ function Project(props: {
                 markProjectAsSeen(props.project_slug).catch(() => console.error("Failed to mark as read"));
             }
         }}>
+
+
+        {props.is_warning && <div className={"absolute right-2 bottom-0"}>
+            <FontAwesomeIcon icon={faWarning} className={"text-red-500 text-xs"}/>
+        </div>}
+
         <div className={"w-12"}>
             <CircularProgressbar
                 value={props.score}
@@ -87,6 +94,7 @@ export default function MouliPage(): React.ReactElement {
         test_id: number;
         score: number;
         date: Date;
+        is_warning: boolean;
     }[] | null>(null);
 
     const [search, setSearch] = React.useState<string>("");
@@ -119,15 +127,15 @@ export default function MouliPage(): React.ReactElement {
     }, []);
 
     useEffect(() => {
+
         if (c_project_slug !== project_slug) {
-            console.log(c_project_slug, project_slug);
             setHistory(null);
             getProjectMouliHistory(c_project_slug!).then((data) => {
                 setHistory(data);
-                console.log("Setting project slug to", c_project_slug);
+                const sorted_data = data.sort((a, b) => a.date > b.date ? -1 : 1);
                 setProjectSlug(c_project_slug);
                 if (data.length > 0)
-                    load_test(data[0].test_id);
+                    load_test(sorted_data[0].test_id);
             });
         }
     }, [c_project_slug, project_slug]);
@@ -147,6 +155,23 @@ export default function MouliPage(): React.ReactElement {
                 <input type="text" placeholder="Search..."
                        className={"w-full p-2 rounded-md bg-gray-100 text-gray-800 mt-2"}
                        onChange={(e) => setSearch(e.target.value)}/>
+
+                <div className={"w-min"}>
+                    {search_results.filter((project) => !project.mouli_seen && project.mouli !== null).length > 0 ? (
+                        <div
+                            className={"flex select-none text-nowrap px-1 flex-row items-center justify-start gap-2 mt-2 bg-red-400 text-white rounded cursor-pointer hover:bg-red-500 transition"}
+                            onClick={() => {
+                                markAllProjectsAsSeen().then(() => {
+                                    reload_projects();
+                                }).catch(() => console.error("Failed to mark all as read"));
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faCheck} className={"text-xs"}/>
+                            <p className={"text-xs"}>mark all as read</p>
+                        </div>) : null}
+
+                </div>
+
                 <div
                     className={"grid grid-cols-2 gap-2 mt-2"}>
                     {
@@ -158,6 +183,8 @@ export default function MouliPage(): React.ReactElement {
                                     project_slug={project.project_slug}
                                     score={project.mouli?.score!}
                                     seen={project.mouli_seen}
+                                    key={project.project_slug}
+                                    is_warning={project.mouli?.is_warning}
                                     last_test={new Date(project.mouli?.date!)}/>
                             })
                     }

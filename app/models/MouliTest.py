@@ -132,9 +132,13 @@ class MouliResult:
     student_id: str
 
     build_trace: str | None
+    make_trace: str | None
     banned_content: str | None
     delivery_error: bool = False
     skills: [MouliSkill]
+
+    coverage_lines: int = 0
+    coverage_branches: int = 0
 
     coding_style_report: CodingStyleReport
 
@@ -150,9 +154,13 @@ class MouliResult:
         self.test_date = mongodata["test_date"]
         self.commit_hash = mongodata["commit_hash"]
         self.build_trace = mongodata["build_trace"]
+        self.make_trace = mongodata["make_trace"] if "make_trace" in mongodata else None
+        self.is_build_failed = mongodata["build_failed"] if "build_failed" in mongodata else False
         self.delivery_error = mongodata["delivery_error"]
         self.banned_content = mongodata["banned_content"]
         self.skills = [MouliSkill(skill) for skill in mongodata["skills"]]
+        self.coverage_lines = mongodata["coverage_lines"] if "coverage_lines" in mongodata else 0
+        self.coverage_branches = mongodata["coverage_branches"] if "coverage_branches" in mongodata else 0
         self.coding_style_report = CodingStyleReport(
             mongodata["coding_style_report"])
 
@@ -164,6 +172,18 @@ class MouliResult:
             return 0
         return round(passed_tests / total_tests * 100, 2)
 
+    def is_warning(self):
+        if self.is_build_failed:
+            return True
+        if self.delivery_error:
+            return True
+        for skill in self.skills:
+            if skill.mandatoryfail_count > 0:
+                return True
+            if skill.crash_count > 0:
+                return True
+        return False
+
     def to_dict(self) -> dict:
         return {
             "_id": self._id,
@@ -174,12 +194,16 @@ class MouliResult:
             "student_id": self.student_id,
             "score": self.score,
             "delivery_error": self.delivery_error,
+            "build_failed": self.is_build_failed,
             "test_date": self.test_date,
             "commit_hash": self.commit_hash,
             "build_trace": self.build_trace,
+            "make_trace": self.make_trace,
             "banned_content": self.banned_content,
             "skills": [skill.to_dict() for skill in self.skills],
-            "coding_style_report": self.coding_style_report.to_dict()
+            "coding_style_report": self.coding_style_report.to_dict(),
+            "coverage_lines": self.coverage_lines,
+            "coverage_branches": self.coverage_branches
         }
 
     def to_api(self):
@@ -194,6 +218,7 @@ class MouliResult:
             "student_id": self.student_id,
             "score": self.score,
             "delivery_error": self.delivery_error,
+            "is_build_failed": self.is_build_failed,
             "test_date": self.test_date,
             "commit_hash": self.commit_hash,
             "evolution": {
@@ -202,9 +227,12 @@ class MouliResult:
                 "ids": evolution[2]
             },
             "build_trace": self.build_trace,
+            "make_trace": self.make_trace,
             "banned_content": self.banned_content,
             "skills": [skill.to_api() for skill in self.skills],
-            "coding_style_report": self.coding_style_report.to_dict()
+            "coding_style_report": self.coding_style_report.to_dict(),
+            "coverage_lines": self.coverage_lines,
+            "coverage_branches": self.coverage_branches
         }
 
     @property
