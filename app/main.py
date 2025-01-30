@@ -99,7 +99,8 @@ def create_app():
             return send_from_directory(flask_app.static_folder, 'index.html')
 
     CORS(flask_app)
-    MouliService.refresh_all_cache()
+    if os.getenv("BYPASS_CACHE_RELOAD", "false") == "false":
+        MouliService.refresh_all_cache()
 
     return flask_app
 
