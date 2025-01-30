@@ -40,12 +40,12 @@ class Student:
 
     @property
     def id(self):
-        return self._id
+        return str(self._id)
 
     def __init__(self, mongo_data=None):
         if mongo_data is None:
             return
-        self._id = mongo_data["_id"]
+        self._id = str(mongo_data["_id"])
         self.login = mongo_data["login"]
         self.password_hash = mongo_data.get("password_hash", None)
         self.first_name = mongo_data.get("first_name", None)
