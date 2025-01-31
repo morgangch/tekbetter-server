@@ -18,11 +18,9 @@ default_values = {
     "JWT_SECRET": None,
     "AES_KEY": None,
     "DATA_PATH": "./data",
-    "SMTP_HOST": None,
-    "SMTP_PORT": 587,
-    "SMTP_USER": None,
-    "SMTP_PASSWORD": None,
     "ENABLE_MAILER": "false",
+    "MAILERSEND_API_KEY": None,
+    "MAILERSEND_FROM_EMAIL": None
 }
 
 def displ_deprecated(message):
@@ -43,7 +41,7 @@ def load_env():
     log_debug("Loading environment variables")
     load_dotenv()
 
-    smtp_vars = ["SMTP_HOST", "SMTP_USER", "SMTP_PASSWORD"]
+    smtp_vars = ["MAILERSEND_API_KEY", "MAILERSEND_FROM_EMAIL"]
     if os.getenv("ENABLE_MAILER") == "true":
         for var in smtp_vars:
             if os.getenv(var) is None:
