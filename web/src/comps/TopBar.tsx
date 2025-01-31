@@ -82,8 +82,8 @@ export default function TopBar(): React.ReactElement {
 
             <div className={"flex flex-row items-center mr-8"}>
                 <img
-                    src={require("../assets/epitech.png")}
-                    alt={"Epitech"}
+                    src={require("../assets/tblogo.png")}
+                    alt={"TekBetter Logo"}
                     className={"w-9 ml-1"}
                 />
                 <p className={"text-white ml-1 mr-2 font-bold"}>TekBetter</p>
