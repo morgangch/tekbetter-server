@@ -23,6 +23,8 @@ default_values = {
     "SMTP_USER": None,
     "SMTP_PASSWORD": None,
     "ENABLE_MAILER": "false",
+    "MAILERSEND_API_KEY": "key",
+    "MAILERSEND_FROM_EMAIL": "contact@example.com"
 }
 
 def displ_deprecated(message):
