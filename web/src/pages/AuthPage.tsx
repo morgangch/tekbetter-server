@@ -97,7 +97,7 @@ export default function AuthPage(): React.ReactElement {
             <div className={"p-10 shadow rounded bg-white"}>
                 <div className={"flex flex-col items-center gap-5 mb-6"}>
                     <img
-                        src={require("../assets/epitech.png")}
+                        src={require("../assets/tblogo.png")}
                         alt={"Epitech logo"}
                         className={"w-24"}
                     />
